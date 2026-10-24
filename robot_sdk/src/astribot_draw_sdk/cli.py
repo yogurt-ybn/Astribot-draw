@@ -71,6 +71,7 @@ def main():
         args.output = args.output/('svg-'+str(time.time_ns()))
     report = dict(status='failed', backend=args.backend)
     session = handle = svg_job = None
+    pipeline_started_at = time.perf_counter()
     try:
         # Validate file identity before opening any SDK connection.
         trajectory = Trajectory.from_npz(args.plan, evidence=args.validation) if args.command == 'run' else None
@@ -82,7 +83,7 @@ def main():
                 from .svg_runner import SvgJob
                 svg_job = SvgJob(session, args.plan, args.output, planner_dir=args.planner_dir,
                                  assets=args.assets, seeds=args.seeds, speed_scale=args.speed_scale,
-                                 plan_only=args.plan_only)
+                                 plan_only=args.plan_only, pipeline_started_at=pipeline_started_at)
                 report = svg_job.run()
             elif args.command == 'probe':
                 first = session.state()['joints']['sequence']

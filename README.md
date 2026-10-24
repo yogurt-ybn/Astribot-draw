@@ -12,7 +12,7 @@ The [simulation SDK adapter](robot_sdk/README.md) connects an existing `simulati
 bash robot_sdk/run_sim.sh draw svg_planner/inputs/ginkgo.svg
 ```
 
-It checks the current pose, plans the 18-joint approach/draw/return, streams paired positions/velocities at 125 Hz, and audits received joint feedback against the SVG. The [fresh ginkgo SDK verification](robot_sdk/examples/svg-ginkgo-verification.json) reports about 219 seconds of execution and maximum tip-position errors of 1.10 mm. [Comparison image](robot_sdk/examples/ginkgo-measured-vs-svg.png). These are simulation results from feedback FK, not camera or hardware measurements.
+It checks the current pose, plans the 18-joint approach and drawing, stops at the drawing endpoint, streams paired positions/velocities at 125 Hz, and audits received joint feedback against the SVG. The [initial ginkgo SDK verification](robot_sdk/examples/svg-ginkgo-verification.json), which included a full return, reports about 219 seconds of execution and maximum tip-position errors of 1.10 mm. [Comparison image](robot_sdk/examples/ginkgo-measured-vs-svg.png). The [stop-at-end verification](robot_sdk/examples/svg-ginkgo-stop-at-end-verification.json) records 27.04 seconds from CLI initialization to a fully checked trajectory, 109.41 seconds of motion, and continued endpoint holding after the controller exits. These are simulation results from feedback FK, not camera or hardware measurements.
 
 ## Earlier T1 case-specific demonstrations
 

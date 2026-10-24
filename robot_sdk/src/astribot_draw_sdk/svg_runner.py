@@ -77,7 +77,10 @@ class SvgStateGuard(FixedPartsGuard):
 
 class SvgJob:
     def __init__(self, robot, svg, output, *, planner_dir=None, assets=None,
-                 seeds=12, speed_scale=1., plan_only=False):
+                 seeds=12, speed_scale=1., plan_only=False, pipeline_started_at=None):
+        now = time.perf_counter()
+        self.started = now if pipeline_started_at is None else pipeline_started_at
+        self.stage_started = now
         if robot.backend_kind != 'sdk-sim' or robot.transport != 'ros':
             raise ValueError('SVG drawing requires the official SDK simulation ROS backend')
         if not 0 < speed_scale <= 1 or not 0 <= seeds <= 100:
@@ -93,7 +96,8 @@ class SvgJob:
         self.report = dict(schema='astribot-sdk-svg-run/v1', status='planning',
                            svg=str(self.svg), svg_sha256=hashlib.sha256(original_svg).hexdigest(),
                            model_assets=str(self.assets), model_revision=os.getenv('ASTRIBOT_DRAW_MODEL_REVISION', 'unknown'),
-                           speed_scale=speed_scale, stages={},
+                           speed_scale=speed_scale, stages={}, completion_behavior='stop_at_drawing_end',
+                           timings_s=dict(sdk_initialization=max(0., now-self.started)),
                            scope='Official simulation; free-space virtual light tip, not surface-contact drawing',
                            limitations=['Sampled collision checks and upstream compound-joint exclusions.',
                                         'Passive gripper joints use the near-closed model preset.',
@@ -101,6 +105,12 @@ class SvgJob:
 
     def save_report(self):
         (self.output/'svg-run.json').write_text(json.dumps(self.report, indent=2, allow_nan=False)+'\n', encoding='utf-8')
+
+    def checkpoint(self, stage):
+        now = time.perf_counter()
+        timings = self.report['timings_s']
+        timings[stage] = timings.get(stage, 0.)+now-self.stage_started
+        self.stage_started = now
 
     def run(self):
         try:
@@ -110,6 +120,7 @@ class SvgJob:
                                error=f'{type(exc).__name__}: {exc}')
             raise
         finally:
+            self.report['timings_s']['input_to_result'] = time.perf_counter()-self.started
             self.save_report()
 
     def _run(self):
@@ -121,6 +132,8 @@ class SvgJob:
             raise RuntimeError('Another svg_plan module is already loaded from a different directory')
         if 'initial_qpos' not in inspect.signature(planner.ik_candidate).parameters:
             raise RuntimeError('Apply robot_sdk/patches/svg-measured-start.patch to svg_planner/svg_plan.py')
+        if 'return_home' not in inspect.signature(planner.schedule).parameters:
+            raise RuntimeError('Update svg_planner: SDK drawing requires stop-at-end scheduling support')
         self.planner = planner
         self.mujoco = planner.mujoco
         planner.CollisionChecker = lambda model: CollisionChecker(model, planner.collision_pairs(model))
@@ -136,6 +149,7 @@ class SvgJob:
             draw.line([tuple(p) for p in parsed['arms'][side]['points_uv']], fill=color, width=2)
         image.save(self.output/'input-preview.png')
         self.report['stages']['static'] = 'passed'
+        self.checkpoint('svg_import_and_static')
         self.save_report()
         print('SVG static check passed; compiling the current simulator model', flush=True)
         model = planner.build_t1_scene(self.output, assets=self.assets, exclude_compound_elbow=True)
@@ -154,16 +168,22 @@ class SvgJob:
         self.guard = SvgStateGuard(auxiliary, model, initial, self.checker)
         self.verify_kinematics()
         u, targets = planner.shared_targets(parsed)
+        self.checkpoint('model_and_state')
         self.report['candidate_failures'] = []
         for name, torso in planner.torso_candidates(u, targets):
             try:
                 print('SVG_CANDIDATE', name, flush=True)
                 home, chains, solved, search = planner.ik_candidate(model, u, targets, torso, self.seeds,
                                                                   initial_qpos=initial)
-                q, dq, phase, desired = planner.schedule(model, u, targets, torso, home, chains, solved)
+                self.checkpoint('ik')
+                q, dq, phase, desired = planner.schedule(model, u, targets, torso, home, chains, solved,
+                                                        return_home=False)
+                self.checkpoint('scheduling')
                 checked = planner.validate_plan(model, q, dq, phase, desired)
+                self.checkpoint('native_plan_validation')
                 break
             except (planner.PlanningError, RuntimeError) as exc:
+                self.checkpoint('rejected_candidate_work')
                 self.report['candidate_failures'].append(dict(candidate=name, error=str(exc)))
                 print('SVG_REJECT', name, str(exc), flush=True)
                 self.save_report()
@@ -204,6 +224,8 @@ class SvgJob:
                 model_revision=self.report['model_revision'], measured_initial_state=True,
                 speed_scale=self.speed_scale))
         plan = Trajectory.from_npz(plan_path)
+        self.checkpoint('resampling_and_validation')
+        self.report['timings_s']['input_to_trajectory_ready'] = time.perf_counter()-self.started
         self.report.update(plan=str(plan_path), validation=str(validation), duration_s=float(plan.time[-1]))
         self.report['stages']['resampling'] = 'passed'
         self.save_report()
@@ -211,7 +233,7 @@ class SvgJob:
             self.report['status'] = 'planned'
             print('SVG plan ready; plan-only requested, no control or motion requested', flush=True)
             return self.report
-        print(f'SVG execution starts: {plan.time[-1]:.1f}s; approach, draw, return to measured start', flush=True)
+        print(f'SVG execution starts: {plan.time[-1]:.1f}s; approach, draw, stop at drawing end', flush=True)
         self.handle = self.robot.execute(plan, state_guard=self.guard)
         started, last_progress = time.perf_counter(), 0.
         while not self.handle.done:
@@ -224,12 +246,14 @@ class SvgJob:
                 raise RuntimeError('SVG execution exceeded the duration/settling allowance')
             time.sleep(.1)
         execution = self.handle.wait()
+        self.checkpoint('execution')
         self.report['execution'] = execution
         self.report['actual_sampled_minimum_clearance_m'] = self.guard.minimum_clearance
         if execution['status'] != 'completed':
             raise RuntimeError('SVG execution did not complete: '+str(execution.get('error')))
         self.report['stages']['execution'] = 'passed'
         self.audit_execution(execution['execution_id'], parsed)
+        self.checkpoint('measured_drawing_audit')
         self.report['status'] = 'completed'
         return self.report
 

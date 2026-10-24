@@ -44,11 +44,11 @@ bash robot_sdk/run_sim.sh draw /path/to/drawing.svg --speed-scale 0.5
 
 输入采用上游 [SVG_INPUT_INTERFACE.md](../svg_planner/SVG_INPUT_INTERFACE.md)：616×560 画布，两个直接子 `path`，分别 `id="left"` / `id="right"`，支持 `M L C Q Z`。机器人左臂对应画面右侧。普通编辑器导出的 groups、transforms、嵌入位图或多条分离子路径会被明确拒绝，不会静默改图。
 
-`draw` 自动完成严格 SVG/画布检查、当前躯干/双臂/头/夹爪/底盘反馈读取、双臂耦合 IK、从当前姿态入场的 18 关节 RRT、同步绘制与返回、200→125 Hz 位置/速度重采样及每条命令的间隙检查，再通过 SDK 执行。用户不需要提前准备 NPZ。生成的 NPZ 仅为内部缓存与复核证据。
+`draw` 自动完成严格 SVG/画布检查、当前躯干/双臂/头/夹爪/底盘反馈读取、双臂耦合 IK、从当前姿态入场的 18 关节 RRT、同步绘制并停在绘制末端、200→125 Hz 位置/速度重采样及每条命令的间隙检查，再通过 SDK 执行。用户不需要提前准备 NPZ。生成的 NPZ 仅为内部缓存与复核证据。
 
 规划仍使用上游有限躯干候选族和确定性种子预算，不保证所有符合 SVG 格式的图案都能执行。搜索失败或间隙不足时保留拒绝原因。没有自动缩放、镜像、删线或跳到中立首帧。
 
-原始 `04afcd6` 代码需要一次性应用 `robot_sdk/patches/svg-measured-start.patch`；当前分支和部署均已包含该适配，无需重复应用。它只给上游 `ik_candidate` 增加可选的实测起点，独立 `svg_plan.py` 默认共同中立起点和原基准不变。上游更新后可通过 `git apply --check robot_sdk/patches/svg-measured-start.patch` 检查是否仍适用。
+原始 `04afcd6` 代码需要一次性应用 `robot_sdk/patches/svg-measured-start.patch`；当前分支和部署均已包含该适配，无需重复应用。它给上游 `ik_candidate` 增加可选的实测起点，并给 `schedule` 增加 `return_home` 参数。SDK 的 `draw` 使用 `return_home=False`：末帧速度为零，确认反馈收敛后结束，不自动返回。独立 `svg_plan.py` 仍默认返回，原基准不变。上游更新后可通过 `git apply --check robot_sdk/patches/svg-measured-start.patch` 检查是否仍适用。
 
 规划时使用 MuJoCo 几何包围球保守剔除远离的碰撞对，候选对仍调用原生 `mj_geomDistance`，不改变原有 3947 对覆盖和阈值；已与原始穷举查询对比。该优化避免把大量时间用于明显相距很远的几何体。
 
@@ -57,7 +57,7 @@ bash robot_sdk/run_sim.sh draw /path/to/drawing.svg --speed-scale 0.5
 每次 `draw` 生成独立目录 `output/sdk-sim-draw/svg-<时间戳>/`，终端打印实际宿主机路径：
 
 - `input.svg`、`input-preview.png`：原始 SVG 字节和解析后的目标。
-- `svg-run.json`：各阶段、模型版本、当前起点、选中的 IK 分支、规划及执行结果。
+- `svg-run.json`：各阶段、模型版本、当前起点、选中的 IK 分支、规划及执行结果；`timings_s` 记录 SVG 检查、模型/状态准备、IK、时间规划、原始轨迹检查、重采样检查、执行和反馈核验耗时。`input_to_trajectory_ready` 从 CLI 开始准备 SDK 到通过全部轨迹检查，包含初始化，不含 shell 文件复制。
 - `sdk-plan.npz` / `.validation.json`：完整 q/dq 命令及其哈希绑定检查记录。
 - `<执行ID>.jsonl`：目标、实测关节、辅助部件、阶段、反馈年龄和调度延迟。
 - `measured-drawing.npz`、`measured-vs-svg.png`：从关节反馈计算的独立仿真模型 FK 与 SVG 目标对比；灰色为输入，蓝/橙为实测轨迹。
@@ -186,6 +186,8 @@ PYTHONPATH=robot_sdk/src python -m unittest discover -s robot_sdk/tests -v
 
 测试覆盖命名映射、200→125 Hz 位置速度插值、导出检查与文件哈希、厂家下发参数、线程归属、首帧拒绝、辅助部件变化、反馈过期、控制权丢失、取消和资源释放，并对碰撞包围球剔除与原生穷举查询进行对比。
 
-当前 SVG 适配在仿真容器 Python 3.10 中通过 35 项 SDK 测试和 25 项上游 SVG 测试。银杏 SVG 已完成完整 SDK 执行：约 218.8 秒、27352 条命令、12994 个绘图反馈样本；左右末端最大误差约 1.097 / 1.104 mm，RMS 约 0.384 / 0.386 mm，实测姿态最小采样间隙约 3.981 mm。几何与误差范围见上方说明。
+首轮含返回的 SVG 适配在仿真容器 Python 3.10 中通过 35 项 SDK 测试和 25 项上游 SVG 测试。该轮银杏 SVG 已完成完整 SDK 执行：约 218.8 秒、27352 条命令、12994 个绘图反馈样本；左右末端最大误差约 1.097 / 1.104 mm，RMS 约 0.384 / 0.386 mm，实测姿态最小采样间隙约 3.981 mm。几何与误差范围见上方说明。
 
 参见 [精简验证记录](examples/svg-ginkgo-verification.json) 和 [实际反馈轨迹对比](examples/ginkgo-measured-vs-svg.png)。完整命令与反馈日志保存在执行电脑本次输出目录，未随代码发布；模型资产不包含在本包中。
+
+新的不返回版本已在同一官方仿真中验证：35 项 SDK 和 26 项 SVG 测试通过。银杏输入到完整轨迹检查通过约 27.04 秒（IK 4.03 秒、时间规划 0.10 秒、原始轨迹检查 5.06 秒、重采样检查 13.22 秒，另含初始化/模型准备）；运动约 109.41 秒，输入到结果约 138.22 秒。绘制最大反馈 FK 误差约 1.108 mm。结束约 10.95 秒后只读反馈仍停在末端，零速度，无返回阶段。计时不含 shell 文件复制和最终 SDK 关闭，耗时随输入与机器负载变化。见 [不返回验证记录](examples/svg-ginkgo-stop-at-end-verification.json)。
