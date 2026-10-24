@@ -1,0 +1,53 @@
+{
+  "scope": "Input compatibility only, not execution or collision certificate. Backend reproduction adapter reads v2 JSON, checks simultaneous=true and exact world agreement with seed NPZ. Full static metadata is validated by this gate; historical measured runs used identical NPZ world targets before the adapter was added.",
+  "designs": {
+    "tidal_waves": {
+      "design_and_contract_valid": true,
+      "seed_npz_sha256": "f840b6db43d0a93acdb3ffff7d761d33fd0ea3f538e6bc923ce93dfa45ccdf43",
+      "arms": {
+        "left": {
+          "exact_world_array_match": true,
+          "point_count": 855,
+          "maximum_difference_m": 0.0
+        },
+        "right": {
+          "exact_world_array_match": true,
+          "point_count": 855,
+          "maximum_difference_m": 0.0
+        }
+      }
+    },
+    "rounded_leaves": {
+      "design_and_contract_valid": true,
+      "seed_npz_sha256": "818561ac36e480f9597a9f36327c4415e26f3d5771d19e46d64cef4d3ba21475",
+      "arms": {
+        "left": {
+          "exact_world_array_match": true,
+          "point_count": 967,
+          "maximum_difference_m": 0.0
+        },
+        "right": {
+          "exact_world_array_match": true,
+          "point_count": 967,
+          "maximum_difference_m": 0.0
+        }
+      }
+    },
+    "twin_galaxies": {
+      "design_and_contract_valid": true,
+      "seed_npz_sha256": "bc472e6297e444b44f4791e65307d6a1d1ee8fd5fc5de9fed92d5a739551907c",
+      "arms": {
+        "left": {
+          "exact_world_array_match": true,
+          "point_count": 950,
+          "maximum_difference_m": 0.0
+        },
+        "right": {
+          "exact_world_array_match": true,
+          "point_count": 950,
+          "maximum_difference_m": 0.0
+        }
+      }
+    }
+  }
+}

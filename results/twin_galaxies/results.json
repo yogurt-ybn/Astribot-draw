@@ -1,0 +1,189 @@
+{
+  "name": "twin_galaxies",
+  "source_schema": "astribot-drawing-v2",
+  "torso_lean_amplitude": 0.75,
+  "engineering_plan_clearance_gate_m": 0.002,
+  "contact_margin_m": 0.001,
+  "distance_cap_m": 0.05,
+  "collision_pair_count": 1071,
+  "planned_steps": 18055,
+  "planned_minimum": {
+    "minimum_distance_m": 0.0022777394820757135,
+    "geom1": "collision_mesh_017",
+    "geom2": "collision_mesh_019",
+    "category": "same_arm_nonadjacent",
+    "category_minima": {
+      "arm_environment": {
+        "distance_m": 0.05,
+        "geom1": "floor",
+        "geom2": "collision_mesh_015"
+      },
+      "torso_head_base": {
+        "distance_m": 0.05,
+        "geom1": "collision_mesh_001",
+        "geom2": "collision_mesh_007"
+      },
+      "arm_body": {
+        "distance_m": 0.032297444667922615,
+        "geom1": "collision_mesh_010",
+        "geom2": "collision_mesh_033"
+      },
+      "same_arm_nonadjacent": {
+        "distance_m": 0.0022777394820757135,
+        "geom1": "collision_mesh_017",
+        "geom2": "collision_mesh_019"
+      },
+      "inter_arm": {
+        "distance_m": 0.05,
+        "geom1": "collision_mesh_015",
+        "geom2": "collision_mesh_033"
+      }
+    },
+    "pair_counts": {
+      "arm_environment": 36,
+      "torso_head_base": 55,
+      "arm_body": 496,
+      "same_arm_nonadjacent": 160,
+      "inter_arm": 324
+    },
+    "distance_m": 0.0022777394820757135,
+    "step": 9285,
+    "time_s": 92.85000000000001,
+    "phase": "draw_both"
+  },
+  "planning_sampling_s": 0.05,
+  "rejected_samples": 0,
+  "torso_control": "Prescribed shared sagittal fold trajectory with both arm IK compensating fixed world targets; posture-guided, not fully optimized whole-body control",
+  "torso_joint_min_rad": [
+    0.049983738350588246,
+    -1.1500008105026893,
+    0.3499994064324081,
+    -1.9588065352331815e-07
+  ],
+  "torso_joint_max_rad": [
+    0.05001009475821701,
+    -0.39999773413678635,
+    1.1000001113746374,
+    4.3773926422057265e-07
+  ],
+  "torso_minimum_joint_margin_rad": 0.049983738350588246,
+  "torso_height_range_m": [
+    0.7734281464117514,
+    0.9628813886822727
+  ],
+  "base_translation_max_m": 0.0,
+  "category_minima": {
+    "arm_environment": {
+      "distance_m": 0.05,
+      "geom1": "floor",
+      "geom2": "collision_mesh_015",
+      "time_s": 0.01,
+      "phase": "approach_both"
+    },
+    "torso_head_base": {
+      "distance_m": 0.05,
+      "geom1": "collision_mesh_001",
+      "geom2": "collision_mesh_007",
+      "time_s": 0.01,
+      "phase": "approach_both"
+    },
+    "arm_body": {
+      "distance_m": 0.023903299363299026,
+      "geom1": "collision_mesh_009",
+      "geom2": "collision_mesh_017",
+      "time_s": 72.98000000000043,
+      "phase": "draw_both"
+    },
+    "same_arm_nonadjacent": {
+      "distance_m": 0.0022773561507785367,
+      "geom1": "collision_mesh_017",
+      "geom2": "collision_mesh_019",
+      "time_s": 92.84000000001059,
+      "phase": "draw_both"
+    },
+    "inter_arm": {
+      "distance_m": 0.05,
+      "geom1": "collision_mesh_015",
+      "geom2": "collision_mesh_033",
+      "time_s": 0.01,
+      "phase": "approach_both"
+    }
+  },
+  "arms": {
+    "left": {
+      "tracking_rms_m": 0.0001912096553020001,
+      "tracking_max_m": 0.0002997942361503532,
+      "minimum_joint_margin_rad": 0.029999172873290507,
+      "draw_minimum_joint_margin_rad": 0.3206431691402405,
+      "max_joint_speed_rad_s": 0.19999417919217133
+    },
+    "right": {
+      "tracking_rms_m": 0.00019168461461231413,
+      "tracking_max_m": 0.0002970162845995674,
+      "minimum_joint_margin_rad": 0.029999080847541475,
+      "draw_minimum_joint_margin_rad": 0.40586844025284013,
+      "max_joint_speed_rad_s": 0.18861919484470455
+    }
+  },
+  "actual_minimum": {
+    "minimum_distance_m": 0.0022773561507785367,
+    "geom1": "collision_mesh_017",
+    "geom2": "collision_mesh_019",
+    "category": "same_arm_nonadjacent",
+    "category_minima": {
+      "arm_environment": {
+        "distance_m": 0.05,
+        "geom1": "floor",
+        "geom2": "collision_mesh_015"
+      },
+      "torso_head_base": {
+        "distance_m": 0.05,
+        "geom1": "collision_mesh_001",
+        "geom2": "collision_mesh_007"
+      },
+      "arm_body": {
+        "distance_m": 0.03229763433732834,
+        "geom1": "collision_mesh_010",
+        "geom2": "collision_mesh_033"
+      },
+      "same_arm_nonadjacent": {
+        "distance_m": 0.0022773561507785367,
+        "geom1": "collision_mesh_017",
+        "geom2": "collision_mesh_019"
+      },
+      "inter_arm": {
+        "distance_m": 0.05,
+        "geom1": "collision_mesh_015",
+        "geom2": "collision_mesh_033"
+      }
+    },
+    "pair_counts": {
+      "arm_environment": 36,
+      "torso_head_base": 55,
+      "arm_body": 496,
+      "same_arm_nonadjacent": 160,
+      "inter_arm": 324
+    },
+    "distance_m": 0.0022773561507785367,
+    "step": 9283,
+    "time_s": 92.84000000001059,
+    "phase": "draw_both"
+  },
+  "actual_sampling_s": 0.01,
+  "simulation_seconds": 180.54999999998077,
+  "steps": 18055,
+  "max_contacts": 0,
+  "warning_counts": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "draw_start_step": 1938,
+  "draw_end_step": 15615,
+  "force_limit_fraction": 0.19491993709960162
+}

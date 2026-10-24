@@ -1,0 +1,52 @@
+{
+  "method": "Linear interpolation of recorded actual joint states at1ms within +/-50ms of each measured global minimum; all1071 active pairs. Not continuous swept certification.",
+  "nativeccd_disabled": true,
+  "pair_count": 1071,
+  "results": {
+    "tidal_waves": {
+      "refined_min_distance_m": 0.004392851940988082,
+      "time_s": 51.49000000000018,
+      "pair": [
+        "collision_mesh_035",
+        "collision_mesh_037"
+      ],
+      "all_controlled_joint_min_margin_rad": 0.02999740350240501,
+      "recorded_min_distance_m": 0.004392851940988277,
+      "phases": [
+        "approach_both",
+        "draw_both",
+        "return_both"
+      ]
+    },
+    "rounded_leaves": {
+      "refined_min_distance_m": 0.002083421298269064,
+      "time_s": 74.33000000000018,
+      "pair": [
+        "collision_mesh_035",
+        "collision_mesh_037"
+      ],
+      "all_controlled_joint_min_margin_rad": 0.029998772841014557,
+      "recorded_min_distance_m": 0.0020834212982693556,
+      "phases": [
+        "approach_both",
+        "draw_both",
+        "return_both"
+      ]
+    },
+    "twin_galaxies": {
+      "refined_min_distance_m": 0.002277356150778752,
+      "time_s": 92.84000000000019,
+      "pair": [
+        "collision_mesh_017",
+        "collision_mesh_019"
+      ],
+      "all_controlled_joint_min_margin_rad": 0.029999080847541475,
+      "recorded_min_distance_m": 0.0022773561507785367,
+      "phases": [
+        "approach_both",
+        "draw_both",
+        "return_both"
+      ]
+    }
+  }
+}

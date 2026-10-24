@@ -1,0 +1,29 @@
+{
+  "tidal_waves": {
+    "strokes_exactly_unchanged": true,
+    "canvas_exactly_unchanged": true,
+    "png_pixels_exactly_unchanged": true,
+    "design_pass": true,
+    "robot_execution_status": "not_tested_by_static_validator",
+    "source_schema": "astribot-drawing-v1",
+    "destination_schema": "astribot-drawing-v2"
+  },
+  "rounded_leaves": {
+    "strokes_exactly_unchanged": true,
+    "canvas_exactly_unchanged": true,
+    "png_pixels_exactly_unchanged": true,
+    "design_pass": true,
+    "robot_execution_status": "not_tested_by_static_validator",
+    "source_schema": "astribot-drawing-v1",
+    "destination_schema": "astribot-drawing-v2"
+  },
+  "twin_galaxies": {
+    "strokes_exactly_unchanged": true,
+    "canvas_exactly_unchanged": true,
+    "png_pixels_exactly_unchanged": true,
+    "design_pass": true,
+    "robot_execution_status": "not_tested_by_static_validator",
+    "source_schema": "astribot-drawing-v1",
+    "destination_schema": "astribot-drawing-v2"
+  }
+}
