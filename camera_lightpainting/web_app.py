@@ -1,6 +1,6 @@
 """LAN HTML interface; image processing stays on the camera computer."""
-import argparse
 import ipaddress
+import os
 from pathlib import Path
 import signal
 import socket
@@ -11,10 +11,12 @@ from flask import Flask, jsonify, request, send_file
 
 if __package__:
     from .web_controller import ControlError, WebController
-    from .startup import PortInUseError, bind_or_reuse
+    from .startup import PortInUseError, bind_or_reuse, local_url
+    from .arguments import argument_parser
 else:
     from web_controller import ControlError, WebController
-    from startup import PortInUseError, bind_or_reuse
+    from startup import PortInUseError, bind_or_reuse, local_url
+    from arguments import argument_parser
 
 
 def create_app(controller):
@@ -128,7 +130,7 @@ def create_app(controller):
 
     @app.get('/api/v1/capabilities')
     def capabilities():
-        return jsonify(application='astribot-lightpainting', api_version='1', modes=['neon', 'exposure'], light_colors=['cyan', 'white'],
+        return jsonify(application='astribot-lightpainting', process_id=os.getpid(), api_version='1', modes=['neon', 'exposure'], light_colors=['cyan', 'white'],
                        previews=['camera', 'selected', 'mask', 'result'],
                        overlay_mode='last_drawing_frame', overlay_brightness_range=[0, 100],
                        frame_format='RGB uint8 HxWx3', mask_values=[0, 1],
@@ -150,18 +152,19 @@ def create_app(controller):
 
 def main():
     from waitress import create_server
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--host', default='0.0.0.0')
-    parser.add_argument('--port', default=8765, type=int)
-    parser.add_argument('--camera', default='0')
-    parser.add_argument('--video')
-    parser.add_argument('--output-dir', type=Path)
-    parser.add_argument('--diagnostic', action='store_true', help=argparse.SUPPRESS)
+    parser = argument_parser(__doc__)
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
         parser.error('--port must be between 1 and 65535')
     try:
-        listener, url = bind_or_reuse(args.host, args.port)
+        if args.listen_fd is not None:
+            listener = socket.socket(fileno=args.listen_fd)
+            if listener.getsockname()[1] != args.port:
+                listener.close()
+                raise ValueError('Inherited listener port does not match --port')
+            url = local_url(args.host, args.port)
+        else:
+            listener, url = bind_or_reuse(args.host, args.port)
     except (PortInUseError, OSError) as exc:
         print(str(exc), file=sys.stderr)
         return 1
@@ -171,10 +174,17 @@ def main():
         return 0
     source = args.video if args.video else int(args.camera) if args.camera.isdecimal() else args.camera
     controller = server = None
+    shutdown_requested = False
     def shutdown(*_):
+        nonlocal shutdown_requested
+        if shutdown_requested:
+            return
+        shutdown_requested = True
         raise KeyboardInterrupt
     signal.signal(signal.SIGTERM, shutdown)
     signal.signal(signal.SIGINT, shutdown)
+    if hasattr(signal, 'SIGHUP'):
+        signal.signal(signal.SIGHUP, shutdown)
     try:
         controller = WebController(source, args.output_dir)
         server = create_server(create_app(controller), sockets=[listener], threads=8,

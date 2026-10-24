@@ -11,4 +11,4 @@ else
     task_python="python3"
 fi
 "$task_python" -c 'import cv2, numpy, PIL, flask, waitress'
-exec "$task_python" "$module_dir/web_app.py" "$@"
+exec "$task_python" "$module_dir/session_launcher.py" "$@"

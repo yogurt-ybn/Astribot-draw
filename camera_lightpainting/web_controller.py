@@ -83,7 +83,7 @@ class WebController:
                         fps=round(self.fps, 1), frame_age=round(time.monotonic()-self.last_frame_at, 2))
         alive = self.worker is not None and self.worker.thread.is_alive()
         recording = self.recorder
-        return dict(version='0.6.0', api_version='1', background_captured=self.background_captured,
+        return dict(version='0.6.1', api_version='1', background_captured=self.background_captured,
                     overlay=self.pipeline.overlay_state(),
                     connected=bool(alive and self.latest_rgb is not None and info['frame_age'] < 3),
                     drawing=self.running, source=str(self.source), message=self.message,
