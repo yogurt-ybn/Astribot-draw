@@ -1,5 +1,6 @@
 from pathlib import Path
 import tempfile
+import json
 from types import SimpleNamespace
 import unittest
 
@@ -9,6 +10,18 @@ from astribot_draw_sdk import T1_JOINTS, Trajectory, export_model_trajectory
 
 
 class ExportTests(unittest.TestCase):
+    def test_phase_boundaries_and_final_frame_keep_full_geometry_coverage(self):
+        phases = ['approach']*100+['draw']*100+['end']
+        checked = []
+        with tempfile.TemporaryDirectory() as tmp:
+            path, evidence = export_model_trajectory(Path(tmp)/'plan.npz', self.model,
+                self.q, self.dq, .005, phases, validate_state=lambda q: checked.append(q.copy()) or .004)
+            loaded = Trajectory.from_npz(path)
+            self.assertEqual(loaded.phase[0], 'approach')
+            self.assertEqual(loaded.phase[63], 'draw')
+            self.assertEqual(loaded.phase[-1], 'end')
+            self.assertEqual(len(checked), len(loaded.time))
+            self.assertTrue(json.loads(evidence.read_text())['collision_gate_passed'])
     def setUp(self):
         self.indices = np.random.default_rng(7).permutation(22)[:18]
         self.model = SimpleNamespace(nq=22, nv=22, jnt_qposadr=self.indices,

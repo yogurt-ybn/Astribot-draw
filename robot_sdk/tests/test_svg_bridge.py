@@ -10,7 +10,7 @@ import numpy as np
 from astribot_draw_sdk import RobotSession, T1_JOINTS, Trajectory
 from astribot_draw_sdk.backends import MOCK_HOME, MockBackend
 from astribot_draw_sdk.ros_feedback import AUXILIARY_PARTS
-from astribot_draw_sdk.svg_runner import FixedPartsGuard, full_pose, validate_auxiliary
+from astribot_draw_sdk.svg_runner import FixedPartsGuard, full_pose, validate_auxiliary, validate_native_contract
 
 
 def auxiliary():
@@ -19,6 +19,23 @@ def auxiliary():
 
 
 class SvgBoundaryTests(unittest.TestCase):
+    def test_native_numerical_validation_rejects_limits_and_nonfinite_targets(self):
+        model = SimpleNamespace(jnt_limited=np.ones(18), jnt_qposadr=np.arange(18),
+                                jnt_range=np.tile([-1., 1.], (18, 1)))
+        q, dq = np.zeros((3, 18)), np.zeros((3, 18))
+        phase, desired = np.array(['approach_both', 'draw_both', 'draw_both']), np.zeros((3, 2, 3))
+        validate_native_contract(model, q, dq, phase, desired)
+        q[1, 0] = 1.1
+        with self.assertRaisesRegex(RuntimeError, 'joint limits'):
+            validate_native_contract(model, q, dq, phase, desired)
+        q[:] = 0
+        dq[1, 0] = .21
+        with self.assertRaisesRegex(RuntimeError, 'joint limits'):
+            validate_native_contract(model, q, dq, phase, desired)
+        dq[:] = 0
+        desired[-1, 0, 0] = np.nan
+        with self.assertRaisesRegex(RuntimeError, 'Nonfinite'):
+            validate_native_contract(model, q, dq, phase, desired)
     def test_measured_pose_maps_names_and_preserves_head(self):
         names = list(T1_JOINTS)+['astribot_head_joint_1', 'astribot_head_joint_2',
             'astribot_gripper_left_joint_L1', 'astribot_gripper_right_joint_L1']
@@ -103,3 +120,9 @@ class CollisionBroadPhaseTests(unittest.TestCase):
             expected = min(.05, *(mujoco.mj_geomDistance(model, data, int(a), int(b), .05, None)
                                   for a, b in zip(model.pair_geom1, model.pair_geom2)))
             self.assertAlmostEqual(checker.check(data)['distance_m'], expected, places=10)
+            fast = mujoco.MjData(model)
+            fast.qpos[0] = x
+            mujoco.mj_kinematics(model, fast)
+            np.testing.assert_allclose(fast.geom_xpos, data.geom_xpos, atol=1e-12)
+            np.testing.assert_allclose(fast.geom_xmat, data.geom_xmat, atol=1e-12)
+            self.assertAlmostEqual(checker.minimum_distance(fast), expected, places=10)

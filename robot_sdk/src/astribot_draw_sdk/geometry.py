@@ -8,21 +8,30 @@ class CollisionChecker:
         self.mujoco, self.model = mujoco, model
         self.pairs = (list(pairs) if pairs is not None else
                       [(int(a), int(b), 'geometry') for a, b in zip(model.pair_geom1, model.pair_geom2)])
-        self.ids = np.asarray([(p[0], p[1]) for p in self.pairs], dtype=int)
+        self.ids = np.asarray([(p[0], p[1]) for p in self.pairs], dtype=int).reshape(-1, 2)
         self.radii = model.geom_rbound[self.ids].sum(axis=1)
         self.planes = np.any(model.geom_type[self.ids] == mujoco.mjtGeom.mjGEOM_PLANE, axis=1)
+        self.categories = tuple(dict.fromkeys(p[2] for p in self.pairs))
+        self.names = tuple(model.geom(i).name for i in range(model.ngeom))
 
-    def check(self, data):
-        centers = data.geom_xpos[self.ids]
-        lower_bound = np.linalg.norm(centers[:, 0]-centers[:, 1], axis=1)-self.radii
+    def distances(self, data):
+        delta = data.geom_xpos[self.ids[:, 0]]-data.geom_xpos[self.ids[:, 1]]
+        lower_bound = np.linalg.norm(delta, axis=1)-self.radii
         candidates = np.flatnonzero(self.planes | (lower_bound < .05+1e-9))
-        best = dict(distance_m=.05, minimum_distance_m=.05, geom1=None, geom2=None, category=None)
-        categories = {p[2]: dict(distance_m=.05, geom1=None, geom2=None) for p in self.pairs}
         for i in candidates:
             a, b, category = self.pairs[i]
-            distance = float(self.mujoco.mj_geomDistance(self.model, data, a, b, .05, None))
+            yield a, b, category, float(self.mujoco.mj_geomDistance(self.model, data, a, b, .05, None))
+
+    def minimum_distance(self, data):
+        """Same queries/threshold as check(), without per-category report allocation."""
+        return min(.05, min((distance for _, _, _, distance in self.distances(data)), default=.05))
+
+    def check(self, data):
+        best = dict(distance_m=.05, minimum_distance_m=.05, geom1=None, geom2=None, category=None)
+        categories = {name: dict(distance_m=.05, geom1=None, geom2=None) for name in self.categories}
+        for a, b, category, distance in self.distances(data):
             if distance < categories[category]['distance_m']:
-                record = dict(distance_m=distance, geom1=self.model.geom(a).name, geom2=self.model.geom(b).name)
+                record = dict(distance_m=distance, geom1=self.names[a], geom2=self.names[b])
                 categories[category] = record
                 if distance < best['distance_m']:
                     best.update(record, minimum_distance_m=distance, category=category)
@@ -40,8 +49,8 @@ def checked_transfer(m, c, start, goal, torso, home, sub, rng):
         data.qpos[:] = home
         data.qpos[:4] = torso
         data.qpos[c.qids] = q
-        mujoco.mj_forward(m, data)
-        return checker.check(data)['distance_m'] >= .003
+        mujoco.mj_kinematics(m, data)
+        return checker.minimum_distance(data) >= .003
 
     def edge(a, b):
         return all(valid(a+r*(b-a)) for r in np.linspace(0, 1, max(2, int(np.ceil(np.max(abs(b-a))/.01))+1)))

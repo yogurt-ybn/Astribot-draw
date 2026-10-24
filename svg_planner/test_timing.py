@@ -3,8 +3,32 @@ from types import SimpleNamespace
 from unittest.mock import patch
 import numpy as np
 from scipy.interpolate import CubicSpline, PPoly
-from svg_plan import spline_derivative_bound, schedule
+from svg_plan import spline_derivative_bound, progress_velocity_bound, schedule, ik_candidate, PlanningError
 class TimingTests(unittest.TestCase):
+ def test_measured_start_accepts_roundoff_but_rejects_margin_violation(self):
+  model=SimpleNamespace(nq=14,jnt_limited=np.ones(14),jnt_qposadr=np.arange(14),
+      jnt_range=np.tile([-2.,2.],(14,1)))
+  def chain(m,side,margin):
+   return SimpleNamespace(qids=np.arange(7)+(0 if side=='left' else 7),lo=np.full(7,-1.),hi=np.ones(7))
+  home=np.zeros(14);home[0]=np.nextafter(1.,np.inf)
+  with patch('svg_plan.mujoco.MjData'),patch('svg_plan.Chain',side_effect=chain),patch('svg_plan.collision_pairs',side_effect=RuntimeError('past measured-start checks')):
+   with self.assertRaisesRegex(RuntimeError,'past measured-start checks'):
+    ik_candidate(model,None,None,None,0,initial_qpos=home)
+   home[0]=1.+1e-6
+   with self.assertRaisesRegex(PlanningError,'outside transfer planning margins'):
+    ik_candidate(model,None,None,None,0,initial_qpos=home)
+ def test_progress_bound_preserves_composed_velocity_limits(self):
+  rng=np.random.default_rng(21)
+  for x in (np.array([0,.001,.01,.3,.6,.99,.999,1.]),np.r_[0,np.sort(rng.random(30)),1]):
+   spline=CubicSpline(x,rng.normal(size=(len(x),4)))
+   r=np.linspace(0,1,200001);u=10*r**3-15*r**4+6*r**5
+   actual=np.max(abs(spline(u,1)*(30*r**2*(1-r)**2)[:,None]))
+   bound=progress_velocity_bound(spline)
+   self.assertGreaterEqual(bound+1e-7,actual)
+   self.assertLessEqual(bound,1.875*spline_derivative_bound(spline)*(1+2e-9))
+ def test_progress_bound_avoids_endpoint_peak_overestimate(self):
+  spline=CubicSpline([0,.001,.01,.1,.5,1],[0,.01,.02,.02,.02,.02])
+  self.assertLess(progress_velocity_bound(spline),1.875*spline_derivative_bound(spline)/2)
  def test_stationary_extremum(self):
   s=PPoly(np.array([[[-1.]],[[1.5]],[[0.]],[[0.]]]),[0.,1.])
   self.assertAlmostEqual(spline_derivative_bound(s),.75)

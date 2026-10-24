@@ -44,11 +44,11 @@ bash robot_sdk/run_sim.sh draw /path/to/drawing.svg --speed-scale 0.5
 
 输入采用上游 [SVG_INPUT_INTERFACE.md](../svg_planner/SVG_INPUT_INTERFACE.md)：616×560 画布，两个直接子 `path`，分别 `id="left"` / `id="right"`，支持 `M L C Q Z`。机器人左臂对应画面右侧。普通编辑器导出的 groups、transforms、嵌入位图或多条分离子路径会被明确拒绝，不会静默改图。
 
-`draw` 自动完成严格 SVG/画布检查、当前躯干/双臂/头/夹爪/底盘反馈读取、双臂耦合 IK、从当前姿态入场的 18 关节 RRT、同步绘制并停在绘制末端、200→125 Hz 位置/速度重采样及每条命令的间隙检查，再通过 SDK 执行。用户不需要提前准备 NPZ。生成的 NPZ 仅为内部缓存与复核证据。
+`draw` 自动完成严格 SVG/画布检查、当前躯干/双臂/头/夹爪/底盘反馈读取、双臂耦合 IK、从当前姿态入场的 18 关节 RRT、同步绘制并停在绘制末端、200→125 Hz 位置/速度重采样及每条最终命令的间隙/形状检查，再通过 SDK 执行。用户不需要提前准备 NPZ。生成的 NPZ 仅为内部缓存与复核证据。
 
 规划仍使用上游有限躯干候选族和确定性种子预算，不保证所有符合 SVG 格式的图案都能执行。搜索失败或间隙不足时保留拒绝原因。没有自动缩放、镜像、删线或跳到中立首帧。
 
-原始 `04afcd6` 代码需要一次性应用 `robot_sdk/patches/svg-measured-start.patch`；当前分支和部署均已包含该适配，无需重复应用。它给上游 `ik_candidate` 增加可选的实测起点，并给 `schedule` 增加 `return_home` 参数。SDK 的 `draw` 使用 `return_home=False`：末帧速度为零，确认反馈收敛后结束，不自动返回。独立 `svg_plan.py` 仍默认返回，原基准不变。上游更新后可通过 `git apply --check robot_sdk/patches/svg-measured-start.patch` 检查是否仍适用。
+原始 `04afcd6` 代码需要一次性应用 `robot_sdk/patches/svg-measured-start.patch`；当前分支和部署均已包含该适配，无需重复应用。它给上游 `ik_candidate` 增加可选的实测起点，并给 `schedule` 增加 `return_home` 和 `timing` 参数。SDK 的 `draw` 使用 `return_home=False, timing="progress_bound"`：末帧速度为零，确认反馈收敛后结束，不自动返回。独立 `svg_plan.py` 仍默认返回，原基准不变。上游更新后可通过 `git apply --check robot_sdk/patches/svg-measured-start.patch` 检查是否仍适用。
 
 规划时使用 MuJoCo 几何包围球保守剔除远离的碰撞对，候选对仍调用原生 `mj_geomDistance`，不改变原有 3947 对覆盖和阈值；已与原始穷举查询对比。该优化避免把大量时间用于明显相距很远的几何体。
 
@@ -191,3 +191,9 @@ PYTHONPATH=robot_sdk/src python -m unittest discover -s robot_sdk/tests -v
 参见 [精简验证记录](examples/svg-ginkgo-verification.json) 和 [实际反馈轨迹对比](examples/ginkgo-measured-vs-svg.png)。完整命令与反馈日志保存在执行电脑本次输出目录，未随代码发布；模型资产不包含在本包中。
 
 新的不返回版本已在同一官方仿真中验证：35 项 SDK 和 26 项 SVG 测试通过。银杏输入到完整轨迹检查通过约 27.04 秒（IK 4.03 秒、时间规划 0.10 秒、原始轨迹检查 5.06 秒、重采样检查 13.22 秒，另含初始化/模型准备）；运动约 109.41 秒，输入到结果约 138.22 秒。绘制最大反馈 FK 误差约 1.108 mm。结束约 10.95 秒后只读反馈仍停在末端，零速度，无返回阶段。计时不含 shell 文件复制和最终 SDK 关闭，耗时随输入与机器负载变化。见 [不返回验证记录](examples/svg-ginkgo-stop-at-end-verification.json)。
+
+速度规划使用每个样条区间的解析关节导数上界，乘以同一区间的五次平滑进度速度上界，避免把不同时刻的两个全局最大值相乘。保持规划关节速度上限 0.2 rad/s、末端速度上限 0.05 m/s、125 Hz SDK 控制及末帧零速度。独立规划器的默认 `timing="legacy"` 保持历史基准，SDK 使用收紧后的保守上界，不使用均匀抽样估计速度峰值。
+
+几何检查合并到实际执行的 125 Hz 指令：省去原始 200 Hz 轨迹的重复 FK/几何遍历；原始轨迹仍向量化检查有限数、关节限位和速度。最终每条指令仍做全套碰撞对的保守剔除与精确候选距离查询（间隙至少 2 mm），绘图位置误差最多 1 mm。检查仅运行 MuJoCo 运动学，不计算无关动力学；缓存碰撞类别/名称，避免每帧重复构造数千项字典。执行中仍每 50 ms 检查实际姿态代理碰撞，并持续检查反馈与跟踪。没有提供跳过全部几何检查的执行开关；`native_plan.geometry_validation` 与 `command_validation` 明确区分原始数值检查和最终指令检查。
+
+优化版本在官方仿真中通过 37 项 SDK 与 29 项 SVG 测试。银杏实测：输入到完整检查通过 14.41 秒（原始数值检查 0.007 秒，最终指令逐帧检查 4.69 秒），运动 84.85 秒，输入到核验结果 100.63 秒，125 Hz 平均控制频率保持；左右最大反馈 FK 误差 1.538/1.718 mm，通过 2 mm 阈值。此次从前一轮停留的末端起步，入场姿态与上一轮不同；固定相同原始起点、IK 分支和速度上限的离线计划对比为 109.395→78.675 秒（绘制 103.95→73.23 秒）。新旧几何算法在 21 个姿态、全部 3947 对上距离及几何变换差异均为零；该离线对比没有执行额外动作。结束后只读反馈仍保持末端，轨迹无返回阶段；闭合 SVG 的末端可能与本次起始姿态重合。完整精简证据见 [优化验证记录](examples/svg-ginkgo-optimized-verification.json)。

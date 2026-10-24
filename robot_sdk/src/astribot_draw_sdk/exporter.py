@@ -45,7 +45,8 @@ def export_model_trajectory(path, model, position, velocity, timestep, phase, *,
     native = Trajectory(np.arange(len(q))*timestep, q[:, indices], phase=phases,
                         scope=scope, velocity=dq[:, indices])
     times, positions, velocities = native.control_samples(control_hz)
-    phases = tuple(native.sample(t)[2] for t in times)
+    phase_indices = np.clip(np.searchsorted(native.time, times, side='right')-1, 0, len(native.time)-1)
+    phases = tuple(np.asarray(native.phase)[phase_indices])
     minimum = None
     if scope != 'mock_only' and validate_state is None:
         raise ValueError('simulation/hardware export requires rechecking resampled full poses')

@@ -54,6 +54,23 @@ def full_pose(model, command, auxiliary):
     return q
 
 
+def validate_native_contract(model, q, dq, phase, desired):
+    """Vectorized numerical checks; geometry is checked on the final SDK poses."""
+    if not np.isfinite(q).all() or not np.isfinite(dq).all():
+        raise RuntimeError('Nonfinite planned position/velocity')
+    if not np.isfinite(desired[phase == 'draw_both']).all():
+        raise RuntimeError('Nonfinite desired drawing target')
+    limited = np.flatnonzero(model.jnt_limited)
+    values = q[:, model.jnt_qposadr[limited]]
+    margin = float(np.minimum(values-model.jnt_range[limited, 0],
+                              model.jnt_range[limited, 1]-values).min())
+    maximum = float(np.max(np.abs(dq)))
+    if margin < 0 or maximum > .205:
+        raise RuntimeError('Native trajectory violates joint limits or the 0.2 rad/s planning ceiling')
+    return dict(minimum_joint_margin_rad=margin, maximum_commanded_velocity_rad_s=maximum,
+                geometry_validation='deferred to every final 125 Hz SDK command')
+
+
 class SvgStateGuard(FixedPartsGuard):
     def __init__(self, baseline, model, home, checker):
         super().__init__(baseline)
@@ -67,8 +84,8 @@ class SvgStateGuard(FixedPartsGuard):
         now = time.perf_counter()
         if now-self.last_check >= .05:
             self.data.qpos[:] = full_pose(self.model, state.position, auxiliary)
-            self.mujoco.mj_forward(self.model, self.data)
-            distance = self.checker.check(self.data)['distance_m']
+            self.mujoco.mj_kinematics(self.model, self.data)
+            distance = self.checker.minimum_distance(self.data)
             self.minimum_clearance = min(self.minimum_clearance, distance)
             self.last_check = now
             if distance < 0:
@@ -134,6 +151,8 @@ class SvgJob:
             raise RuntimeError('Apply robot_sdk/patches/svg-measured-start.patch to svg_planner/svg_plan.py')
         if 'return_home' not in inspect.signature(planner.schedule).parameters:
             raise RuntimeError('Update svg_planner: SDK drawing requires stop-at-end scheduling support')
+        if 'timing' not in inspect.signature(planner.schedule).parameters:
+            raise RuntimeError('Update svg_planner: SDK drawing requires progress-bound timing support')
         self.planner = planner
         self.mujoco = planner.mujoco
         planner.CollisionChecker = lambda model: CollisionChecker(model, planner.collision_pairs(model))
@@ -177,9 +196,9 @@ class SvgJob:
                                                                   initial_qpos=initial)
                 self.checkpoint('ik')
                 q, dq, phase, desired = planner.schedule(model, u, targets, torso, home, chains, solved,
-                                                        return_home=False)
+                                                        return_home=False, timing='progress_bound')
                 self.checkpoint('scheduling')
-                checked = planner.validate_plan(model, q, dq, phase, desired)
+                checked = validate_native_contract(model, q, dq, phase, desired)
                 self.checkpoint('native_plan_validation')
                 break
             except (planner.PlanningError, RuntimeError) as exc:
@@ -202,7 +221,7 @@ class SvgJob:
         def validate_command(full):
             nonlocal sample_index
             data.qpos[:] = full
-            self.mujoco.mj_forward(model, data)
+            self.mujoco.mj_kinematics(model, data)
             t = min(sample_index/self.robot.policy.control_hz, (len(q)-1)*self.dt)
             expected = self.drawing_target(t)
             if expected is not None:
@@ -211,19 +230,24 @@ class SvgJob:
                 self.report['resampled_shape_error_m'] = max(self.report['resampled_shape_error_m'], error)
                 if error > .001:
                     raise RuntimeError(f'Resampling changes SVG by {error:.6f} m, exceeding 1 mm')
-            distance = self.checker.check(data)['distance_m']
+            distance = self.checker.minimum_distance(data)
             if sample_index % 5000 == 0:
                 print('SVG_RESAMPLE_CHECK', sample_index, flush=True)
             sample_index += 1
             return distance
 
-        print('SVG full plan passed; resampling and checking each SDK command', flush=True)
+        print('SVG numerical plan passed; checking geometry once on each final SDK command', flush=True)
         plan_path, validation = export_model_trajectory(self.output/'sdk-plan.npz', model, q,
             dq*self.speed_scale, self.dt, phase, control_hz=self.robot.policy.control_hz,
             validate_state=validate_command, provenance=dict(svg_sha256=self.report['svg_sha256'],
                 model_revision=self.report['model_revision'], measured_initial_state=True,
                 speed_scale=self.speed_scale))
         plan = Trajectory.from_npz(plan_path)
+        self.report['command_validation'] = json.loads(validation.read_text())
+        self.report['validation_strategy'] = dict(native_geometry_pass=False,
+            command_geometry='every final command', control_hz=self.robot.policy.control_hz,
+            minimum_clearance_m=.002, maximum_shape_error_m=.001,
+            runtime_geometry_interval_s=.05, timing_method='progress_bound')
         self.checkpoint('resampling_and_validation')
         self.report['timings_s']['input_to_trajectory_ready'] = time.perf_counter()-self.started
         self.report.update(plan=str(plan_path), validation=str(validation), duration_s=float(plan.time[-1]))

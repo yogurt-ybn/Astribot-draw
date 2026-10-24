@@ -27,7 +27,7 @@ Usage: bash robot_sdk/run_sim.sh [start|probe|demo|draw INPUT.svg|run PLAN.npz] 
   demo                Visible 10-degree double elbow motion, twice in 12s (not drawing)
   probe               Read state only; no control request or motion
   run PLAN.npz        Execute an exported, validated T1 command plan
-  draw INPUT.svg      Plan from current pose, execute SVG, return, audit feedback
+  draw INPUT.svg      Plan from current pose, execute SVG, stop at endpoint, audit
   --plan-only         Validate/plan SVG without motion
   --seeds NUMBER      Deterministic SVG IK seed budget (default 12)
   --speed-scale RATE  SVG speed multiplier in (0,1] (default 1)

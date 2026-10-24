@@ -65,7 +65,7 @@ def ik_candidate(m,u,targets,torso,seed_count,initial_qpos=None):
         if np.any(values<m.jnt_range[limited,0]) or np.any(values>m.jnt_range[limited,1]):
             raise PlanningError('Measured initial pose exceeds model limits')
         for c in cs:
-            if np.any(home[c.qids]<c.lo) or np.any(home[c.qids]>c.hi):
+            if np.any(home[c.qids]<c.lo-1e-9) or np.any(home[c.qids]>c.hi+1e-9):
                 raise PlanningError('Measured arm pose is outside transfer planning margins')
     pairs=collision_pairs(m);rng=np.random.default_rng(36)
     seeds=[[home[c.qids]]+list(rng.uniform(c.lo,c.hi,(seed_count,7))) for c in cs]
@@ -127,7 +127,31 @@ def spline_derivative_bound(spline):
     value=3*a*vertex*vertex+2*b*vertex+c
     return float(max(np.max(abs(c)),np.max(abs(end)),np.max(np.where(inside,abs(value),0))))
 
-def schedule(m,u,targets,torso,home,cs,solved,*,return_home=True):
+def progress_velocity_bound(spline):
+    """Conservative |dq/dr| bound for q(smoothstep(r)), by spline interval.
+
+    Bounds each quadratic dq/du exactly, then multiplies by the maximum
+    smoothstep speed over that SAME interval. No sampled velocity maxima.
+    """
+    if spline.x[0]!=0 or spline.x[-1]!=1:raise PlanningError('Progress spline must span [0,1]')
+    a,b,c=spline.c[:3]
+    h=np.diff(spline.x).reshape((-1,)+(1,)*(a.ndim-1))
+    end=3*a*h*h+2*b*h+c
+    vertex=np.divide(-b,3*a,out=np.zeros_like(a),where=a!=0)
+    value=3*a*vertex*vertex+2*b*vertex+c
+    bounds=np.maximum(np.maximum(abs(c),abs(end)),np.where((a!=0)&(vertex>0)&(vertex<h),abs(value),0))
+    lo=np.zeros(len(spline.x));hi=np.ones(len(spline.x))
+    for _ in range(60):
+        r=(lo+hi)/2
+        z=np.minimum(r,1-r);v=z**3*(10+z*(-15+6*z));v=np.where(r<=.5,v,1-v)
+        below=v<spline.x;lo=np.where(below,r,lo);hi=np.where(below,hi,r)
+    left=np.maximum(0,lo[:-1]-1e-9);right=np.minimum(1,hi[1:]+1e-9)
+    peak=np.clip(.5,left,right);weight=30*peak**2*(1-peak)**2
+    weight=weight.reshape((-1,)+(1,)*(a.ndim-1))
+    return float(np.max(bounds*weight)*(1+1e-9))
+
+def schedule(m,u,targets,torso,home,cs,solved,*,return_home=True,timing='legacy'):
+    if timing not in ('legacy','progress_bound'):raise PlanningError('Unknown timing method')
     dt=m.opt.timestep;goal=home.copy();goal[:4]=torso[0]
     for c,q in zip(cs,solved):goal[c.qids]=q[0]
     torso_joints=np.array([int(np.flatnonzero(m.jnt_qposadr==i)[0]) for i in range(4)])
@@ -144,7 +168,8 @@ def schedule(m,u,targets,torso,home,cs,solved,*,return_home=True):
         nxt=home.copy();nxt[both.qids]=qq;transfer(prev,nxt);prev=nxt
     aq=np.array(qs);av=np.array(dqs)
     spl=[CubicSpline(u,q) for q in solved];ts=CubicSpline(u,torso)
-    T=max(2.,max(1.875*np.linalg.norm(np.diff(p,axis=0),axis=1).sum()/.05 for p in targets),max(1.875*spline_derivative_bound(s)/.2 for s in spl),1.875*spline_derivative_bound(ts)/.2)
+    bound=(lambda s:1.875*spline_derivative_bound(s)) if timing=='legacy' else progress_velocity_bound
+    T=max(2.,max(1.875*np.linalg.norm(np.diff(p,axis=0),axis=1).sum()/.05 for p in targets),max(bound(s)/.2 for s in spl),bound(ts)/.2)
     n=int(np.ceil(T/dt))
     total_steps=(2*(n+1)+2*len(qs)+1) if return_home else len(qs)+n+1
     if total_steps>200000:raise PlanningError(f'Schedule exceeds 200000-step resource budget ({n} draw steps); inspect curve conditioning/corners')
