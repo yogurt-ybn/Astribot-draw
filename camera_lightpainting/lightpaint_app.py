@@ -1,6 +1,8 @@
 """USB camera light painting with a local Tk preview."""
 import argparse
 import os
+import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 import queue
@@ -8,6 +10,7 @@ import threading
 import time
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
+from tkinter import font as tkfont
 
 import cv2
 import numpy as np
@@ -19,9 +22,11 @@ from diagnostic_recorder import DiagnosticRecorder
 
 
 class LightPaintApp:
-    def __init__(self, root, source=None, smoke_ms=None, diagnostic=False):
+    def __init__(self, root, source=None, smoke_ms=None, diagnostic=False, camera='0'):
         self.root = root
-        self.root.title('光绘实验室 · USB Camera · v0.2.1')
+        self.root.title('光绘实验室 · USB Camera · v0.3.0')
+        available_fonts = set(tkfont.families(root))
+        self.ui_font = next((font for font in ('Microsoft YaHei UI', 'Noto Sans CJK SC', 'WenQuanYi Zen Hei', 'DejaVu Sans') if font in available_fonts), 'sans-serif')
         self.root.geometry('1280x820')
         self.root.minsize(960, 650)
         self.root.configure(bg='#10141f')
@@ -41,7 +46,7 @@ class LightPaintApp:
         self.recorder = None
         self.last_recording_folder = None
         self.record_var = tk.StringVar(value='未录制 · 先录 3 秒空背景，再采集背景并绘制 15–30 秒')
-        self.camera_var = tk.StringVar(value='0')
+        self.camera_var = tk.StringVar(value=str(camera))
         self.mode_var = tk.StringVar(value='彩虹轨迹')
         self.threshold_var = tk.IntVar(value=230)
         self.width_var = tk.IntVar(value=4)
@@ -67,14 +72,14 @@ class LightPaintApp:
     def build_ui(self):
         style = ttk.Style()
         style.theme_use('clam')
-        style.configure('.', font=('Microsoft YaHei UI', 10))
+        style.configure('.', font=(self.ui_font, 10))
         style.configure('TFrame', background='#10141f')
         style.configure('TLabel', background='#10141f', foreground='#dce5f5')
         style.configure('TCheckbutton', background='#10141f', foreground='#dce5f5')
         style.configure('TButton', padding=(12, 8))
         outer = ttk.Frame(self.root, padding=18)
         outer.pack(fill='both', expand=True)
-        ttk.Label(outer, text='光绘实验室', font=('Microsoft YaHei UI', 23, 'bold')).pack(anchor='w')
+        ttk.Label(outer, text='光绘实验室', font=(self.ui_font, 23, 'bold')).pack(anchor='w')
         ttk.Label(outer, text='移动光点，留下轨迹。左侧为相机画面，右侧为绘制结果。').pack(anchor='w', pady=(4, 15))
         if self.diagnostic:
             recording = ttk.Frame(outer)
@@ -86,7 +91,7 @@ class LightPaintApp:
         toolbar = ttk.Frame(outer)
         toolbar.pack(fill='x')
         ttk.Label(toolbar, text='相机').pack(side='left')
-        ttk.Combobox(toolbar, textvariable=self.camera_var, values=['0', '1', '2', '3'], state='readonly', width=4).pack(side='left', padx=8)
+        ttk.Combobox(toolbar, textvariable=self.camera_var, values=['0', '1', '2', '3'], width=14).pack(side='left', padx=8)
         self.connect_btn = ttk.Button(toolbar, text='重新连接', command=self.connect)
         self.connect_btn.pack(side='left', padx=(0, 20))
         ttk.Label(toolbar, text='模式').pack(side='left')
@@ -139,7 +144,7 @@ class LightPaintApp:
         ttk.Button(actions, text='取消识别区域', command=lambda: self.set_roi(None)).pack(side='left')
         ttk.Button(actions, text='采集背景', command=self.background).pack(side='left', padx=8)
         ttk.Label(actions, text='采集背景会清空画布。相机移动或灯光变化后，请重新采集。').pack(side='left', padx=8)
-        ttk.Label(outer, textvariable=self.status_var, font=('Microsoft YaHei UI', 11)).pack(anchor='w')
+        ttk.Label(outer, textvariable=self.status_var, font=(self.ui_font, 11)).pack(anchor='w')
         ttk.Label(outer, textvariable=self.stats_var).pack(anchor='w', pady=4)
         ttk.Label(outer, text='空格：开始 / 暂停    Esc：暂停    Ctrl+S：保存    关闭窗口后释放摄像头').pack(anchor='w', pady=(8, 0))
 
@@ -156,7 +161,8 @@ class LightPaintApp:
         self.rgb = self.result = None
         with self.engine_lock:
             self.engine.reset()
-        source = self.source_override if self.source_override is not None else int(self.camera_var.get())
+        choice = self.camera_var.get().strip()
+        source = self.source_override if self.source_override is not None else int(choice) if choice.isdecimal() else choice
         self.sync_settings()
         self.worker = CameraWorker(source, self.engine, self.engine_lock, self.mirror_var.get())
         self.status_var.set('正在连接…')
@@ -305,7 +311,11 @@ class LightPaintApp:
     def open_recording_folder(self):
         folder = self.last_recording_folder.parent if self.last_recording_folder else Path(__file__).resolve().parent/'output'/'diagnostics'
         folder.mkdir(parents=True, exist_ok=True)
-        os.startfile(str(folder))
+        if sys.platform == 'win32':
+            os.startfile(str(folder))
+        else:
+            subprocess.Popen(['open' if sys.platform == 'darwin' else 'xdg-open', str(folder)],
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
 
     def image_point(self, event):
         if self.preview_geometry is None or self.rgb is None:
@@ -442,11 +452,12 @@ class LightPaintApp:
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--video', help='Use a video as the preview input')
+    parser.add_argument('--camera', default='0', help='Camera index or Linux /dev/video device path')
     parser.add_argument('--smoke-ms', type=int, help=argparse.SUPPRESS)
     parser.add_argument('--diagnostic', action='store_true', help='Show diagnostic recording controls')
     args = parser.parse_args()
     root = tk.Tk()
-    LightPaintApp(root, args.video, args.smoke_ms, args.diagnostic)
+    LightPaintApp(root, args.video, args.smoke_ms, args.diagnostic, args.camera)
     root.mainloop()
 
 

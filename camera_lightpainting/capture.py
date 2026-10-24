@@ -2,6 +2,7 @@
 import queue
 import threading
 import time
+import sys
 
 import cv2
 
@@ -9,6 +10,7 @@ import cv2
 class CameraWorker:
     def __init__(self, source, engine, engine_lock, mirrored=True, drawing=False):
         self.source = source
+        self.is_camera = isinstance(source, int) or (isinstance(source, str) and source.startswith('/dev/'))
         self.engine = engine
         self.engine_lock = engine_lock
         self.mirrored = mirrored
@@ -25,7 +27,11 @@ class CameraWorker:
     def run(self):
         cap = None
         try:
-            cap = cv2.VideoCapture(self.source, cv2.CAP_DSHOW) if isinstance(self.source, int) else cv2.VideoCapture(self.source)
+            if self.is_camera:
+                backend = cv2.CAP_DSHOW if sys.platform == 'win32' else cv2.CAP_V4L2 if sys.platform.startswith('linux') else cv2.CAP_ANY
+                cap = cv2.VideoCapture(self.source, backend)
+            else:
+                cap = cv2.VideoCapture(self.source)
             if not cap.isOpened():
                 self.events.put(('error', '无法打开摄像头，请关闭其他占用相机的程序，或切换相机编号。'))
                 return
@@ -38,7 +44,7 @@ class CameraWorker:
             while not self.stop_event.is_set():
                 ok, bgr = cap.read()
                 if not ok:
-                    self.events.put(('ended', '视频播放结束' if isinstance(self.source, str) else '摄像头画面中断，请重新连接'))
+                    self.events.put(('ended', '摄像头画面中断，请重新连接' if self.is_camera else '视频播放结束'))
                     break
                 rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
                 captured_ns = time.monotonic_ns()
@@ -65,7 +71,7 @@ class CameraWorker:
                 except queue.Empty:
                     pass
                 self.frames.put_nowait(packet)
-                if isinstance(self.source, str):
+                if not self.is_camera:
                     deadline += 1/fps
                     self.stop_event.wait(max(0, deadline-time.monotonic()))
         except Exception as exc:

@@ -1,6 +1,6 @@
 # USB 摄像头光绘
 
-Windows 本地光绘工具，使用 Python 3.12、OpenCV 和 Tkinter。默认针对青蓝色光棒，重点通过背景学习和颜色/发光强度筛选，排除固定亮灯、窗户、白衣服及较暗的蓝色管身。所有画面和诊断数据都保存在本机。
+Windows / Linux 本地光绘工具，使用 Python、OpenCV 和 Tkinter。默认针对青蓝色光棒，重点通过背景学习和颜色/发光强度筛选，排除固定亮灯、窗户、白衣服及较暗的蓝色管身。所有画面和诊断数据都保存在本机。
 
 ## 安装与启动
 
@@ -22,6 +22,20 @@ py -3.12 -m venv .venv
 ```
 
 ## 绘制流程
+
+### Linux / Ubuntu
+
+需要 Python 3.10 以上、系统 Tk 支持（Ubuntu 的 `python3-tk`）和图形桌面。在仓库根目录创建虚拟环境并安装模块依赖：
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r camera_lightpainting/requirements.txt
+bash start_lightpaint.sh --camera 0
+```
+
+Linux 使用 V4L2 相机接口；可用 `--camera /dev/v4l/by-id/...-video-index0` 指定稳定设备路径。录制入口为 `bash start_lightpaint.sh --diagnostic`。普通 SSH 会话通常没有图形显示环境；图形界面应从远端桌面终端或桌面启动器打开。
+
+### 操作
 
 1. 选择相机编号并连接。编号由 Windows 驱动顺序决定。
 2. 固定相机，移走绘制光源，点击“采集背景”。背景采集会清空画布。
