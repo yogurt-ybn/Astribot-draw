@@ -38,7 +38,8 @@ class DiagnosticRecorder:
                              started_ns=self.started_ns, initial_settings=settings,
                              python=platform.python_version(), opencv=cv2.__version__, numpy=np.__version__,
                              note='AVI uses nominal FPS. Use CSV timestamps and capture_seq for actual timing; processed video contains only frames processed by the app.')
-        for name in ('lightpaint_engine.py', 'lightpaint_app.py', 'capture.py', 'diagnostic_recorder.py'):
+        for name in ('lightpaint_engine.py', 'lightpaint_app.py', 'capture.py', 'diagnostic_recorder.py',
+                     'web_app.py', 'web_controller.py'):
             shutil.copy2(Path(__file__).parent/name, self.folder/name)
         self.thread = threading.Thread(target=self._run, daemon=False)
         self.thread.start()

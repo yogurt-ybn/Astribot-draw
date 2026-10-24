@@ -8,13 +8,14 @@ import cv2
 
 
 class CameraWorker:
-    def __init__(self, source, engine, engine_lock, mirrored=True, drawing=False):
+    def __init__(self, source, engine, engine_lock, mirrored=True, drawing=False, preview_masks=False):
         self.source = source
         self.is_camera = isinstance(source, int) or (isinstance(source, str) and source.startswith('/dev/'))
         self.engine = engine
         self.engine_lock = engine_lock
         self.mirrored = mirrored
         self.drawing = drawing
+        self.preview_masks = preview_masks
         self.frames = queue.Queue(maxsize=1)
         self.events = queue.Queue()
         self.stop_event = threading.Event()
@@ -65,6 +66,9 @@ class CameraWorker:
                                            processing_ms, position, self.engine, self.settings(), self.drawing)
                     stats = (self.engine.frames, self.engine.strokes, self.engine.misses)
                     packet = (rgb, seq, captured_ns, result, position, stats)
+                    if self.preview_masks:
+                        packet = (rgb, seq, captured_ns, result, position,
+                                  self.engine.source_mask.copy(), processing_ms, stats)
                 try:
                     self.frames.get_nowait()
                     self.replaced_frames += 1

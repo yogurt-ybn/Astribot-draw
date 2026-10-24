@@ -1,10 +1,10 @@
 # USB 摄像头光绘
 
-Windows / Linux 本地光绘工具，使用 Python、OpenCV 和 Tkinter。默认针对青蓝色光棒，重点通过背景学习和颜色/发光强度筛选，排除固定亮灯、窗户、白衣服及较暗的蓝色管身。所有画面和诊断数据都保存在本机。
+Windows / Linux 局域网光绘工具，使用 Python、OpenCV 和 HTML。后台连接 USB 相机并处理图像，浏览器提供操作界面。默认针对青蓝色光棒，重点通过背景学习和颜色/发光强度筛选，排除固定亮灯、窗户、白衣服及较暗的蓝色管身。所有画面和诊断数据都保存在本机。
 
 ## 安装与启动
 
-在仓库根目录执行，Python 安装时需包含 Tcl/Tk：
+在仓库根目录执行（Python 3.10 以上）：
 
 ```powershell
 py -3.12 -m venv .venv
@@ -12,20 +12,20 @@ py -3.12 -m venv .venv
 .\start_lightpaint.cmd
 ```
 
-安装后可以直接双击根目录的 `start_lightpaint.cmd`。启动器优先使用模块或仓库根目录中的 `.venv`，其次使用 Windows Python Launcher 或 PATH 中的 Python；可用环境变量 `LIGHTPAINT_PYTHON` 指定解释器。脚本不依赖 Codex 或开发者本机路径。
+安装后可以直接双击根目录的 `start_lightpaint.cmd`，然后用浏览器打开 http://127.0.0.1:8765/ 。同一局域网的设备使用 `http://相机电脑的局域网IP:8765/` 访问。启动器优先使用模块或仓库根目录中的 `.venv`，其次使用 Windows Python Launcher 或 PATH 中的 Python；可用环境变量 `LIGHTPAINT_PYTHON` 指定解释器。脚本不依赖 Codex 或开发者本机路径。
 
 也可以直接运行：
 
 ```powershell
-.\.venv\Scripts\python.exe camera_lightpainting\lightpaint_app.py
-.\.venv\Scripts\python.exe camera_lightpainting\lightpaint_app.py --video 'C:\path\to\test.mp4'
+.\.venv\Scripts\python.exe camera_lightpainting\web_app.py
+.\.venv\Scripts\python.exe camera_lightpainting\web_app.py --video 'C:\path\to\test.mp4'
 ```
 
 ## 绘制流程
 
 ### Linux / Ubuntu
 
-需要 Python 3.10 以上、系统 Tk 支持（Ubuntu 的 `python3-tk`）和图形桌面。在仓库根目录创建虚拟环境并安装模块依赖：
+需要 Python 3.10 以上，不依赖图形桌面或 Tk。可通过 SSH 启动。在仓库根目录创建虚拟环境并安装模块依赖：
 
 ```bash
 python3 -m venv .venv
@@ -33,7 +33,7 @@ python3 -m venv .venv
 bash start_lightpaint.sh --camera 0
 ```
 
-Linux 使用 V4L2 相机接口；可用 `--camera /dev/v4l/by-id/...-video-index0` 指定稳定设备路径。录制入口为 `bash start_lightpaint.sh --diagnostic`。普通 SSH 会话通常没有图形显示环境；图形界面应从远端桌面终端或桌面启动器打开。
+Linux 使用 V4L2 相机接口；可用 `--camera /dev/v4l/by-id/...-video-index0` 指定稳定设备路径。默认监听 `0.0.0.0:8765`；可用 `--host`、`--port` 修改。相机电脑处理全部画面，多个浏览器共享同一相机、参数与画布；关闭网页不会停止后台或诊断录制。网页面向可信局域网使用，没有登录功能。用 Ctrl+C 停止前台服务，或通过部署后的用户服务管理后台进程。
 
 ### 操作
 
@@ -51,15 +51,15 @@ Linux 使用 V4L2 相机接口；可用 `--camera /dev/v4l/by-id/...-video-index
 
 “亮度阈值”默认 230：青蓝模式判断颜色亮度，白光模式判断灰度亮度。“变化阈值”默认 25，越大背景过滤越强；光源漏检时可降低，固定亮点干扰时可提高。识别区域可在左侧画面拖框限定。
 
-空格开始/暂停，Esc 暂停，Ctrl+S 保存。输出图片和录制文件位于 `camera_lightpainting/output/`。启用“相机背景”时，暗化的实时背景仍显示在结果下面，它与累积的光轨分开处理。
+空格开始/暂停，Esc 暂停，Ctrl+S 保存。输出图片和录制文件默认位于 `camera_lightpainting/output/`，可用 `--output-dir` 指定；PNG 在 `captures/` 子目录，网页保存按钮会同时触发浏览器下载。启用“相机背景”时，暗化的实时背景仍显示在结果下面，它与累积的光轨分开处理。
 
 ## 诊断录制
 
-关闭其他占用同一相机的窗口，双击仓库根目录的 `record_diagnostic.cmd`。
+在网页下方的“诊断录制”区域操作；无需额外启动程序。
 
-1. 点击“开始诊断录制”，先录制约 3 秒空背景。
+1. 点击“开始录制”，先录制约 3 秒空背景。
 2. 采集背景、开始绘制，按实际执行速度移动光源，保留平时出现问题的环境光。
-3. 点击“停止录制并打包”。等待完成后，用“打开录制目录”找到 ZIP；关闭窗口也会结束录制并写完文件。
+3. 点击“停止录制”。等待打包完成后，点击“下载诊断包”。关闭浏览器不会自动结束录制。
 
 每次录制保存在 `camera_lightpainting/output/diagnostics/日期时间/` 和同名 ZIP 中：
 
@@ -79,7 +79,10 @@ AVI 使用标称帧率，真实时间以 CSV 为准。算法与采集在同一�
 camera_lightpainting/
   lightpaint_engine.py    # 背景模型、光源筛选、取亮累积和彩虹渲染
   capture.py              # 相机/视频采集和逐帧处理，独立于界面刷新
-  lightpaint_app.py       # Tk 界面、参数和交互
+  web_app.py              # 局域网 HTTP 接口与服务入口
+  web_controller.py       # 共享相机状态、操作与预览编码
+  web/index.html          # HTML/CSS/JS 操作界面
+  lightpaint_app.py       # 保留的旧 Tk 界面，默认启动器不再使用
   diagnostic_recorder.py  # 异步诊断写盘与 ZIP 打包
   start_lightpaint.ps1    # Windows Python 启动器
   tests/                 # 合成画面、视频管线和诊断包测试
@@ -91,7 +94,7 @@ camera_lightpainting/
 .\.venv\Scripts\python.exe -m unittest discover -s camera_lightpainting/tests -t camera_lightpainting -v
 ```
 
-测试覆盖固定亮源过滤、移动白衣服与蓝色管身排除、青蓝光源保留、真实像素累积、禁止断点补线、预览未读取时的完整逐帧处理，以及诊断视频、CSV 对应关系和 ZIP 完整性。无需物理相机或私人测试视频。
+测试覆盖固定亮源过滤、移动白衣服与蓝色管身排除、青蓝光源保留、真实像素累积、禁止断点补线、预览未读取时的完整逐帧处理，以及诊断视频、CSV 对应关系和 ZIP 完整性。网页测试覆盖参数校验、背景采集、拖框区域、暂停、清空、PNG 保存、下载路径限制和诊断录制生命周期。无需物理相机或私人测试视频。
 
 ## 当前限制
 

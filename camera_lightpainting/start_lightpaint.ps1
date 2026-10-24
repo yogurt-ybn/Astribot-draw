@@ -27,14 +27,14 @@ if ($env:LIGHTPAINT_PYTHON) {
     }
 }
 
-& $taskPython @pythonOptions -c 'import cv2, numpy, PIL, tkinter'
+& $taskPython @pythonOptions -c 'import cv2, numpy, PIL, flask, waitress'
 if ($LASTEXITCODE -ne 0) {
-    throw 'Missing Python dependencies. Install Python with Tk, create .venv, and run: python -m pip install -r camera_lightpainting/requirements.txt'
+    throw 'Missing dependencies. Run: python -m pip install -r camera_lightpainting/requirements.txt'
 }
 
 Push-Location -LiteralPath $moduleRoot
 try {
-    & $taskPython @pythonOptions (Join-Path $moduleRoot 'lightpaint_app.py') @args
+    & $taskPython @pythonOptions (Join-Path $moduleRoot 'web_app.py') @args
     if ($LASTEXITCODE -ne 0) {
         throw 'Light painting exited with an error. See the Python traceback above.'
     }

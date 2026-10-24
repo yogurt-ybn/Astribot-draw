@@ -10,5 +10,5 @@ elif [[ -x "$module_dir/../.venv/bin/python" ]]; then
 else
     task_python="python3"
 fi
-"$task_python" -c 'import cv2, numpy, PIL, tkinter'
-exec "$task_python" "$module_dir/lightpaint_app.py" "$@"
+"$task_python" -c 'import cv2, numpy, PIL, flask, waitress'
+exec "$task_python" "$module_dir/web_app.py" "$@"
