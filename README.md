@@ -4,6 +4,10 @@
 
 Start with [`svg_planner/`](svg_planner/README.md): SVG → unchanged geometry → synchronized dual-arm planning with a movable torso and collision checks → MuJoCo validation. The same frozen method/configuration tests all three original SVG inputs: **ginkgo and koi passed; wings was rejected at IK and was not executed**. Includes [agent generation MD](svg_planner/SVG_GENERATION_SPEC.md), tests, [original SVG/PNG test images](svg_planner/inputs/), reports, and [measured trajectory comparison](svg_planner/visuals/three-design-comparison.jpg). Fixed chassis; no hardware-safety certification.
 
+## Agent SVG generation: visual occlusion policy
+
+The updated [agent SVG specification](svg_planner/SVG_GENERATION_SPEC.md#9-center50-可见性假设用户已纠正旧禁画解读) and [prompt](svg_planner/AGENT_PROMPT.md) treat the assumed central 50 cm band as **visual occlusion, not a no-draw zone**. Keep complete source paths; overlay occlusion only in separate previews. Original reachability masks and planner physics are unchanged. This documentation update adds no new IK, planning or simulation results, and is not human-safety validation.
+
 ## Execute SVGs in the official T1 simulator
 
 The [simulation SDK adapter](robot_sdk/README.md) connects an existing `simulation-deploy/start-simulation.sh` container to measured-start SVG planning and execution:
