@@ -10,6 +10,7 @@ import numpy as np
 
 from web_app import create_app
 from web_controller import WebController
+from pipeline import LightPaintingPipeline, PipelineSettings
 
 
 class FakeWorker:
@@ -119,6 +120,24 @@ class WebTest(unittest.TestCase):
         self.assertEqual(state['recording']['result']['written']['raw'], 1)
         with self.client.get(state['recording']['result']['url']) as response:
             self.assertEqual(response.status_code, 200)
+
+    def test_versioned_contract_uses_typed_frame_and_lossless_result(self):
+        pipe = LightPaintingPipeline(PipelineSettings(filter_static=False, mode='exposure'))
+        result = pipe.process_frame(self.rgb, sequence=42)
+        self.controller._publish(result)
+        capabilities = self.client.get('/api/v1/capabilities').json
+        self.assertEqual(capabilities['api_version'], '1')
+        metadata = self.client.get('/api/v1/frame').json
+        self.assertEqual(metadata['sequence'], 42)
+        self.assertEqual(metadata['source_pixels'], 100)
+        response = self.client.get('/api/v1/result.png')
+        self.assertEqual(response.headers['X-Frame-Sequence'], '42')
+        decoded = cv2.imdecode(np.frombuffer(response.data, np.uint8), cv2.IMREAD_COLOR)
+        np.testing.assert_array_equal(decoded, cv2.cvtColor(result.image, cv2.COLOR_RGB2BGR))
+        state = self.client.get('/api/v1/state').json
+        self.assertEqual(state['api_version'], '1')
+        self.assertEqual(self.client.post('/api/v1/action', json={'action':'clear'}).status_code, 200)
+        self.assertEqual(self.client.get('/api/v1/result.png').status_code, 409)
 
 
 if __name__ == '__main__':

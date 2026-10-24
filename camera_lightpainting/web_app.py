@@ -8,7 +8,10 @@ from urllib.parse import urlsplit
 
 from flask import Flask, jsonify, request, send_file
 
-from web_controller import ControlError, WebController
+if __package__:
+    from .web_controller import ControlError, WebController
+else:
+    from web_controller import ControlError, WebController
 
 
 def create_app(controller):
@@ -47,10 +50,12 @@ def create_app(controller):
     def index():
         return send_file(Path(__file__).parent/'web/index.html')
 
+    @app.get('/api/v1/state')
     @app.get('/api/state')
     def state():
         return jsonify(controller.state())
 
+    @app.get('/api/v1/devices')
     @app.get('/api/devices')
     def devices():
         choices = [dict(value=str(i), name='相机 '+str(i)) for i in range(4)]
@@ -63,17 +68,20 @@ def create_app(controller):
             choices.insert(0, dict(value=current, name='当前相机 · '+current))
         return jsonify(devices=choices)
 
+    @app.get('/api/v1/preview/<view>.jpg')
     @app.get('/preview/<view>.jpg')
     def preview(view):
         if view not in {'camera', 'result', 'mask', 'selected'}:
             return jsonify(error='未知预览'), 404
         return app.response_class(controller.preview(view), mimetype='image/jpeg')
 
+    @app.post('/api/v1/settings')
     @app.post('/api/settings')
     def settings():
         controller.update_settings(request.get_json())
         return jsonify(controller.state())
 
+    @app.post('/api/v1/action')
     @app.post('/api/action')
     def action():
         data = request.get_json()
@@ -102,6 +110,28 @@ def create_app(controller):
         else:
             return jsonify(error='未知操作'), 400
         return jsonify(controller.state())
+
+    @app.get('/api/v1/frame')
+    def frame():
+        return jsonify(controller.frame_metadata())
+
+    @app.get('/api/v1/result.png')
+    def result_png():
+        result, metadata = controller.result_snapshot()
+        response = app.response_class(controller.encode_png(result), mimetype='image/png')
+        response.headers['X-Frame-Sequence'] = str(metadata.get('sequence', ''))
+        response.headers['X-Captured-Ns'] = str(metadata.get('captured_ns', ''))
+        return response
+
+    @app.get('/api/v1/capabilities')
+    def capabilities():
+        return jsonify(api_version='1', modes=['neon', 'exposure'], light_colors=['cyan', 'white'],
+                       previews=['camera', 'selected', 'mask', 'result'],
+                       frame_format='RGB uint8 HxWx3', mask_values=[0, 1],
+                       coordinate_space='processed_frame', timestamp_clock='monotonic_ns',
+                       endpoints=dict(state='/api/v1/state', settings='/api/v1/settings',
+                                      action='/api/v1/action', frame='/api/v1/frame',
+                                      result='/api/v1/result.png', devices='/api/v1/devices'))
 
     @app.get('/files/<path:name>')
     def download(name):

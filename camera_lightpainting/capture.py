@@ -8,7 +8,7 @@ import cv2
 
 
 class CameraWorker:
-    def __init__(self, source, engine, engine_lock, mirrored=True, drawing=False, preview_masks=False):
+    def __init__(self, source, engine, engine_lock, mirrored=True, drawing=False, preview_masks=False, processor=None):
         self.source = source
         self.is_camera = isinstance(source, int) or (isinstance(source, str) and source.startswith('/dev/'))
         self.engine = engine
@@ -16,6 +16,7 @@ class CameraWorker:
         self.mirrored = mirrored
         self.drawing = drawing
         self.preview_masks = preview_masks
+        self.processor = processor
         self.frames = queue.Queue(maxsize=1)
         self.events = queue.Queue()
         self.stop_event = threading.Event()
@@ -58,8 +59,15 @@ class CameraWorker:
                 with self.engine_lock:
                     rgb = cv2.flip(rgb, 1) if self.mirrored else rgb
                     started = time.monotonic_ns()
-                    result, position = self.engine.process(rgb, self.drawing, captured_ns/1e9)
-                    processing_ms = (time.monotonic_ns()-started)/1e6
+                    processed = None
+                    if self.processor is not None:
+                        processed = self.processor.process_frame(rgb, accumulate=self.drawing,
+                                                                 sequence=seq, captured_ns=captured_ns)
+                        result, position = processed.image, processed.position
+                        processing_ms = processed.processing_ms
+                    else:
+                        result, position = self.engine.process(rgb, self.drawing, captured_ns/1e9)
+                        processing_ms = (time.monotonic_ns()-started)/1e6
                     # Keep capture/processed evidence paired when recording is
                     # started midway through acquisition of this frame.
                     if recorder is not None:
@@ -70,6 +78,8 @@ class CameraWorker:
                     if self.preview_masks:
                         packet = (rgb, seq, captured_ns, result, position,
                                   self.engine.source_mask.copy(), processing_ms, stats)
+                    if processed is not None:
+                        packet = processed
                 try:
                     self.frames.get_nowait()
                     self.replaced_frames += 1

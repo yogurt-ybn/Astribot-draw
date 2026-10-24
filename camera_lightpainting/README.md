@@ -1,5 +1,7 @@
 # USB 摄像头光绘
 
+本模块提供独立 Python 帧处理接口和版本化局域网 API。接入后续 pipeline 请看 [INTEGRATION.md](INTEGRATION.md)，公共入口为 `LightPaintingPipeline`、`PipelineSettings`、`FrameResult`；网页与相机处理使用同一套接口。
+
 Windows / Linux 局域网光绘工具，使用 Python、OpenCV 和 HTML。后台连接 USB 相机并处理图像，浏览器提供操作界面。默认针对青蓝色光棒，重点通过背景学习和颜色/发光强度筛选，排除固定亮灯、窗户、白衣服及较暗的蓝色管身。所有画面和诊断数据都保存在本机。
 
 ## 安装与启动
@@ -78,10 +80,14 @@ AVI 使用标称帧率，真实时间以 CSV 为准。算法与采集在同一�
 ```text
 camera_lightpainting/
   lightpaint_engine.py    # 背景模型、光源筛选、取亮累积和彩虹渲染
+  pipeline.py             # 公共帧处理接口、参数及独立结果快照
   capture.py              # 相机/视频采集和逐帧处理，独立于界面刷新
   web_app.py              # 局域网 HTTP 接口与服务入口
   web_controller.py       # 共享相机状态、操作与预览编码
-  web/index.html          # HTML/CSS/JS 操作界面
+  web/index.html          # 页面结构
+  web/styles.css          # 响应式样式
+  web/api.js              # HTTP 客户端接口
+  web/app.js              # 页面状态与交互
   lightpaint_app.py       # 保留的旧 Tk 界面，默认启动器不再使用
   diagnostic_recorder.py  # 异步诊断写盘与 ZIP 打包
   start_lightpaint.ps1    # Windows Python 启动器

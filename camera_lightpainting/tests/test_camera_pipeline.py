@@ -8,6 +8,7 @@ import numpy as np
 
 from capture import CameraWorker
 from lightpaint_engine import LightPainter
+from pipeline import FrameResult, LightPaintingPipeline
 
 
 class CameraPipelineTest(unittest.TestCase):
@@ -31,6 +32,16 @@ class CameraPipelineTest(unittest.TestCase):
             packet = worker.frames.get_nowait()
             self.assertEqual(packet[1], 12)
             self.assertEqual(packet[-1][0], 12)
+            pipeline = LightPaintingPipeline()
+            typed_worker = CameraWorker(str(path), pipeline.engine, pipeline.lock,
+                                        mirrored=False, drawing=True, processor=pipeline)
+            typed_worker.thread.join(10)
+            self.assertFalse(typed_worker.thread.is_alive())
+            typed = typed_worker.frames.get_nowait()
+            self.assertIsInstance(typed, FrameResult)
+            self.assertEqual(typed.sequence, 12)
+            self.assertEqual(typed.frames, 12)
+            self.assertEqual(typed.mask.shape, (120, 160))
 
 
 if __name__ == '__main__':
