@@ -36,3 +36,7 @@ Follow the pinned model clone, LFS checksum download and run commands in [README
 Upstream model: [Astribot-Dev/astribot_descriptions](https://github.com/Astribot-Dev/astribot_descriptions), commit `8c651a1abbe2821824a692aa3a3aa4cbf88e4122`. Model meshes are intentionally not vendored. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [UPSTREAM_LICENSE](UPSTREAM_LICENSE).
 
 No new license for original project code has been selected here. The upstream license file applies to upstream material; it must not be interpreted as a blanket license for all original project content.
+
+## USB camera light painting
+
+The Windows camera tool is maintained independently in [camera_lightpainting/](camera_lightpainting/README.md). It includes static-background suppression, cyan-light selection, real-pixel maximum accumulation without gap interpolation, a neon preview, and diagnostic recording. Start with the module's installation instructions, then run `start_lightpaint.cmd` or `record_diagnostic.cmd` from the repository root.
