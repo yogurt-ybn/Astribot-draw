@@ -4,6 +4,16 @@
 
 Start with [`svg_planner/`](svg_planner/README.md): SVG → unchanged geometry → synchronized dual-arm planning with a movable torso and collision checks → MuJoCo validation. The same frozen method/configuration tests all three original SVG inputs: **ginkgo and koi passed; wings was rejected at IK and was not executed**. Includes [agent generation MD](svg_planner/SVG_GENERATION_SPEC.md), tests, [original SVG/PNG test images](svg_planner/inputs/), reports, and [measured trajectory comparison](svg_planner/visuals/three-design-comparison.jpg). Fixed chassis; no hardware-safety certification.
 
+## Execute SVGs in the official T1 simulator
+
+The [simulation SDK adapter](robot_sdk/README.md) connects an existing `simulation-deploy/start-simulation.sh` container to measured-start SVG planning and execution:
+
+```bash
+bash robot_sdk/run_sim.sh draw svg_planner/inputs/ginkgo.svg
+```
+
+It checks the current pose, plans the 18-joint approach/draw/return, streams paired positions/velocities at 125 Hz, and audits received joint feedback against the SVG. The [fresh ginkgo SDK verification](robot_sdk/examples/svg-ginkgo-verification.json) reports about 219 seconds of execution and maximum tip-position errors of 1.10 mm. [Comparison image](robot_sdk/examples/ginkgo-measured-vs-svg.png). These are simulation results from feedback FK, not camera or hardware measurements.
+
 ## Earlier T1 case-specific demonstrations
 
 The earlier case-specific implementation is preserved in [`t1/`](t1/). Start with [T1 setup and limitations](t1/T1_README.md), [T1 agent drawing specification](t1/T1_AGENT_DRAWING_SPEC.md), and the recalculated [616 × 560 canvas](t1/t1-canvas/t1-canvas-overview-zh.png). A [larger 1.271 m wingspan regression](t1/T1_WINGS_README.md) adds verified synchronized approach/draw/return beyond the three small examples.

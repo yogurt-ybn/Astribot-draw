@@ -1,0 +1,31 @@
+--- a/svg_planner/svg_plan.py
++++ b/svg_planner/svg_plan.py
+@@ -50,12 +50,23 @@
+         b=-bend-.12*np.sin(np.pi*u)**2
+         yield 'bend_'+str(bend),np.c_[np.full(len(u),.04),b,-.04-b,np.zeros(len(u))]
+ 
+-def ik_candidate(m,u,targets,torso,seed_count):
++def ik_candidate(m,u,targets,torso,seed_count,initial_qpos=None):
+     d=mujoco.MjData(m);cs=[Chain(m,s,margin=.04) for s in SIDES]
+-    home=np.zeros(m.nq)
+-    for j in np.flatnonzero(m.jnt_limited):
+-        home[m.jnt_qposadr[j]]=np.clip(0.,m.jnt_range[j,0]+.001,m.jnt_range[j,1]-.001)
+-    for c in cs:home[c.qids]=np.clip(np.zeros(7),c.lo,c.hi)
++    if initial_qpos is None:
++        home=np.zeros(m.nq)
++        for j in np.flatnonzero(m.jnt_limited):
++            home[m.jnt_qposadr[j]]=np.clip(0.,m.jnt_range[j,0]+.001,m.jnt_range[j,1]-.001)
++        for c in cs:home[c.qids]=np.clip(np.zeros(7),c.lo,c.hi)
++    else:
++        home=np.array(initial_qpos,dtype=float,copy=True)
++        if home.shape!=(m.nq,) or not np.isfinite(home).all():
++            raise PlanningError('Measured initial_qpos must be a finite full model pose')
++        limited=np.flatnonzero(m.jnt_limited);values=home[m.jnt_qposadr[limited]]
++        if np.any(values<m.jnt_range[limited,0]) or np.any(values>m.jnt_range[limited,1]):
++            raise PlanningError('Measured initial pose exceeds model limits')
++        for c in cs:
++            if np.any(home[c.qids]<c.lo) or np.any(home[c.qids]>c.hi):
++                raise PlanningError('Measured arm pose is outside transfer planning margins')
+     pairs=collision_pairs(m);rng=np.random.default_rng(36)
+     seeds=[[home[c.qids]]+list(rng.uniform(c.lo,c.hi,(seed_count,7))) for c in cs]
+     diagnostics={'seed_budget_per_arm':seed_count+1,'pair_combination_budget':169,'pair_attempts':[],'arm_branch_seeds':{s:[] for s in SIDES}}
