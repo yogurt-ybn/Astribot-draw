@@ -23,7 +23,34 @@ def validate_calibration(canvas):
         raise PlanningError('Unsupported canvas world bounds')
     return cfg
 
-def shared_targets(data):
+def shared_targets(data, *, sampling='vertices', max_step_m=.0025, max_error_m=.0001,
+                   max_intervals=10000):
+    if sampling not in ('vertices','uniform'):
+        raise PlanningError('Unknown shared target sampling method')
+    if sampling=='uniform':
+        if not np.isfinite(max_step_m) or not np.isfinite(max_error_m) or min(max_step_m,max_error_m)<=0:
+            raise PlanningError('Shared target step and error budgets must be finite and positive')
+        length=max(a['length_m'] for a in data['arms'].values())
+        intervals=max(2,int(np.ceil(length/max_step_m)))
+        while intervals<=max_intervals:
+            u=np.linspace(0.,1.,intervals+1);targets=[];error=0.
+            for side in SIDES:
+                arm=data['arms'][side];v=np.asarray(arm['progress']);uv=np.asarray(arm['points_uv'])
+                original=np.c_[-.77+.0025*uv[:,0],np.full(len(v),-.42),1.89-.0025*uv[:,1]]
+                points=np.column_stack([np.interp(u,v,original[:,j]) for j in range(3)])
+                reconstructed=np.column_stack([np.interp(v,u,points[:,j]) for j in range(3)])
+                # Difference of the two polylines is linear between the union of
+                # their knots. Its norm is bounded by endpoint errors; new knots
+                # lie on the source, so checking all source knots gives a bound.
+                error=max(error,float(np.linalg.norm(reconstructed-original,axis=1).max()))
+                targets.append(points)
+            if error<=max_error_m:
+                data['metadata']['shared_target_sampling']=dict(method='uniform_arc_progress',
+                    knot_count=len(u),maximum_arc_step_m=length/intervals,
+                    maximum_source_polyline_deviation_m=error,error_budget_m=max_error_m)
+                return u,targets
+            intervals*=2
+        raise PlanningError('Uniform shared targets exceed sampling budget while preserving source shape')
     # Merge only numerically coincident normalized progress knots (not geometry).
     # Mirror-image SVG decimal roundoff otherwise makes cubic IK splines ill-conditioned.
     raw=np.unique(np.concatenate([data['arms'][s]['progress'] for s in SIDES]))

@@ -16,9 +16,11 @@ from .geometry import CollisionChecker, checked_transfer
 from .ros_feedback import AUXILIARY_PARTS
 
 
-def validate_auxiliary(auxiliary):
+def validate_auxiliary(auxiliary, *, skip_gripper_checks=False):
     now = time.perf_counter()
     for part, size in AUXILIARY_PARTS.items():
+        if skip_gripper_checks and 'gripper' in part:
+            continue
         data = auxiliary.get(part, {})
         value = np.asarray(data.get('position', []), dtype=float)
         age = now-data.get('received_at', float('-inf'))
@@ -27,26 +29,28 @@ def validate_auxiliary(auxiliary):
 
 
 class FixedPartsGuard:
-    def __init__(self, baseline):
-        validate_auxiliary(baseline)
-        self.baseline = {name: np.array(data['position']) for name, data in baseline.items()}
+    def __init__(self, baseline, *, skip_gripper_checks=False):
+        self.skip_gripper_checks = skip_gripper_checks
+        validate_auxiliary(baseline, skip_gripper_checks=skip_gripper_checks)
+        self.baseline = {name: np.array(baseline[name]['position']) for name in AUXILIARY_PARTS
+                         if not (skip_gripper_checks and 'gripper' in name)}
 
     def __call__(self, _state, auxiliary):
-        validate_auxiliary(auxiliary)
+        validate_auxiliary(auxiliary, skip_gripper_checks=self.skip_gripper_checks)
         for name, expected in self.baseline.items():
             tolerance = .002 if 'gripper' in name else (.001 if 'chassis' in name else .005)
             if np.max(np.abs(np.asarray(auxiliary[name]['position'])-expected)) > tolerance:
                 raise RuntimeError(f'Uncommanded part moved during SVG execution: {name}')
 
 
-def full_pose(model, command, auxiliary):
-    validate_auxiliary(auxiliary)
+def full_pose(model, command, auxiliary, *, skip_gripper_checks=False):
+    validate_auxiliary(auxiliary, skip_gripper_checks=skip_gripper_checks)
     q = model.qpos0.copy()
     for name, value in zip(T1_JOINTS, command):
         q[model.jnt_qposadr[model.joint(name).id]] = value
     for i, value in enumerate(auxiliary['astribot_head']['position'], 1):
         q[model.jnt_qposadr[model.joint(f'astribot_head_joint_{i}').id]] = value
-    for side in ('left', 'right'):
+    for side in (() if skip_gripper_checks else ('left', 'right')):
         value = auxiliary[f'astribot_gripper_{side}']['position'][0]
         if abs(value) > .002:
             raise RuntimeError('SVG fixed-gripper model requires nearly closed grippers; no automatic gripper motion')
@@ -80,8 +84,8 @@ def motion_time_scale(minimum_duration, duration_s, speed_scale):
 
 
 class SvgStateGuard(FixedPartsGuard):
-    def __init__(self, baseline, model, home, checker):
-        super().__init__(baseline)
+    def __init__(self, baseline, model, home, checker, *, skip_gripper_checks=False):
+        super().__init__(baseline, skip_gripper_checks=skip_gripper_checks)
         import mujoco
         self.mujoco, self.model, self.home, self.checker = mujoco, model, home, checker
         self.data, self.last_check, self.minimum_clearance = mujoco.MjData(model), 0., .05
@@ -91,7 +95,8 @@ class SvgStateGuard(FixedPartsGuard):
         super().__call__(state, auxiliary)
         now = time.perf_counter()
         if now-self.last_check >= .05:
-            self.data.qpos[:] = full_pose(self.model, state.position, auxiliary)
+            self.data.qpos[:] = full_pose(self.model, state.position, auxiliary,
+                                          skip_gripper_checks=self.skip_gripper_checks)
             self.mujoco.mj_kinematics(self.model, self.data)
             distance = self.checker.minimum_distance(self.data)
             self.minimum_clearance = min(self.minimum_clearance, distance)
@@ -103,12 +108,13 @@ class SvgStateGuard(FixedPartsGuard):
 class SvgJob:
     def __init__(self, robot, svg, output, *, planner_dir=None, assets=None,
                  seeds=12, speed_scale=1., plan_only=False, pipeline_started_at=None,
-                 joint_speed=1., tip_speed=.2, duration_s=None):
+                 joint_speed=1., tip_speed=.2, duration_s=None, skip_gripper_checks=False):
         now = time.perf_counter()
         self.started = now if pipeline_started_at is None else pipeline_started_at
         self.stage_started = now
         if robot.backend_kind != 'sdk-sim' or robot.transport != 'ros':
             raise ValueError('SVG drawing requires the official SDK simulation ROS backend')
+        self.skip_gripper_checks = bool(skip_gripper_checks)
         if not np.isfinite(speed_scale) or not 0 < speed_scale <= 2.5 or not 0 <= seeds <= 100:
             raise ValueError('speed_scale must be finite and in (0,2.5] and seeds in [0,100]')
         if any(not np.isfinite(v) or v <= 0 for v in (joint_speed, tip_speed)):
@@ -133,12 +139,17 @@ class SvgJob:
                            requested_duration_s=duration_s, joint_speed_limit_rad_s=joint_speed,
                            tip_speed_limit_m_s=tip_speed,
                            command_speed_ceiling_rad_s=robot.policy.max_speed_rad_s,
+                           gripper_checks='skipped_simulation_only' if self.skip_gripper_checks else 'enabled',
+                           gripper_geometry='fixed_model_preset' if self.skip_gripper_checks else 'near_closed_feedback',
                            stages={}, completion_behavior='stop_at_drawing_end',
                            timings_s=dict(sdk_initialization=max(0., now-self.started)),
                            scope='Official simulation; free-space virtual light tip, not surface-contact drawing',
                            limitations=['Sampled collision checks and upstream compound-joint exclusions.',
                                         'Passive gripper joints use the near-closed model preset.',
                                         'Measured tip positions are FK from joint feedback, not camera measurements.'])
+        if self.skip_gripper_checks:
+            self.report['limitations'].append('Gripper feedback checks disabled for simulation testing; '
+                                              'collision geometry uses the fixed model preset, not actual finger articulation.')
 
     def save_report(self):
         (self.output/'svg-run.json').write_text(json.dumps(self.report, indent=2, allow_nan=False)+'\n', encoding='utf-8')
@@ -173,6 +184,8 @@ class SvgJob:
             raise RuntimeError('Update svg_planner: SDK drawing requires stop-at-end scheduling support')
         if 'timing' not in inspect.signature(planner.schedule).parameters:
             raise RuntimeError('Update svg_planner: SDK drawing requires progress-bound timing support')
+        if 'sampling' not in inspect.signature(planner.shared_targets).parameters:
+            raise RuntimeError('Update svg_planner: SDK drawing requires uniform arc-progress sampling support')
         self.planner = planner
         self.mujoco = planner.mujoco
         planner.CollisionChecker = lambda model: CollisionChecker(model, planner.collision_pairs(model))
@@ -200,13 +213,16 @@ class SvgJob:
         coverage_path.write_text(json.dumps(coverage, indent=2), encoding='utf-8')
         snapshot = self.robot.state()
         auxiliary = snapshot['auxiliary']
-        initial = full_pose(model, snapshot['joints']['position'], auxiliary)
+        initial = full_pose(model, snapshot['joints']['position'], auxiliary,
+                            skip_gripper_checks=self.skip_gripper_checks)
         self.initial, self.auxiliary = initial, auxiliary
         self.report['initial_snapshot'] = snapshot
         self.checker = CollisionChecker(model, planner.collision_pairs(model))
-        self.guard = SvgStateGuard(auxiliary, model, initial, self.checker)
+        self.guard = SvgStateGuard(auxiliary, model, initial, self.checker,
+                                   skip_gripper_checks=self.skip_gripper_checks)
         self.verify_kinematics()
-        u, targets = planner.shared_targets(parsed)
+        u, targets = planner.shared_targets(parsed, sampling='uniform')
+        self.report['target_sampling'] = parsed['metadata']['shared_target_sampling']
         self.checkpoint('model_and_state')
         self.report['candidate_failures'] = []
         for name, torso in planner.torso_candidates(u, targets):
@@ -239,6 +255,8 @@ class SvgJob:
         np.savez_compressed(self.output/'planner-trajectory.npz', qdes=q, dqdes=dq*time_scale,
                             phase=phase, desired=desired, dt=self.dt, home=initial)
         self.report['resampled_shape_error_m'] = 0.
+        self.report['resampled_source_shape_error_bound_m'] = 0.
+        source_sampling_error = self.report['target_sampling']['maximum_source_polyline_deviation_m']
         data, indices = self.mujoco.MjData(model), self.guard.indices
         jacobian = np.zeros((3, model.nv))
         tip_ids = [model.site(s+'_light').id for s in ('left', 'right')]
@@ -255,8 +273,11 @@ class SvgJob:
                 actual = np.array([data.site(s+'_light').xpos for s in ('left', 'right')])
                 error = float(np.linalg.norm(actual-expected, axis=1).max())
                 self.report['resampled_shape_error_m'] = max(self.report['resampled_shape_error_m'], error)
-                if error > .001:
-                    raise RuntimeError(f'Resampling changes SVG by {error:.6f} m, exceeding 1 mm')
+                source_bound = error+source_sampling_error
+                self.report['resampled_source_shape_error_bound_m'] = max(
+                    self.report['resampled_source_shape_error_bound_m'], source_bound)
+                if source_bound > .001:
+                    raise RuntimeError(f'Resampling changes SVG by at most {source_bound:.6f} m, exceeding 1 mm')
             distance = self.checker.minimum_distance(data)
             if sample_index % 5000 == 0:
                 print('SVG_RESAMPLE_CHECK', sample_index, flush=True)

@@ -69,6 +69,8 @@ def main():
     parser.add_argument('--control-hz', type=float, default=125.)
     parser.add_argument('--output', type=Path, default=Path('output/robot_sdk'))
     parser.add_argument('--plan-only', action='store_true', help='Plan SVG from current simulation state without motion')
+    parser.add_argument('--skip-gripper-checks', action='store_true',
+                        help='Simulation SVG tests only: ignore gripper feedback and use fixed preset geometry')
     parser.add_argument('--seeds', type=int, default=12)
     parser.add_argument('--speed-scale', type=float, default=1., help='Slowdown multiplier; >1 requires --duration slack')
     parser.add_argument('--joint-speed', type=float, default=1., help='Absolute joint speed ceiling in rad/s')
@@ -79,6 +81,8 @@ def main():
     parser.add_argument('--planner-dir', type=Path)
     parser.add_argument('--assets', type=Path)
     args = parser.parse_args()
+    if args.skip_gripper_checks and (args.command != 'draw' or args.backend != 'sdk-sim' or args.transport != 'ros'):
+        parser.error('--skip-gripper-checks requires draw --backend sdk-sim --transport ros')
     if args.command == 'demo' and args.backend == 'sdk-hardware':
         parser.error('demo is limited to mock or the explicitly configured simulation service')
     if args.command == 'run' and args.plan is None:
@@ -107,7 +111,8 @@ def main():
                 svg_job = SvgJob(session, args.plan, args.output, planner_dir=args.planner_dir,
                                  assets=args.assets, seeds=args.seeds, speed_scale=args.speed_scale,
                                  plan_only=args.plan_only, pipeline_started_at=pipeline_started_at,
-                                 joint_speed=args.joint_speed, tip_speed=args.tip_speed, duration_s=args.duration)
+                                 joint_speed=args.joint_speed, tip_speed=args.tip_speed, duration_s=args.duration,
+                                 skip_gripper_checks=args.skip_gripper_checks)
                 report = svg_job.run()
             elif args.command == 'probe':
                 first = session.state()['joints']['sequence']

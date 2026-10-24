@@ -73,6 +73,26 @@ class SvgBoundaryTests(unittest.TestCase):
         aux['astribot_gripper_left']['position'] = [.1]
         with self.assertRaisesRegex(RuntimeError, 'nearly closed'):
             full_pose(model, MOCK_HOME, aux)
+        # Explicit simulation bypass uses preset geometry even for missing feedback.
+        del aux['astribot_gripper_right']
+        values = full_pose(model, MOCK_HOME, aux, skip_gripper_checks=True)
+        np.testing.assert_allclose(values[indices[20:]], model.qpos0[indices[20:]])
+        np.testing.assert_allclose(values[indices[:18]], MOCK_HOME)
+
+    def test_simulation_gripper_bypass_preserves_other_auxiliary_guards(self):
+        aux = auxiliary()
+        guard = FixedPartsGuard(aux, skip_gripper_checks=True)
+        aux['astribot_gripper_left'] = dict(position=[float('nan')], received_at=0.)
+        del aux['astribot_gripper_right']
+        guard(None, aux)
+        for part in ('astribot_head', 'astribot_chassis'):
+            aux[part]['position'][0] = .02
+            with self.assertRaisesRegex(RuntimeError, part):
+                guard(None, aux)
+            aux[part]['position'][0] = 0.
+        aux['astribot_head']['received_at'] -= 1.
+        with self.assertRaisesRegex(RuntimeError, 'fresh complete'):
+            guard(None, aux)
 
     def test_missing_stale_or_moving_auxiliary_is_rejected(self):
         aux = auxiliary()

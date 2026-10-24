@@ -16,6 +16,7 @@ MODE=""
 PLAN=""
 OUTPUT=""
 PLAN_ONLY=0
+SKIP_GRIPPER_CHECKS=0
 SEEDS=12
 SPEED_SCALE=1
 PREVIEW_MS=""
@@ -33,6 +34,7 @@ Usage: bash robot_sdk/run_sim.sh [start|probe|demo|draw INPUT.svg|run PLAN.npz] 
   run PLAN.npz        Execute an exported, validated T1 command plan
   draw INPUT.svg      Plan from current pose, execute SVG, stop at endpoint, audit
   --plan-only         Validate/plan SVG without motion
+  --skip-gripper-checks  Simulation SVG tests: ignore gripper feedback, use fixed geometry
   --seeds NUMBER      Deterministic SVG IK seed budget (default 12)
   --joint-speed RAD_S Absolute joint velocity ceiling (default 1 rad/s)
   --tip-speed M_S     Tool-tip cruise/ceiling (default 0.2 m/s, arc-length timing)
@@ -96,18 +98,21 @@ while (($#)); do
             shift 2 ;;
         --mock) BACKEND=mock; shift ;;
         --plan-only) PLAN_ONLY=1; shift ;;
+        --skip-gripper-checks) SKIP_GRIPPER_CHECKS=1; shift ;;
         -h|--help) usage; exit 0 ;;
         *) fail "Unknown argument: $1 (use --help)" ;;
     esac
 done
 
 [[ -n "$MODE" ]] || fail 'Specify start, probe, demo, draw INPUT.svg, or run PLAN.npz (use --help)'
+((SKIP_GRIPPER_CHECKS == 0)) || [[ "$MODE" == draw && "$BACKEND" == sdk-sim ]] || fail '--skip-gripper-checks requires simulation draw'
 draw_options=()
 if [[ "$MODE" == draw ]]; then
     draw_options=(--seeds "$SEEDS" --speed-scale "$SPEED_SCALE" --joint-speed "$JOINT_SPEED" --tip-speed "$TIP_SPEED")
     [[ -z "$DURATION" ]] || draw_options+=(--duration "$DURATION")
     [[ -z "$PREVIEW_MS" ]] || draw_options+=(--command-preview-ms "$PREVIEW_MS")
     ((PLAN_ONLY == 0)) || draw_options+=(--plan-only)
+    ((SKIP_GRIPPER_CHECKS == 0)) || draw_options+=(--skip-gripper-checks)
 fi
 [[ "$TRANSPORT" == ros || "$TRANSPORT" == link ]] || fail '--transport must be ros or link'
 [[ "$RUNTIME" == auto || "$RUNTIME" == docker || "$RUNTIME" == local ]] || fail '--runtime must be auto, docker or local'
