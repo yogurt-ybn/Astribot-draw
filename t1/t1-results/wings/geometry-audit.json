@@ -1,0 +1,65 @@
+{
+  "wing": {
+    "left": {
+      "bbox_m": [
+        0.4755439722049616,
+        0.6545080303550173
+      ],
+      "bbox_area_m2": 0.31124734859507047,
+      "length_m": 1.914247943483506,
+      "inside_mask": true,
+      "min_mask_margin_pixels": 18.027756377319946,
+      "finite": true,
+      "points": 1001,
+      "max_segment_pixels": 0.765745629561486,
+      "max_turn_degrees": 28.650378011217384,
+      "max_discrete_curvature_per_m": 263.7625254164193,
+      "self_intersections": []
+    },
+    "right": {
+      "bbox_m": [
+        0.4755439722049616,
+        0.6545080303550173
+      ],
+      "bbox_area_m2": 0.31124734859507047,
+      "length_m": 1.914247943483506,
+      "inside_mask": true,
+      "min_mask_margin_pixels": 18.027756377319946,
+      "finite": true,
+      "points": 1001,
+      "max_segment_pixels": 0.765745629561486,
+      "max_turn_degrees": 28.650378011217384,
+      "max_discrete_curvature_per_m": 263.7625254164193,
+      "self_intersections": []
+    }
+  },
+  "old": {
+    "waves": {
+      "bbox_m": [
+        0.10999999999999988,
+        0.31999999999999995
+      ],
+      "bbox_area_m2": 0.035199999999999954,
+      "length_m": 0.5636027342540559,
+      "wing_bbox_area_ratio": 8.842254221450878
+    },
+    "leaves": {
+      "bbox_m": [
+        0.17000000000000015,
+        0.29999999999999993
+      ],
+      "bbox_area_m2": 0.05100000000000003,
+      "length_m": 0.752463269998251,
+      "wing_bbox_area_ratio": 6.102889188138633
+    },
+    "spiral": {
+      "bbox_m": [
+        0.19215907431050416,
+        0.1643470640131517
+      ],
+      "bbox_area_m2": 0.0315807796864164,
+      "length_m": 0.6427857166238843,
+      "wing_bbox_area_ratio": 9.855594183728938
+    }
+  }
+}

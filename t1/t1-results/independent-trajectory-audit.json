@@ -1,0 +1,93 @@
+{
+  "waves": {
+    "pair_count": 3947,
+    "nq": 32,
+    "nu": 22,
+    "nativeccd_disabled": true,
+    "refined_minimum": [
+      0.0047428202744395145,
+      12.565,
+      "collision_t1_geom_083",
+      "collision_t1_geom_085"
+    ],
+    "reported_minimum_m": 0.0047428202744395145,
+    "refinement": "101 samples over +/-50ms at1ms via linear interpolation recordedqpos;notcontinuousproof",
+    "fk_sample_max_error_m": 0.0,
+    "base_world_variation_m": 0.0,
+    "rms_m": [
+      6.940695496078727e-05,
+      6.936157532640743e-05
+    ],
+    "controlled_min_margin_rad": 0.041992517861501905,
+    "states_finite": true,
+    "phase_counts": {
+      "approach_both": 2542,
+      "draw_both": 11192,
+      "return_both": 1925
+    }
+  },
+  "leaves": {
+    "pair_count": 3947,
+    "nq": 32,
+    "nu": 22,
+    "nativeccd_disabled": true,
+    "refined_minimum": [
+      0.004744512200473096,
+      12.565,
+      "collision_t1_geom_083",
+      "collision_t1_geom_085"
+    ],
+    "reported_minimum_m": 0.004744512200473096,
+    "refinement": "101 samples over +/-50ms at1ms via linear interpolation recordedqpos;notcontinuousproof",
+    "fk_sample_max_error_m": 0.0,
+    "base_world_variation_m": 0.0,
+    "rms_m": [
+      0.00010094414806678487,
+      0.00010071248178023303
+    ],
+    "controlled_min_margin_rad": 0.041993746709883234,
+    "states_finite": true,
+    "phase_counts": {
+      "approach_both": 2542,
+      "draw_both": 11095,
+      "return_both": 2661
+    }
+  },
+  "spiral": {
+    "pair_count": 3947,
+    "nq": 32,
+    "nu": 22,
+    "nativeccd_disabled": true,
+    "refined_minimum": [
+      0.004750388489958235,
+      11.345,
+      "collision_t1_geom_083",
+      "collision_t1_geom_085"
+    ],
+    "reported_minimum_m": 0.004750388489958235,
+    "refinement": "101 samples over +/-50ms at1ms via linear interpolation recordedqpos;notcontinuousproof",
+    "fk_sample_max_error_m": 0.0,
+    "base_world_variation_m": 0.0,
+    "rms_m": [
+      9.260424828916879e-05,
+      9.254252459854361e-05
+    ],
+    "controlled_min_margin_rad": 0.04199402771743835,
+    "states_finite": true,
+    "phase_counts": {
+      "approach_both": 2297,
+      "draw_both": 9764,
+      "return_both": 2690
+    }
+  },
+  "_scope": {
+    "auditor": "Independent read-only sample verification",
+    "limitations": [
+      "All distances apply only to enumerated3947pairs; documented adjacent elbow/wrist and mount exclusions remain.",
+      "No human/base motion/hardware certification.",
+      "Local1ms interpolation is not full-time continuous swept proof.",
+      "Original source motor force/ctrl limits preserved; tracking uses ideal model bias/passive compensation.",
+      "T1 test curves newly chosen; S1 canvas not validated onT1."
+    ]
+  }
+}

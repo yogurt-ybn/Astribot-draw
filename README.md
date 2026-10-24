@@ -1,3 +1,17 @@
+# Astribot drawing: T1 and historical S1
+
+## Current model: Astribot T1
+
+The new implementation is in [`t1/`](t1/). Start with [T1 setup and limitations](t1/T1_README.md), [T1 agent drawing specification](t1/T1_AGENT_DRAWING_SPEC.md), and the recalculated [616 × 560 canvas](t1/t1-canvas/t1-canvas-overview-zh.png). A [larger 1.271 m wingspan regression](t1/T1_WINGS_README.md) adds verified synchronized approach/draw/return beyond the three small examples.
+
+Upstream T1 model assets are downloaded from a pinned official commit, not redistributed here.
+
+The root-level S1 implementation and its original results remain unchanged below for comparison. Do not apply S1 masks or joint trajectories to T1.
+
+---
+
+## Historical S1 implementation
+
 # Astribot synchronous light painting
 
 Fixed-base MuJoCo prototype coordinating a shared moving torso with two synchronized arms. Three agent-generated drawings are preserved as fixed-world targets. This repository includes code, agent instructions, drawing masks, input paths, compact measured results and collision-model audits.

@@ -1,0 +1,75 @@
+{
+  "robot": "Astribot T1",
+  "name": "wings",
+  "source_commit": "cab872dc00081d2c5b096c7a19e563050eb7a2ff",
+  "simulation_seconds": 362.8999999997425,
+  "step_s": 0.005,
+  "actual_collision_sample_s": 0.01,
+  "planned_minimum_m": 0.0047103320647299135,
+  "actual_minimum": {
+    "distance_m": 0.0047103320644897445,
+    "minimum_distance_m": 0.0047103320644897445,
+    "geom1": "collision_t1_geom_083",
+    "geom2": "collision_t1_geom_085",
+    "category": "same_arm_nonadjacent",
+    "category_minima": {
+      "arm_environment": {
+        "distance_m": 0.05,
+        "geom1": "floor",
+        "geom2": "collision_t1_geom_078"
+      },
+      "torso_head_base": {
+        "distance_m": 0.05,
+        "geom1": "collision_t1_geom_000",
+        "geom2": "collision_t1_geom_070"
+      },
+      "arm_body": {
+        "distance_m": 0.011211995293500109,
+        "geom1": "collision_t1_geom_073",
+        "geom2": "collision_t1_geom_078"
+      },
+      "same_arm_nonadjacent": {
+        "distance_m": 0.0047103320644897445,
+        "geom1": "collision_t1_geom_083",
+        "geom2": "collision_t1_geom_085"
+      },
+      "inter_arm": {
+        "distance_m": 0.05,
+        "geom1": "collision_t1_geom_078",
+        "geom2": "collision_t1_geom_096"
+      }
+    },
+    "time_s": 338.2549999997649,
+    "phase": "return_both"
+  },
+  "arms": {
+    "left": {
+      "rms_m": 0.0001425710152058108,
+      "max_m": 0.0016921431440629546,
+      "min_joint_margin_rad": 0.038846229889214046
+    },
+    "right": {
+      "rms_m": 0.00011674735344354833,
+      "max_m": 0.0013997923474855863,
+      "min_joint_margin_rad": 0.052966672656765516
+    }
+  },
+  "torso_z_min_max_m": [
+    0.8199125744682438,
+    0.877519483430562
+  ],
+  "max_contacts": 0,
+  "warning_counts": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "base": "structurally fixed; wheel joints removed",
+  "scope": "large T1 wing curve; existing T1 canvas and collision exclusions unchanged",
+  "method": "prescribed shared moving torso + compensated simultaneous arms; not full-body optimizer"
+}

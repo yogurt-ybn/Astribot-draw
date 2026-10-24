@@ -1,0 +1,89 @@
+{
+  "audit": "Independent recorded-state and code audit, not rerun dynamics",
+  "pair_count": 3947,
+  "dt_s": 0.005,
+  "phase_counts": {
+    "approach_both": 5550,
+    "draw_both": 30740,
+    "return_both": 36290
+  },
+  "full_cycle": [
+    "approach_both",
+    "draw_both",
+    "return_both"
+  ],
+  "controlled_joint_margin_rad": 0.038846229889214046,
+  "max_controlled_joint_speed_rad_s": 0.20007440608525925,
+  "max_controlled_accel_finite_difference_rad_s2": 2.5799007277877455,
+  "recorded_fk_max_entry_error_m": 0.0,
+  "sampled_base_translation_range_m": 0.0,
+  "sampled_torso_z_range_m": [
+    0.8199125744856133,
+    0.8775191140466163
+  ],
+  "sampled_max_contacts": 0,
+  "tracking_rms_m": [
+    0.00014257101520581073,
+    0.00011674735344354883
+  ],
+  "tracking_max_m": [
+    0.0016921431440629546,
+    0.0013997923474855863
+  ],
+  "final_vs_initial_controlled_q_rad": 0.0001277069734781007,
+  "local_refined_minimum": {
+    "distance_m": 0.004710332064489654,
+    "minimum_distance_m": 0.004710332064489654,
+    "geom1": "collision_t1_geom_083",
+    "geom2": "collision_t1_geom_085",
+    "category": "same_arm_nonadjacent",
+    "category_minima": {
+      "arm_environment": {
+        "distance_m": 0.05,
+        "geom1": "floor",
+        "geom2": "collision_t1_geom_078"
+      },
+      "torso_head_base": {
+        "distance_m": 0.05,
+        "geom1": "collision_t1_geom_000",
+        "geom2": "collision_t1_geom_070"
+      },
+      "arm_body": {
+        "distance_m": 0.01121199529353336,
+        "geom1": "collision_t1_geom_073",
+        "geom2": "collision_t1_geom_078"
+      },
+      "same_arm_nonadjacent": {
+        "distance_m": 0.004710332064489654,
+        "geom1": "collision_t1_geom_083",
+        "geom2": "collision_t1_geom_085"
+      },
+      "inter_arm": {
+        "distance_m": 0.05,
+        "geom1": "collision_t1_geom_078",
+        "geom2": "collision_t1_geom_096"
+      }
+    },
+    "time_s": 338.2549999997642
+  },
+  "local_refinement": "1 ms linearly interpolated recorded joint states within +/- 50 ms around reported minimum, all declared pairs at 50 mm distance cap. Not globally continuous swept proof.",
+  "initialization": "Joint-space neutral arms clipped within limits and torso preset to drawing-start configuration; no torso-zero-to-start sequence claimed. Actual main loop uses mj_step; assignments to qpos only planning and initial setup.",
+  "limitations": [
+    "Mechanical-interface collision exclusions unchanged from prior T1 model.",
+    "Finite simulation and local interpolation do not certify real hardware safety.",
+    "Speed/acceleration measured, hardware ratings not certified.",
+    "Collision pass is based on sampled geometric separation; physical impact/contact response has not been tested, and zero contacts alone is not a pass criterion."
+  ],
+  "passed_scoped_audit": true,
+  "collision_configuration_code_audit": {
+    "saved_xml_explicit_contact_pair_count": 3947,
+    "compiled_model_npair_observed_during_audit": 3947,
+    "automatic_geom_pair_masks": "contype=0 and conaffinity=0; explicit contact pairs enumerated separately",
+    "option_flags_in_saved_xml": {
+      "nativeccd": "disable"
+    },
+    "runtime_contact_disable_found": false,
+    "pass_evidence": "Explicit mj_geomDistance geometric separation checks over compiled model pair list, not zero contact count.",
+    "contact_response_scope": "No impact or contact-response experiment performed; ncon=0 alone is not evidence of collision-free motion or physical contact behavior."
+  }
+}

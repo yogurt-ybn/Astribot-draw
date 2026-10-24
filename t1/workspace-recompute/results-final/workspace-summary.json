@@ -1,0 +1,497 @@
+{
+  "robot": "Astribot T1",
+  "upstream_commit": "cab872dc00081d2c5b096c7a19e563050eb7a2ff",
+  "plane_y_m": -0.42,
+  "grid_spacing_m": 0.02,
+  "joint_margin_rad": 0.04,
+  "ik_tolerance_m": 0.0005,
+  "collision_clearance_threshold_m": 0.002,
+  "full_model_pair_count": 3947,
+  "torso_samples": [
+    [
+      0.04,
+      -0.3,
+      0.26,
+      0.0
+    ],
+    [
+      0.04,
+      -0.45,
+      0.41000000000000003,
+      0.0
+    ],
+    [
+      0.04,
+      -0.6,
+      0.5599999999999999,
+      0.0
+    ],
+    [
+      0.04,
+      -0.8,
+      0.76,
+      0.0
+    ],
+    [
+      0.04,
+      -0.95,
+      0.9099999999999999,
+      0.0
+    ],
+    [
+      0.2,
+      -0.4,
+      0.2,
+      0.0
+    ],
+    [
+      0.35,
+      -0.7,
+      0.35,
+      0.0
+    ],
+    [
+      0.5,
+      -1.0,
+      0.5,
+      0.0
+    ],
+    [
+      0.65,
+      -1.3,
+      0.65,
+      0.0
+    ],
+    [
+      0.35,
+      -0.7,
+      0.35,
+      -0.4
+    ],
+    [
+      0.35,
+      -0.7,
+      0.35,
+      0.4
+    ]
+  ],
+  "park_reports": [
+    {
+      "torso_index": 0,
+      "torso": [
+        0.04,
+        -0.3,
+        0.26,
+        0.0
+      ],
+      "valid": true,
+      "method": "zero arms clipped 0.04rad inside limits",
+      "minimum_checked_clearance_m": 0.005000157531846253
+    },
+    {
+      "torso_index": 1,
+      "torso": [
+        0.04,
+        -0.45,
+        0.41000000000000003,
+        0.0
+      ],
+      "valid": true,
+      "method": "zero arms clipped 0.04rad inside limits",
+      "minimum_checked_clearance_m": 0.005000157531846253
+    },
+    {
+      "torso_index": 2,
+      "torso": [
+        0.04,
+        -0.6,
+        0.5599999999999999,
+        0.0
+      ],
+      "valid": true,
+      "method": "zero arms clipped 0.04rad inside limits",
+      "minimum_checked_clearance_m": 0.005000157531846253
+    },
+    {
+      "torso_index": 3,
+      "torso": [
+        0.04,
+        -0.8,
+        0.76,
+        0.0
+      ],
+      "valid": true,
+      "method": "zero arms clipped 0.04rad inside limits",
+      "minimum_checked_clearance_m": 0.005000157531846253
+    },
+    {
+      "torso_index": 4,
+      "torso": [
+        0.04,
+        -0.95,
+        0.9099999999999999,
+        0.0
+      ],
+      "valid": true,
+      "method": "zero arms clipped 0.04rad inside limits",
+      "minimum_checked_clearance_m": 0.005000157531846308
+    },
+    {
+      "torso_index": 5,
+      "torso": [
+        0.2,
+        -0.4,
+        0.2,
+        0.0
+      ],
+      "valid": true,
+      "method": "zero arms clipped 0.04rad inside limits",
+      "minimum_checked_clearance_m": 0.005000157531846253
+    },
+    {
+      "torso_index": 6,
+      "torso": [
+        0.35,
+        -0.7,
+        0.35,
+        0.0
+      ],
+      "valid": true,
+      "method": "zero arms clipped 0.04rad inside limits",
+      "minimum_checked_clearance_m": 0.005000157531846294
+    },
+    {
+      "torso_index": 7,
+      "torso": [
+        0.5,
+        -1.0,
+        0.5,
+        0.0
+      ],
+      "valid": true,
+      "method": "zero arms clipped 0.04rad inside limits",
+      "minimum_checked_clearance_m": 0.005000157531846253
+    },
+    {
+      "torso_index": 8,
+      "torso": [
+        0.65,
+        -1.3,
+        0.65,
+        0.0
+      ],
+      "valid": true,
+      "method": "zero arms clipped 0.04rad inside limits",
+      "minimum_checked_clearance_m": 0.005000157531846253
+    },
+    {
+      "torso_index": 9,
+      "torso": [
+        0.35,
+        -0.7,
+        0.35,
+        -0.4
+      ],
+      "left_tip": [
+        0.44,
+        -0.2,
+        0.65
+      ],
+      "right_tip": [
+        -0.44,
+        -0.2,
+        0.65
+      ],
+      "minimum_checked_clearance_m": 0.004518361042654816,
+      "valid": true
+    },
+    {
+      "torso_index": 10,
+      "torso": [
+        0.35,
+        -0.7,
+        0.35,
+        0.4
+      ],
+      "left_tip": [
+        0.44,
+        -0.2,
+        0.65
+      ],
+      "right_tip": [
+        -0.44,
+        -0.2,
+        0.65
+      ],
+      "minimum_checked_clearance_m": 0.004463617173434319,
+      "valid": true
+    }
+  ],
+  "search_bound_m": {
+    "x": [
+      -0.9400000000000001,
+      0.9400000000000001
+    ],
+    "z": [
+      0.32,
+      2.06
+    ]
+  },
+  "grid_shape": [
+    88,
+    95
+  ],
+  "accepted_points_per_arm": [
+    3409,
+    3406
+  ],
+  "max_fk_residual_m": 0.0004999806040738399,
+  "minimum_witness_clearance_m": 0.004433981178059536,
+  "elapsed_s": 49.107115507125854,
+  "statistics": [
+    {
+      "arm": "left",
+      "torso_index": 0,
+      "collision_candidates": 2248,
+      "new_acceptances": 2248
+    },
+    {
+      "arm": "left",
+      "torso_index": 1,
+      "collision_candidates": 0,
+      "new_acceptances": 0
+    },
+    {
+      "arm": "left",
+      "torso_index": 2,
+      "collision_candidates": 0,
+      "new_acceptances": 0
+    },
+    {
+      "arm": "left",
+      "torso_index": 3,
+      "collision_candidates": 0,
+      "new_acceptances": 0
+    },
+    {
+      "arm": "left",
+      "torso_index": 4,
+      "collision_candidates": 0,
+      "new_acceptances": 0
+    },
+    {
+      "arm": "left",
+      "torso_index": 5,
+      "collision_candidates": 487,
+      "new_acceptances": 487
+    },
+    {
+      "arm": "left",
+      "torso_index": 6,
+      "collision_candidates": 85,
+      "new_acceptances": 85
+    },
+    {
+      "arm": "left",
+      "torso_index": 7,
+      "collision_candidates": 127,
+      "new_acceptances": 127
+    },
+    {
+      "arm": "left",
+      "torso_index": 8,
+      "collision_candidates": 174,
+      "new_acceptances": 174
+    },
+    {
+      "arm": "left",
+      "torso_index": 9,
+      "collision_candidates": 288,
+      "new_acceptances": 288
+    },
+    {
+      "arm": "left",
+      "torso_index": 10,
+      "collision_candidates": 0,
+      "new_acceptances": 0
+    },
+    {
+      "arm": "right",
+      "torso_index": 0,
+      "collision_candidates": 2240,
+      "new_acceptances": 2240
+    },
+    {
+      "arm": "right",
+      "torso_index": 1,
+      "collision_candidates": 0,
+      "new_acceptances": 0
+    },
+    {
+      "arm": "right",
+      "torso_index": 2,
+      "collision_candidates": 0,
+      "new_acceptances": 0
+    },
+    {
+      "arm": "right",
+      "torso_index": 3,
+      "collision_candidates": 0,
+      "new_acceptances": 0
+    },
+    {
+      "arm": "right",
+      "torso_index": 4,
+      "collision_candidates": 0,
+      "new_acceptances": 0
+    },
+    {
+      "arm": "right",
+      "torso_index": 5,
+      "collision_candidates": 491,
+      "new_acceptances": 491
+    },
+    {
+      "arm": "right",
+      "torso_index": 6,
+      "collision_candidates": 87,
+      "new_acceptances": 87
+    },
+    {
+      "arm": "right",
+      "torso_index": 7,
+      "collision_candidates": 133,
+      "new_acceptances": 133
+    },
+    {
+      "arm": "right",
+      "torso_index": 8,
+      "collision_candidates": 167,
+      "new_acceptances": 167
+    },
+    {
+      "arm": "right",
+      "torso_index": 9,
+      "collision_candidates": 0,
+      "new_acceptances": 0
+    },
+    {
+      "arm": "right",
+      "torso_index": 10,
+      "collision_candidates": 288,
+      "new_acceptances": 288
+    }
+  ],
+  "limitations": [
+    "Finite grid, finite torso samples, finite multi-start IK search; rejected/unfound points are not a proof of unreachable positions.",
+    "Each accepted point has one full collision-screened pose with opposite arm parked for that sampled torso.",
+    "Marginal union over torso: two arbitrary accepted left/right points need not share a feasible torso posture.",
+    "Position-only reachability with free tool orientation; not a continuous path or execution guarantee.",
+    "Collision proxies and explicit exclusions are model-specific; no hardware safety guarantee."
+  ],
+  "canvas": {
+    "schema": "astribot-t1-canvas-v1",
+    "robot": "Astribot T1",
+    "width": 616,
+    "height": 560,
+    "meters_per_pixel": 0.0025,
+    "coordinate_system": "continuous_pixel_edges; +u right, +v down, pixel centers at integer+0.5",
+    "drawing_plane_world_y_m": -0.42,
+    "world_bounds_m": {
+      "x": [
+        -0.7699999999999999,
+        0.7700000000000015
+      ],
+      "z": [
+        0.4900000000000002,
+        1.8900000000000015
+      ]
+    },
+    "physical_size_m": [
+      1.54,
+      1.4000000000000001
+    ],
+    "pixel_to_world": {
+      "x": "-0.7700000000 + u * 0.0025",
+      "y": "-0.42",
+      "z": "1.8900000000 - v * 0.0025"
+    },
+    "sampling_grid_m": 0.02,
+    "pixels_per_sampling_cell": 8,
+    "masks": "marginal-mask-* contains all found arm witnesses; mask-* further assigns x>=0 to left arm and x<0 to right for design. Filled cells visualize sampling support only, not verified every pixel.",
+    "torso_samples": [
+      [
+        0.04,
+        -0.3,
+        0.26,
+        0.0
+      ],
+      [
+        0.04,
+        -0.45,
+        0.41000000000000003,
+        0.0
+      ],
+      [
+        0.04,
+        -0.6,
+        0.5599999999999999,
+        0.0
+      ],
+      [
+        0.04,
+        -0.8,
+        0.76,
+        0.0
+      ],
+      [
+        0.04,
+        -0.95,
+        0.9099999999999999,
+        0.0
+      ],
+      [
+        0.2,
+        -0.4,
+        0.2,
+        0.0
+      ],
+      [
+        0.35,
+        -0.7,
+        0.35,
+        0.0
+      ],
+      [
+        0.5,
+        -1.0,
+        0.5,
+        0.0
+      ],
+      [
+        0.65,
+        -1.3,
+        0.65,
+        0.0
+      ],
+      [
+        0.35,
+        -0.7,
+        0.35,
+        -0.4
+      ],
+      [
+        0.35,
+        -0.7,
+        0.35,
+        0.4
+      ]
+    ],
+    "joint_margin_rad": 0.04,
+    "model_clearance_m": 0.002,
+    "tool": "80mm local -Y beyond official T1 arm tool site; tip at link7 [0,-.23,0]m",
+    "source_commit": "cab872dc00081d2c5b096c7a19e563050eb7a2ff",
+    "model_pair_count": 3947,
+    "validity": "Sampled marginal union over torso; arbitrary two-arm target combinations and continuous paths NOT guaranteed. No S1 camera/crop mapping retained."
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "waves": {
+    "left": {
+      "sample_count": 2001,
+      "inside_assigned_mask": 2001,
+      "all_inside": true
+    },
+    "right": {
+      "sample_count": 2001,
+      "inside_assigned_mask": 2001,
+      "all_inside": true
+    }
+  },
+  "leaves": {
+    "left": {
+      "sample_count": 2001,
+      "inside_assigned_mask": 2001,
+      "all_inside": true
+    },
+    "right": {
+      "sample_count": 2001,
+      "inside_assigned_mask": 2001,
+      "all_inside": true
+    }
+  },
+  "spiral": {
+    "left": {
+      "sample_count": 2001,
+      "inside_assigned_mask": 2001,
+      "all_inside": true
+    },
+    "right": {
+      "sample_count": 2001,
+      "inside_assigned_mask": 2001,
+      "all_inside": true
+    }
+  }
+}

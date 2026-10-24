@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "left": {
+      "inside_assigned_mask": true,
+      "max_segment_pixels": 0.1884953238262574,
+      "points": 2001,
+      "continuous": true
+    },
+    "right": {
+      "inside_assigned_mask": true,
+      "max_segment_pixels": 0.18849532382625736,
+      "points": 2001,
+      "continuous": true
+    }
+  },
+  "execution_status": "UNVALIDATED",
+  "note": "Geometry export only; see separate results.json for measured simulation of corresponding continuous curves."
+}

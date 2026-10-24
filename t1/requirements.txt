@@ -1,0 +1,4 @@
+numpy
+scipy
+pillow
+mujoco==3.4.0

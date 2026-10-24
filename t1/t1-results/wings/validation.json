@@ -1,0 +1,28 @@
+{
+  "design_checks": {
+    "left": {
+      "points": 1001,
+      "mask_contained": true,
+      "max_segment_px": 0.7657456295614974,
+      "min_segment_px": 0.7564571872059146,
+      "bbox_size_m": [
+        0.4755439722049616,
+        0.6545080303550173
+      ],
+      "arc_length_m": 1.914247943483506
+    },
+    "right": {
+      "points": 1001,
+      "mask_contained": true,
+      "max_segment_px": 0.7657456295614974,
+      "min_segment_px": 0.7564571872059146,
+      "bbox_size_m": [
+        0.4755439722049616,
+        0.6545080303550173
+      ],
+      "arc_length_m": 1.914247943483506
+    }
+  },
+  "execution_status": "SIMULATION_PASSED",
+  "note": "Measured fixed-base T1 simulation passed sampled proxy-geometry checks; see results.json and execution audit. Not hardware approval."
+}

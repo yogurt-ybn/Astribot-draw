@@ -1,0 +1,75 @@
+{
+  "robot": "Astribot T1",
+  "name": "spiral",
+  "source_commit": "cab872dc00081d2c5b096c7a19e563050eb7a2ff",
+  "simulation_seconds": 73.75500000000541,
+  "step_s": 0.005,
+  "actual_collision_sample_s": 0.01,
+  "planned_minimum_m": 0.004750399412279019,
+  "actual_minimum": {
+    "distance_m": 0.004750388489958235,
+    "minimum_distance_m": 0.004750388489958235,
+    "geom1": "collision_t1_geom_083",
+    "geom2": "collision_t1_geom_085",
+    "category": "same_arm_nonadjacent",
+    "category_minima": {
+      "arm_environment": {
+        "distance_m": 0.05,
+        "geom1": "floor",
+        "geom2": "collision_t1_geom_078"
+      },
+      "torso_head_base": {
+        "distance_m": 0.05,
+        "geom1": "collision_t1_geom_000",
+        "geom2": "collision_t1_geom_070"
+      },
+      "arm_body": {
+        "distance_m": 0.01123369992915399,
+        "geom1": "collision_t1_geom_073",
+        "geom2": "collision_t1_geom_096"
+      },
+      "same_arm_nonadjacent": {
+        "distance_m": 0.004750388489958235,
+        "geom1": "collision_t1_geom_083",
+        "geom2": "collision_t1_geom_085"
+      },
+      "inter_arm": {
+        "distance_m": 0.05,
+        "geom1": "collision_t1_geom_078",
+        "geom2": "collision_t1_geom_096"
+      }
+    },
+    "time_s": 11.345000000000374,
+    "phase": "approach_both"
+  },
+  "arms": {
+    "left": {
+      "rms_m": 9.260424828916872e-05,
+      "max_m": 0.00019343543778175352,
+      "min_joint_margin_rad": 0.05298905748203353
+    },
+    "right": {
+      "rms_m": 9.25425245985437e-05,
+      "max_m": 0.00019309228530198453,
+      "min_joint_margin_rad": 0.05298904506316496
+    }
+  },
+  "torso_z_min_max_m": [
+    0.831000429327562,
+    0.8502825290771832
+  ],
+  "max_contacts": 0,
+  "warning_counts": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "base": "structurally fixed; wheel joints removed",
+  "scope": "new smaller T1 test curves; S1 reachable mask not transferred",
+  "method": "prescribed shared moving torso + compensated simultaneous arms; not full-body optimizer"
+}

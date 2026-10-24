@@ -1,0 +1,34 @@
+{
+  "distance_m": 0.005000157531846253,
+  "minimum_distance_m": 0.005000157531846253,
+  "geom1": "collision_t1_geom_101",
+  "geom2": "collision_t1_geom_103",
+  "category": "same_arm_nonadjacent",
+  "category_minima": {
+    "arm_environment": {
+      "distance_m": 0.05,
+      "geom1": "floor",
+      "geom2": "collision_t1_geom_078"
+    },
+    "torso_head_base": {
+      "distance_m": 0.05,
+      "geom1": "collision_t1_geom_000",
+      "geom2": "collision_t1_geom_070"
+    },
+    "arm_body": {
+      "distance_m": 0.011190222270189842,
+      "geom1": "collision_t1_geom_073",
+      "geom2": "collision_t1_geom_096"
+    },
+    "same_arm_nonadjacent": {
+      "distance_m": 0.005000157531846253,
+      "geom1": "collision_t1_geom_101",
+      "geom2": "collision_t1_geom_103"
+    },
+    "inter_arm": {
+      "distance_m": 0.05,
+      "geom1": "collision_t1_geom_078",
+      "geom2": "collision_t1_geom_096"
+    }
+  }
+}

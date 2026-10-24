@@ -1,0 +1,10 @@
+{
+  "left": {
+    "desired_curve_max_original_polyline_distance_m": 8.735584386492427e-05,
+    "all_desired_points_inside_mask": true
+  },
+  "right": {
+    "desired_curve_max_original_polyline_distance_m": 8.735584386492427e-05,
+    "all_desired_points_inside_mask": true
+  }
+}
