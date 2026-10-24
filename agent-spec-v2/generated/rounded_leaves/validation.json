@@ -1,0 +1,26 @@
+{
+  "design_pass": true,
+  "robot_execution_status": "not_tested",
+  "errors": [],
+  "metrics": {
+    "left": {
+      "points": 967,
+      "length_m": 2.2490797349690177,
+      "max_spacing_px": 0.6995615997078953,
+      "min_mask_margin_px": 60.876925020897694,
+      "max_turn_deg": 2.287268161764668,
+      "max_curvature_rad_per_px": 0.057068602878823066,
+      "self_intersection_segments": null
+    },
+    "right": {
+      "points": 967,
+      "length_m": 2.2490797349690177,
+      "max_spacing_px": 0.6995615997078953,
+      "min_mask_margin_px": 60.876925020897694,
+      "max_turn_deg": 2.287268161764668,
+      "max_curvature_rad_per_px": 0.057068602878823066,
+      "self_intersection_segments": null
+    }
+  },
+  "scope": "Static format, ordered geometry, margin, smoothness and raster checks only. No IK, collision, dynamics or hardware certificate."
+}

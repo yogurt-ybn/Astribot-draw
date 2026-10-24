@@ -1,0 +1,26 @@
+{
+  "crop_box_original_pixels_xyxy": [
+    195,
+    0,
+    765,
+    471
+  ],
+  "resolution_pixels": [
+    570,
+    471
+  ],
+  "meters_per_pixel": 0.003328153882611492,
+  "physical_width_height_m": [
+    1.8970477130885506,
+    1.5675604787100128
+  ],
+  "cropped_to_original": "u_original=u_cropped+195; v_original=v_cropped+0",
+  "world_from_cropped_pixel": "x=(u_cropped+195-480)*0.003328153882611492; y=-0.20; z=0.95-(v_cropped+0-360)*0.003328153882611492",
+  "pixel_convention": "Continuous edge coordinates; pixel centers are integer + 0.5. No rescaling.",
+  "arm_region_assignment": "Left arm owns u_original >= 480, right arm owns u_original < 480, intersected with respective original sampled reachability mask. Left arm appears on image right.",
+  "limits": [
+    "Crop is bounding box of previously computed in-frame sampled union; original top boundary already clips workspace.",
+    "Rectangular crop still contains invalid corner pixels; masks determine drawable design regions.",
+    "Region membership is not a continuous-path or collision certificate."
+  ]
+}

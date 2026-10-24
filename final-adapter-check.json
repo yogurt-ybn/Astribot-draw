@@ -1,0 +1,28 @@
+{
+  "tidal_waves": {
+    "schema": "astribot-drawing-v2",
+    "synchronous": true,
+    "max_original_target_difference_m": {
+      "left": 0.0,
+      "right": 0.0
+    }
+  },
+  "rounded_leaves": {
+    "schema": "astribot-drawing-v2",
+    "synchronous": true,
+    "max_original_target_difference_m": {
+      "left": 0.0,
+      "right": 0.0
+    }
+  },
+  "twin_galaxies": {
+    "schema": "astribot-drawing-v2",
+    "synchronous": true,
+    "max_original_target_difference_m": {
+      "left": 0.0,
+      "right": 0.0
+    }
+  },
+  "compile": "passed",
+  "sync_sha256": "bb7975d3f704399d62b6ebb0a5f7832ac4ea24e9d79e1d4a7bc9ffd3e13ccc98"
+}

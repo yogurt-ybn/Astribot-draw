@@ -1,0 +1,102 @@
+{
+  "all_expected_results": true,
+  "cases": {
+    "valid_circle": {
+      "pass": true,
+      "expected": true,
+      "errors": []
+    },
+    "sequential_metadata": {
+      "pass": false,
+      "expected": false,
+      "errors": [
+        "synchronized execution metadata"
+      ]
+    },
+    "missing_sync_contract": {
+      "pass": false,
+      "expected": false,
+      "errors": [
+        "synchronized execution metadata"
+      ]
+    },
+    "wrong_png_dimensions": {
+      "pass": false,
+      "expected": false,
+      "errors": [
+        "PNG mode/size"
+      ]
+    },
+    "wrong_png_mode": {
+      "pass": false,
+      "expected": false,
+      "errors": [
+        "PNG mode/size"
+      ]
+    },
+    "swapped_arms": {
+      "pass": false,
+      "expected": false,
+      "errors": [
+        "exactly left and right strokes in canonical storage order (not temporal order)",
+        "right margin >=15px",
+        "left margin >=15px"
+      ]
+    },
+    "outside_mask": {
+      "pass": false,
+      "expected": false,
+      "errors": [
+        "left max spacing",
+        "left length 0.30\u20134.0m",
+        "left turning angle",
+        "left margin >=15px",
+        "left self intersection [99, 237]",
+        "all nonzero alpha inside assigned union"
+      ]
+    },
+    "discontinuous_step": {
+      "pass": false,
+      "expected": false,
+      "errors": [
+        "left max spacing",
+        "left turning angle",
+        "left self intersection [99, 416]"
+      ]
+    },
+    "repeated_point": {
+      "pass": false,
+      "expected": false,
+      "errors": [
+        "left duplicate points",
+        "left max spacing",
+        "left turning angle",
+        "left curvature",
+        "left self intersection [98, 100]"
+      ]
+    },
+    "sharp_corner": {
+      "pass": false,
+      "expected": false,
+      "errors": [
+        "left turning angle",
+        "left curvature"
+      ]
+    },
+    "self_intersection": {
+      "pass": false,
+      "expected": false,
+      "errors": [
+        "left curvature",
+        "left self intersection [0, 499]"
+      ]
+    },
+    "raster_disagrees_json": {
+      "pass": false,
+      "expected": false,
+      "errors": [
+        "PNG matches canonical rendering from JSON"
+      ]
+    }
+  }
+}

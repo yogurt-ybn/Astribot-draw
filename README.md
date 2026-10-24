@@ -33,7 +33,7 @@ Follow the pinned model clone, LFS checksum download and run commands in [README
 
 `summary.json`, per-design `results.json`, collision pair/exclusion reports, injected-collision controls and the independent final audit describe the tested scope. Videos are accelerated replays of recorded actuator integration, not direct state-setting execution.
 
-Upstream model: [Astribot-Dev/astribot_descriptions](https://github.com/Astribot-Dev/astribot_descriptions), commit `8c651a1abbe2821824a692aa3a3aa4cbf88e4122`. Model meshes are intentionally not vendored. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [UPSTREAM_LICENSE](UPSTREAM_LICENSE).
+Upstream model: [Astribot-Dev/astribot_descriptions](https://github.com/Astribot-Dev/astribot_descriptions), commit `8c651a1abbe2821824a692aa3a3aa4cbf88e4122`. Model meshes are intentionally not vendored. The optional `asset_manifest.json` is also not committed: `download_assets.py` independently reads hashes from the pinned public Git LFS pointers, verifies the downloads, and regenerates this report locally. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [UPSTREAM_LICENSE](UPSTREAM_LICENSE).
 
 No new license for original project code has been selected here. The upstream license file applies to upstream material; it must not be interpreted as a blanket license for all original project content.
 

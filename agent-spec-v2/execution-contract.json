@@ -1,0 +1,11 @@
+{
+  "mode": "synchronized",
+  "simultaneous": true,
+  "progress": "shared_normalized_arc_length",
+  "time_scaling": "quintic_zero_endpoint_velocity_acceleration",
+  "draw_start_finish": "shared",
+  "transfer_planning": "coupled_collision_checked",
+  "tool_orientation": "unconstrained",
+  "base": "fixed",
+  "torso": "shared_coupled_actual_dofs"
+}

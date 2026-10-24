@@ -1,0 +1,22 @@
+{
+  "scope": "Pre-publication local preparation report. Remote publication status must be checked against the Git commit and repository history.",
+  "checks": {
+    "python_compileall": "passed",
+    "static_validator_positive_negative_tests": "passed",
+    "v2_backend_geometry_compatibility": "passed: six original arm paths exactly match seed world arrays",
+    "common_credential_pattern_scan": "no matches; heuristic, not a security guarantee",
+    "private_cloud_absolute_path_scan": "no matches in tracked text candidates"
+  },
+  "changes": [
+    "Removed hardcoded cloud imports and sibling virtualenv fallback.",
+    "Default asset paths now use local descriptions/ or ASTRIBOT_ASSETS.",
+    "Added README.md, third-party notices and .gitignore.",
+    "Excluded vendored model assets, caches, raw 100 Hz records and archives.",
+    "Optional generated asset_manifest.json omitted from publication; downloader derives expected hashes directly from pinned Git LFS pointers and recreates it locally."
+  ],
+  "not_run": [
+    "Full dynamics not rerun after path-only packaging fixes.",
+    "No fresh network model download performed."
+  ],
+  "license": "No blanket project license assigned; upstream Apache-2.0 text retained only for upstream material."
+}
