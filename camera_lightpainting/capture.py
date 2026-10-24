@@ -60,7 +60,8 @@ class CameraWorker:
                     started = time.monotonic_ns()
                     result, position = self.engine.process(rgb, self.drawing, captured_ns/1e9)
                     processing_ms = (time.monotonic_ns()-started)/1e6
-                    recorder = self.recorder
+                    # Keep capture/processed evidence paired when recording is
+                    # started midway through acquisition of this frame.
                     if recorder is not None:
                         recorder.processed(rgb, self.engine.source_mask, result, seq, captured_ns,
                                            processing_ms, position, self.engine, self.settings(), self.drawing)
