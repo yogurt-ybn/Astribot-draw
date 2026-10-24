@@ -10,13 +10,15 @@ from .contracts import T1_JOINTS, Trajectory
 
 def export_model_trajectory(path, model, position, velocity, timestep, phase, *,
                             final_home=None, control_hz=125., validate_state=None,
-                            scope='simulation', provenance=None):
+                            scope='simulation', provenance=None, validate_velocity=None):
     """Convert planner qpos-space q/dq to a named, resampled T1 command file.
 
     ``velocity`` is the planner's analytical dq, never measured qvel. The
     optional final_home appends the checked terminal pose with zero velocity.
     validate_state(full_qpos) returns a minimum clearance in meters for each
     resampled pose; it must cover the same collision pairs as the planner.
+    Optional validate_velocity(full_qvel) runs immediately after validate_state
+    at the paired pose, for example to check tool-tip Jacobian velocity limits.
     """
     if not np.isfinite(timestep) or timestep <= 0 or not np.isfinite(control_hz) or control_hz <= 0:
         raise ValueError('timestep and control_hz must be finite and positive')
@@ -51,13 +53,19 @@ def export_model_trajectory(path, model, position, velocity, timestep, phase, *,
     if scope != 'mock_only' and validate_state is None:
         raise ValueError('simulation/hardware export requires rechecking resampled full poses')
     if validate_state is not None:
-        for command in positions:
+        for command, command_velocity in zip(positions, velocities):
             full = q[0].copy()
             full[indices] = command
             distance = validate_state(full)
             if isinstance(distance, (bool, np.bool_)) or not np.isfinite(distance) or distance < .002:
                 raise ValueError('resampled state fails the 2 mm collision-clearance gate')
             minimum = float(distance) if minimum is None else min(minimum, float(distance))
+            if validate_velocity is not None:
+                full_velocity = np.zeros(model.nv)
+                full_velocity[indices] = command_velocity
+                validate_velocity(full_velocity)
+    elif validate_velocity is not None:
+        raise ValueError('velocity geometry validation requires validate_state at the same pose')
     plan = Trajectory(times, positions, phase=phases, scope=scope, velocity=velocities)
     path = plan.save_npz(path)
     report = {'schema': 'astribot-draw-validation/v1', 'robot': 't1', 'scope': scope,

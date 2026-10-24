@@ -67,7 +67,9 @@ class ContractTests(unittest.TestCase):
                 Trajectory.from_npz(diagnostic)
 
     def test_invalid_policy(self):
-        for kwargs in ({'control_hz': 0}, {'max_step_rad': float('nan')}, {'allow_hardware_motion': 1}):
+        for kwargs in ({'control_hz': 0}, {'max_step_rad': float('nan')}, {'allow_hardware_motion': 1},
+                       {'command_preview_s': -.001}, {'command_preview_s': .031},
+                       {'command_preview_s': float('nan')}):
             with self.assertRaises(ValueError):
                 ExecutionPolicy(**kwargs)
 

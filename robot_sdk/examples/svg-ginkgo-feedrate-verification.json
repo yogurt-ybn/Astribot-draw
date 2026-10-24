@@ -1,0 +1,177 @@
+{
+  "svg_sha256": "2069a373d715ff2ad6a72b07e49177243229ac44ba75d7d413188390b8768d5a",
+  "model_revision": "279e704ef9543c0e2154cc31aa4bce5b9f769b25",
+  "completion_behavior": "stop_at_drawing_end",
+  "timings_s": {
+    "sdk_initialization": 1.328615420999995,
+    "svg_import_and_static": 0.20947608099959325,
+    "model_and_state": 2.1733733149994805,
+    "ik": 4.9238312329980545,
+    "scheduling": 0.06657288800124661,
+    "native_plan_validation": 0.0017283199995290488,
+    "resampling_and_validation": 1.5511653110006591,
+    "input_to_trajectory_ready": 10.254764125998918,
+    "execution": 27.742022616999748,
+    "measured_drawing_audit": 0.3897118419990875,
+    "input_to_result": 38.38825360999908
+  },
+  "duration_s": 27.72,
+  "stages": {
+    "static": "passed",
+    "planning": "passed",
+    "resampling": "passed",
+    "execution": "passed",
+    "measured_drawing": "passed"
+  },
+  "execution": {
+    "execution_id": "0485261549454d518a7c0ff793edc610",
+    "status": "completed",
+    "error": null,
+    "backend": "sdk-sim",
+    "commands_sent": 3467,
+    "transport": "ros",
+    "elapsed_s": 27.72938033399987,
+    "max_tracking_error_rad": 0.009951584168143845,
+    "max_lateness_s": 0.005576307965384331,
+    "plan": {
+      "robot": "t1",
+      "samples": 3466,
+      "duration_s": 27.72,
+      "scope": "simulation",
+      "plan_sha256": "c4f85e9edfd001157eabc4fb07ba75f73fdaf88d03ea009615d150e1fed5a402",
+      "joint_names": [
+        "astribot_torso_joint_1",
+        "astribot_torso_joint_2",
+        "astribot_torso_joint_3",
+        "astribot_torso_joint_4",
+        "astribot_arm_left_joint_1",
+        "astribot_arm_left_joint_2",
+        "astribot_arm_left_joint_3",
+        "astribot_arm_left_joint_4",
+        "astribot_arm_left_joint_5",
+        "astribot_arm_left_joint_6",
+        "astribot_arm_left_joint_7",
+        "astribot_arm_right_joint_1",
+        "astribot_arm_right_joint_2",
+        "astribot_arm_right_joint_3",
+        "astribot_arm_right_joint_4",
+        "astribot_arm_right_joint_5",
+        "astribot_arm_right_joint_6",
+        "astribot_arm_right_joint_7"
+      ]
+    },
+    "evidence_level": "sdk-sim"
+  },
+  "measured_drawing": {
+    "samples": 2967,
+    "position_source": "FK of received SDK joint feedback",
+    "max_error_m": [
+      0.0016964961630955649,
+      0.0016051783760977466
+    ],
+    "rms_error_m": [
+      0.00044966859856396724,
+      0.00046385967822428436
+    ],
+    "threshold_m": 0.002
+  },
+  "actual_sampled_minimum_clearance_m": 0.004065166902287962,
+  "scope": "Official simulation; free-space virtual light tip, not surface-contact drawing",
+  "limitations": [
+    "Sampled collision checks and upstream compound-joint exclusions.",
+    "Passive gripper joints use the near-closed model preset.",
+    "Measured tip positions are FK from joint feedback, not camera measurements."
+  ],
+  "command_validation": {
+    "schema": "astribot-draw-validation/v1",
+    "robot": "t1",
+    "scope": "simulation",
+    "plan_sha256": "c4f85e9edfd001157eabc4fb07ba75f73fdaf88d03ea009615d150e1fed5a402",
+    "collision_gate_passed": true,
+    "minimum_resampled_clearance_m": 0.0040214862850182775,
+    "sample_count": 3466,
+    "control_hz": 125.0,
+    "source_timestep_s": 0.005,
+    "provenance": {
+      "svg_sha256": "2069a373d715ff2ad6a72b07e49177243229ac44ba75d7d413188390b8768d5a",
+      "model_revision": "279e704ef9543c0e2154cc31aa4bce5b9f769b25",
+      "measured_initial_state": true,
+      "speed_scale": 1.0,
+      "effective_time_scale": 1.0,
+      "joint_speed_limit_rad_s": 1.0,
+      "tip_speed_limit_m_s": 0.2,
+      "command_preview_s": 0.02
+    },
+    "scope_note": "Sampled position geometry only; SDK simulation tracking is validated separately"
+  },
+  "validation_strategy": {
+    "native_geometry_pass": false,
+    "command_geometry": "every final command",
+    "control_hz": 125.0,
+    "minimum_clearance_m": 0.002,
+    "maximum_shape_error_m": 0.001,
+    "runtime_geometry_interval_s": 0.05,
+    "timing_method": "feedrate"
+  },
+  "speed_scale": 1.0,
+  "command_preview_s": 0.02,
+  "requested_duration_s": null,
+  "joint_speed_limit_rad_s": 1.0,
+  "tip_speed_limit_m_s": 0.2,
+  "command_speed_ceiling_rad_s": 1.0,
+  "maximum_command_tip_speed_m_s": 0.19002791493041107,
+  "minimum_schedule_duration_s": 27.72,
+  "effective_time_scale": 1.0,
+  "path_length_m": {
+    "left": 1.9527966652690447,
+    "right": 1.9527966652690498
+  },
+  "feedrate_scope": "Longest synchronized arm targets the configured cruise speed; shorter arm scales with path length; start/stop and joint limits reduce speed",
+  "schema": "astribot-svg-sdk-feedrate-verification/v1",
+  "date": "2026-10-24",
+  "input": "svg_planner/inputs/ginkgo.svg",
+  "sdk": "3.4.8",
+  "sdk_tests_passed": 43,
+  "upstream_svg_tests_passed": 31,
+  "endpoint_hold": {
+    "max_joint_error_rad": 8.881784197001252e-16,
+    "max_velocity_rad_s": 8.550731118675486e-14,
+    "seconds_since_execution_end": 20.285699977997865,
+    "max_difference_from_start_rad": 2.611843269477443e-05
+  },
+  "control_rate": {
+    "samples": 3467,
+    "effective_hz": 125.0045344529313,
+    "max_interval_ms": 11.708756999723846
+  },
+  "phase_duration_s": {
+    "approach_both": 4.0,
+    "draw_both": 23.72
+  },
+  "maximum_command_joint_speed_rad_s": 0.4221009451266429,
+  "physical_hardware_motion": false,
+  "measured_speed": {
+    "source": "FK Jacobian of received SDK joint position/velocity feedback, fixed base",
+    "maximum_tip_speed_m_s": [
+      0.22264624847506043,
+      0.22113581717558156
+    ],
+    "samples": 3467
+  },
+  "measured_speed_within_planning_ceiling": false,
+  "timing_scope": "CLI SDK initialization through SVG result, excluding shell staging and final SDK shutdown",
+  "speed_scope": "Cruise/ceiling controls planned commands, not a guaranteed physical servo speed cap; received-velocity FK shows transient overshoot",
+  "planning_profile": {
+    "joint_acceleration_budget_rad_s2": 2.0,
+    "tangential_progress_acceleration_budget_m_s2": 0.4,
+    "tip_command_headroom_fraction": 0.05,
+    "minimum_entry_segment_s": 4.0
+  },
+  "synthetic_length_regression": {
+    "target_m_s": 0.2,
+    "length_1m_duration_s": 5.74,
+    "length_2m_duration_s": 11.005,
+    "scope": "straight synthetic path with start/stop ramps"
+  },
+  "preview_scope": "Fixed 20ms future q/dq commands on the same trajectory; original nominal-time feedback audit and 2mm position gate retained"
+}

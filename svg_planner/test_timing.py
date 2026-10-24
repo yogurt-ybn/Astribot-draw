@@ -3,8 +3,27 @@ from types import SimpleNamespace
 from unittest.mock import patch
 import numpy as np
 from scipy.interpolate import CubicSpline, PPoly
-from svg_plan import spline_derivative_bound, progress_velocity_bound, schedule, ik_candidate, PlanningError
+from svg_plan import spline_derivative_bound, progress_velocity_bound, feedrate_progress, schedule, ik_candidate, PlanningError
 class TimingTests(unittest.TestCase):
+ def test_feedrate_curve_respects_joint_velocity_and_acceleration_budgets(self):
+  u=np.linspace(0,1,13);spline=CubicSpline(u,np.c_[np.sin(2*np.pi*u),.3*np.cos(4*np.pi*u)])
+  progress,speed=feedrate_progress([spline],u,1.,.005,1.,.2)
+  velocity=spline(progress,1)*speed[:,None]
+  self.assertLessEqual(np.max(abs(velocity)),1.+1e-8)
+  self.assertLessEqual(np.max(abs(np.diff(velocity,axis=0)/.005)),2.01)
+ def test_feedrate_time_follows_length_and_keeps_endpoint_and_joint_limits(self):
+  u=np.array([0.,.1,.5,.9,1.]);spline=CubicSpline(u,np.c_[.1*u,.2*u])
+  profiles=[]
+  for length in (1.,2.):
+   progress,speed=feedrate_progress([spline],u,length,.005,1.,.2)
+   self.assertEqual(progress[0],0.);self.assertEqual(progress[-1],1.)
+   self.assertEqual(speed[0],0.);self.assertEqual(speed[-1],0.)
+   self.assertGreaterEqual(np.min(np.diff(progress)),-1e-12)
+   self.assertLessEqual(np.max(speed)*length,.2+1e-9)
+   self.assertLessEqual(np.max(abs(spline(progress,1)*speed[:,None])),1.+1e-9)
+   self.assertGreater(np.count_nonzero(speed*length>.185),len(speed)/2)
+   profiles.append((len(progress)-1)*.005)
+  self.assertAlmostEqual(profiles[1]-profiles[0],1./.19,delta=.02)
  def test_measured_start_accepts_roundoff_but_rejects_margin_violation(self):
   model=SimpleNamespace(nq=14,jnt_limited=np.ones(14),jnt_qposadr=np.arange(14),
       jnt_range=np.tile([-2.,2.],(14,1)))
@@ -56,6 +75,9 @@ class TimingTests(unittest.TestCase):
       side_effect=lambda m,c,start,goal,*args:[start,goal]):
    full=schedule(model,u,targets,torso,home,chains,solved)
    stopped=schedule(model,u,targets,torso,home,chains,solved,return_home=False)
+   for limits in ({'joint_speed':0},{'tip_speed':float('nan')}):
+    with self.assertRaisesRegex(PlanningError,'Speed ceilings'):
+     schedule(model,u,targets,torso,home,chains,solved,**limits)
   q,dq,phase,desired=stopped
   self.assertEqual(set(phase),{'approach_both','draw_both'})
   self.assertEqual(phase[-1],'draw_both')

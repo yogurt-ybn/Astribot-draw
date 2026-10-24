@@ -57,6 +57,35 @@ class RecordingBackend(MockBackend):
 
 
 class SessionTests(unittest.TestCase):
+    def test_preview_keeps_nominal_timeline_and_zero_velocity_endpoint(self):
+        t = np.arange(51)/125
+        u = t/t[-1]
+        q = np.tile(MOCK_HOME, (len(t), 1))
+        q[:, 7] += .01*(10*u**3-15*u**4+6*u**5)
+        dq = np.zeros_like(q)
+        dq[:, 7] = .01*(30*u**2-60*u**3+30*u**4)/t[-1]
+        plan = Trajectory(t, q, velocity=dq)
+        with tempfile.TemporaryDirectory() as tmp:
+            with RobotSession(policy=ExecutionPolicy(command_preview_s=.02), log_dir=tmp) as robot:
+                result = robot.execute(plan).wait(3)
+            self.assertEqual(result['status'], 'completed')
+            samples = [json.loads(s) for s in (Path(tmp)/(result['execution_id']+'.jsonl')).read_text().splitlines()]
+            samples = [s for s in samples if s['event'] == 'sample']
+            for sample in samples:
+                target_time = min(sample['trajectory_time_s']+.02, t[-1])
+                self.assertAlmostEqual(sample['command_time_s'], target_time)
+                np.testing.assert_allclose(sample['target'], plan.sample(target_time)[0], atol=1e-12)
+            np.testing.assert_array_equal(samples[-1]['target'], q[-1])
+            np.testing.assert_array_equal(samples[-1]['target_velocity'], np.zeros(18))
+
+    def test_hardware_preview_rejected_before_control(self):
+        with RobotSession('sdk-hardware', peers='tcp/127.0.0.1:7447',
+                          policy=ExecutionPolicy(command_preview_s=.02),
+                          backend_factory=self.factory(kind='sdk-hardware')) as robot:
+            result = robot.execute(self.trajectory()).wait(2)
+        self.assertEqual(result['status'], 'rejected')
+        self.assertIn('only validated for simulation', result['error'])
+        self.assertFalse(any(name == 'acquire' for name, _ in self.backends[0].calls))
     def setUp(self):
         self.backends = []
 

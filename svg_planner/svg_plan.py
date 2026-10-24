@@ -150,8 +150,46 @@ def progress_velocity_bound(spline):
     weight=weight.reshape((-1,)+(1,)*(a.ndim-1))
     return float(np.max(bounds*weight)*(1+1e-9))
 
-def schedule(m,u,targets,torso,home,cs,solved,*,return_home=True,timing='legacy'):
-    if timing not in ('legacy','progress_bound'):raise PlanningError('Unknown timing method')
+def feedrate_progress(splines,u,path_length,dt,joint_speed,tip_speed):
+    """Arc-length cruise with bounded joint speed/acceleration and zero endpoints.
+
+    Each progress cell uses exact quadratic derivative and linear curvature
+    bounds of the joint cubics. A forward/backward velocity-squared pass
+    reserves half of a 2 rad/s² joint budget for each chain-rule term.
+    """
+    if not np.isfinite(path_length) or path_length<=0:raise PlanningError('Drawing path length must be positive')
+    dense=np.linspace(0,1,401);dense=dense[np.min(abs(dense[:,None]-u[None,:]),axis=1)>1e-12]
+    grid=np.sort(np.r_[u,dense]);du=np.diff(grid)
+    g=np.zeros(len(du));h=np.zeros(len(du))
+    for spline in splines:
+        p=spline(grid[:-1],1);q=spline(grid[:-1],2);j=spline(grid[:-1],3);dx=du[:,None]
+        end=p+q*dx+.5*j*dx*dx
+        vertex=np.divide(-q,j,out=np.zeros_like(q),where=j!=0)
+        value=p+q*vertex+.5*j*vertex*vertex
+        bound=np.maximum(np.maximum(abs(p),abs(end)),np.where((j!=0)&(vertex>0)&(vertex<dx),abs(value),0))
+        g=np.maximum(g,np.max(bound,axis=1));h=np.maximum(h,np.max(np.maximum(abs(q),abs(q+j*dx)),axis=1))
+    joint_accel=2.;tip_accel=.4
+    # Reserve 5% for interpolation differences and measured simulation tracking overshoot.
+    vmax=np.minimum(.95*tip_speed/path_length,joint_speed/np.maximum(g,1e-15))
+    vmax=np.minimum(vmax,np.sqrt(.5*joint_accel/np.maximum(h,1e-15)))
+    accel=np.minimum(tip_accel/path_length,.5*joint_accel/np.maximum(g,1e-15))
+    v=np.r_[0.,np.minimum(vmax[:-1],vmax[1:]),0.]
+    for k in range(1,len(v)):v[k]=min(v[k],np.sqrt(v[k-1]**2+2*accel[k-1]*du[k-1]))
+    for k in range(len(v)-2,-1,-1):v[k]=min(v[k],np.sqrt(v[k+1]**2+2*accel[k]*du[k]))
+    times=np.r_[0.,np.cumsum(2*du/(v[:-1]+v[1:]))]
+    if not np.isfinite(times[-1]) or times[-1]/dt>200000:raise PlanningError('Feedrate schedule exceeds resource budget')
+    n=int(np.ceil(times[-1]/dt));stretch=times[-1]/(n*dt);sample=np.arange(n+1)*dt*stretch
+    edge=np.clip(np.searchsorted(times,sample,side='right')-1,0,len(du)-1)
+    tau=sample-times[edge];a=(v[edge+1]**2-v[edge]**2)/(2*du[edge])
+    progress=grid[edge]+v[edge]*tau+.5*a*tau*tau;speed=(v[edge]+a*tau)*stretch
+    progress[0],progress[-1],speed[0],speed[-1]=0.,1.,0.,0.
+    print('FEEDRATE_PROFILE',dict(path_length_m=path_length,draw_duration_s=n*dt,
+        target_m_s=tip_speed,peak_target_m_s=float(np.max(speed)*path_length)),flush=True)
+    return np.clip(progress,0,1),np.maximum(speed,0)
+
+def schedule(m,u,targets,torso,home,cs,solved,*,return_home=True,timing='legacy',joint_speed=.2,tip_speed=.05):
+    if timing not in ('legacy','progress_bound','feedrate'):raise PlanningError('Unknown timing method')
+    if not np.isfinite(joint_speed) or not np.isfinite(tip_speed) or min(joint_speed,tip_speed)<=0:raise PlanningError('Speed ceilings must be finite and positive')
     dt=m.opt.timestep;goal=home.copy();goal[:4]=torso[0]
     for c,q in zip(cs,solved):goal[c.qids]=q[0]
     torso_joints=np.array([int(np.flatnonzero(m.jnt_qposadr==i)[0]) for i in range(4)])
@@ -161,19 +199,32 @@ def schedule(m,u,targets,torso,home,cs,solved,*,return_home=True,timing='legacy'
     entry=rrt_transfer(m,both,home[both.qids],goal[both.qids],torso[0],home,[(a,b) for a,b,cat in pairs],np.random.default_rng(12345))
     qs=[];dqs=[];phases=[];desired=[]
     def transfer(a,b):
-        T=max(2.,np.max(abs(b-a))*1.875/.2);n=int(np.ceil(T/dt));r=np.arange(n)/n;s=10*r**3-15*r**4+6*r**5;ds=(30*r**2-60*r**3+30*r**4)/(n*dt)
+        T=max(4. if timing=='feedrate' else 2.,np.max(abs(b-a))*1.875/joint_speed)
+        if timing=='feedrate':
+            data=mujoco.MjData(m);jac=np.zeros((3,m.nv));peak=0.
+            for rr in np.linspace(0,1,65):
+                ss=10*rr**3-15*rr**4+6*rr**5;vv=30*rr**2*(1-rr)**2
+                data.qpos[:]=a+ss*(b-a);mujoco.mj_kinematics(m,data);mujoco.mj_comPos(m,data)
+                for side in SIDES:
+                    mujoco.mj_jacSite(m,data,jac,None,m.site(side+'_light').id)
+                    peak=max(peak,float(np.linalg.norm(jac@((b-a)*vv))))
+            T=max(T,1.02*peak/tip_speed)
+        n=int(np.ceil(T/dt));r=np.arange(n)/n;s=10*r**3-15*r**4+6*r**5;ds=(30*r**2-60*r**3+30*r**4)/(n*dt)
         qs.extend(a+s[:,None]*(b-a));dqs.extend(ds[:,None]*(b-a));phases.extend(['approach_both']*n);desired.extend([np.full((2,3),np.nan)]*n)
     prev=home.copy()
     for qq in entry[1:]:
         nxt=home.copy();nxt[both.qids]=qq;transfer(prev,nxt);prev=nxt
     aq=np.array(qs);av=np.array(dqs)
     spl=[CubicSpline(u,q) for q in solved];ts=CubicSpline(u,torso)
-    bound=(lambda s:1.875*spline_derivative_bound(s)) if timing=='legacy' else progress_velocity_bound
-    T=max(2.,max(1.875*np.linalg.norm(np.diff(p,axis=0),axis=1).sum()/.05 for p in targets),max(bound(s)/.2 for s in spl),bound(ts)/.2)
-    n=int(np.ceil(T/dt))
+    if timing=='feedrate':
+        length=max(np.linalg.norm(np.diff(p,axis=0),axis=1).sum() for p in targets)
+        s,ds=feedrate_progress(spl+[ts],u,length,dt,joint_speed,tip_speed);n=len(s)-1
+    else:
+        bound=(lambda s:1.875*spline_derivative_bound(s)) if timing=='legacy' else progress_velocity_bound
+        T=max(2.,max(1.875*np.linalg.norm(np.diff(p,axis=0),axis=1).sum()/tip_speed for p in targets),max(bound(s)/joint_speed for s in spl),bound(ts)/joint_speed)
+        n=int(np.ceil(T/dt));r=np.linspace(0,1,n+1);s=10*r**3-15*r**4+6*r**5;ds=(30*r**2-60*r**3+30*r**4)/(n*dt)
     total_steps=(2*(n+1)+2*len(qs)+1) if return_home else len(qs)+n+1
     if total_steps>200000:raise PlanningError(f'Schedule exceeds 200000-step resource budget ({n} draw steps); inspect curve conditioning/corners')
-    r=np.linspace(0,1,n+1);s=10*r**3-15*r**4+6*r**5;ds=(30*r**2-60*r**3+30*r**4)/(n*dt)
     qdraw=np.tile(goal,(n+1,1));dqdraw=np.zeros_like(qdraw);qdraw[:,:4]=ts(s);dqdraw[:,:4]=ts(s,1)*ds[:,None]
     for c,ss in zip(cs,spl): qdraw[:,c.qids]=ss(s);dqdraw[:,c.qids]=ss(s,1)*ds[:,None]
     exact=np.stack([np.column_stack([np.interp(s,u,p[:,j]) for j in range(3)]) for p in targets],axis=1)

@@ -18,6 +18,10 @@ OUTPUT=""
 PLAN_ONLY=0
 SEEDS=12
 SPEED_SCALE=1
+PREVIEW_MS=""
+JOINT_SPEED=1
+TIP_SPEED=0.2
+DURATION=""
 
 usage() {
     cat <<'USAGE'
@@ -30,7 +34,11 @@ Usage: bash robot_sdk/run_sim.sh [start|probe|demo|draw INPUT.svg|run PLAN.npz] 
   draw INPUT.svg      Plan from current pose, execute SVG, stop at endpoint, audit
   --plan-only         Validate/plan SVG without motion
   --seeds NUMBER      Deterministic SVG IK seed budget (default 12)
-  --speed-scale RATE  SVG speed multiplier in (0,1] (default 1)
+  --joint-speed RAD_S Absolute joint velocity ceiling (default 1 rad/s)
+  --tip-speed M_S     Tool-tip cruise/ceiling (default 0.2 m/s, arc-length timing)
+  --duration SECONDS  Optional slower total duration; no fixed-time default
+  --speed-scale RATE  Slowdown multiplier (default 1; >1 requires duration slack)
+  --command-preview-ms MS  Simulation lead [0,30] ms (auto: 20 for fast ceilings)
   --sim-dir PATH      Official astribot_simulation checkout
   --runtime MODE      auto (default), docker, or local
   --container NAME    Existing simulation container (default astribot-simulation)
@@ -67,7 +75,7 @@ fi
 
 while (($#)); do
     case "$1" in
-        --peers|--python|--output|--sim-dir|--transport|--runtime|--container|--launcher|--seeds|--speed-scale)
+        --peers|--python|--output|--sim-dir|--transport|--runtime|--container|--launcher|--seeds|--speed-scale|--command-preview-ms|--joint-speed|--tip-speed|--duration)
             (($# >= 2)) && [[ -n "$2" ]] || fail "$1 requires a value"
             case "$1" in
                 --peers) PEERS="$2" ;;
@@ -80,6 +88,10 @@ while (($#)); do
                 --launcher) LAUNCHER="$2" ;;
                 --seeds) SEEDS="$2" ;;
                 --speed-scale) SPEED_SCALE="$2" ;;
+                --command-preview-ms) PREVIEW_MS="$2" ;;
+                --joint-speed) JOINT_SPEED="$2" ;;
+                --tip-speed) TIP_SPEED="$2" ;;
+                --duration) DURATION="$2" ;;
             esac
             shift 2 ;;
         --mock) BACKEND=mock; shift ;;
@@ -92,7 +104,9 @@ done
 [[ -n "$MODE" ]] || fail 'Specify start, probe, demo, draw INPUT.svg, or run PLAN.npz (use --help)'
 draw_options=()
 if [[ "$MODE" == draw ]]; then
-    draw_options=(--seeds "$SEEDS" --speed-scale "$SPEED_SCALE")
+    draw_options=(--seeds "$SEEDS" --speed-scale "$SPEED_SCALE" --joint-speed "$JOINT_SPEED" --tip-speed "$TIP_SPEED")
+    [[ -z "$DURATION" ]] || draw_options+=(--duration "$DURATION")
+    [[ -z "$PREVIEW_MS" ]] || draw_options+=(--command-preview-ms "$PREVIEW_MS")
     ((PLAN_ONLY == 0)) || draw_options+=(--plan-only)
 fi
 [[ "$TRANSPORT" == ros || "$TRANSPORT" == link ]] || fail '--transport must be ros or link'

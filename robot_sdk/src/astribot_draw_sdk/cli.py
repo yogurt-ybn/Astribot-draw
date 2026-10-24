@@ -41,6 +41,21 @@ def demo_trajectory(position, control_hz=125., duration_s=12., scope='mock_only'
     return Trajectory(t, q, phase=tuple(phase), scope=scope, velocity=v)
 
 
+def drawing_policy(control_hz, speed_scale, preview_ms=None, *, joint_speed=1., tip_speed=.2, duration_s=None):
+    """Fast mode is simulation-only at the draw boundary; vendor limits still apply."""
+    if not np.isfinite(speed_scale) or not 0 < speed_scale <= 2.5:
+        raise ValueError('speed_scale must be finite and in (0,2.5]')
+    if any(not np.isfinite(v) or v <= 0 for v in (joint_speed, tip_speed)):
+        raise ValueError('joint_speed and tip_speed must be finite and positive')
+    if duration_s is not None and (not np.isfinite(duration_s) or duration_s <= 0):
+        raise ValueError('duration must be finite and positive')
+    if duration_s is None and speed_scale > 1:
+        raise ValueError('Use --tip-speed / --joint-speed to increase feedrate; --speed-scale without --duration only supports slowdown')
+    preview = (20. if joint_speed > .2 or tip_speed > .05 else 0.) if preview_ms is None else preview_ms
+    return ExecutionPolicy(control_hz=control_hz, command_preview_s=preview/1000,
+                           max_speed_rad_s=joint_speed)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', choices=['probe', 'demo', 'run', 'draw'])
@@ -55,7 +70,12 @@ def main():
     parser.add_argument('--output', type=Path, default=Path('output/robot_sdk'))
     parser.add_argument('--plan-only', action='store_true', help='Plan SVG from current simulation state without motion')
     parser.add_argument('--seeds', type=int, default=12)
-    parser.add_argument('--speed-scale', type=float, default=1.)
+    parser.add_argument('--speed-scale', type=float, default=1., help='Slowdown multiplier; >1 requires --duration slack')
+    parser.add_argument('--joint-speed', type=float, default=1., help='Absolute joint speed ceiling in rad/s')
+    parser.add_argument('--tip-speed', type=float, default=.2, help='Tool-tip cruise/ceiling in m/s (default 0.2)')
+    parser.add_argument('--duration', type=float, help='Optional slower total duration; default follows path length and speed')
+    parser.add_argument('--command-preview-ms', type=float,
+                        help='Simulation command lead in [0,30] ms; default 20 for fast speed ceilings, otherwise 0')
     parser.add_argument('--planner-dir', type=Path)
     parser.add_argument('--assets', type=Path)
     args = parser.parse_args()
@@ -75,15 +95,19 @@ def main():
     try:
         # Validate file identity before opening any SDK connection.
         trajectory = Trajectory.from_npz(args.plan, evidence=args.validation) if args.command == 'run' else None
+        policy = (drawing_policy(args.control_hz, args.speed_scale, args.command_preview_ms,
+                                 joint_speed=args.joint_speed, tip_speed=args.tip_speed, duration_s=args.duration)
+                  if args.command == 'draw' else ExecutionPolicy(control_hz=args.control_hz))
         with redirect_stdout(sys.stderr):
             session = RobotSession(args.backend, peers=args.peers, transport=args.transport,
-                                   policy=ExecutionPolicy(control_hz=args.control_hz), log_dir=args.output)
+                                   policy=policy, log_dir=args.output)
             session.open()
             if args.command == 'draw':
                 from .svg_runner import SvgJob
                 svg_job = SvgJob(session, args.plan, args.output, planner_dir=args.planner_dir,
                                  assets=args.assets, seeds=args.seeds, speed_scale=args.speed_scale,
-                                 plan_only=args.plan_only, pipeline_started_at=pipeline_started_at)
+                                 plan_only=args.plan_only, pipeline_started_at=pipeline_started_at,
+                                 joint_speed=args.joint_speed, tip_speed=args.tip_speed, duration_s=args.duration)
                 report = svg_job.run()
             elif args.command == 'probe':
                 first = session.state()['joints']['sequence']

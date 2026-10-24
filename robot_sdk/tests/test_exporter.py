@@ -10,6 +10,22 @@ from astribot_draw_sdk import T1_JOINTS, Trajectory, export_model_trajectory
 
 
 class ExportTests(unittest.TestCase):
+    def test_velocity_geometry_callback_receives_paired_full_pose_velocity(self):
+        checked, speeds = [], []
+        def state(q):
+            checked.append(q.copy())
+            return .004
+        def velocity(dq):
+            self.assertEqual(len(checked), len(speeds)+1)
+            speeds.append(dq.copy())
+        with tempfile.TemporaryDirectory() as tmp:
+            path, _ = export_model_trajectory(Path(tmp)/'plan.npz', self.model, self.q,
+                self.dq, .005, ['draw']*201, validate_state=state, validate_velocity=velocity)
+            plan = Trajectory.from_npz(path)
+            np.testing.assert_allclose(np.asarray(speeds)[:, self.indices], plan.velocity)
+            np.testing.assert_allclose(np.asarray(checked)[:, self.indices], plan.position)
+            other = np.setdiff1d(np.arange(22), self.indices)
+            np.testing.assert_array_equal(np.asarray(speeds)[:, other], 0.)
     def test_phase_boundaries_and_final_frame_keep_full_geometry_coverage(self):
         phases = ['approach']*100+['draw']*100+['end']
         checked = []

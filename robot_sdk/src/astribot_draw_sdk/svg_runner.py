@@ -54,7 +54,7 @@ def full_pose(model, command, auxiliary):
     return q
 
 
-def validate_native_contract(model, q, dq, phase, desired):
+def validate_native_contract(model, q, dq, phase, desired, *, joint_speed=.2):
     """Vectorized numerical checks; geometry is checked on the final SDK poses."""
     if not np.isfinite(q).all() or not np.isfinite(dq).all():
         raise RuntimeError('Nonfinite planned position/velocity')
@@ -65,10 +65,18 @@ def validate_native_contract(model, q, dq, phase, desired):
     margin = float(np.minimum(values-model.jnt_range[limited, 0],
                               model.jnt_range[limited, 1]-values).min())
     maximum = float(np.max(np.abs(dq)))
-    if margin < 0 or maximum > .205:
-        raise RuntimeError('Native trajectory violates joint limits or the 0.2 rad/s planning ceiling')
+    if margin < 0 or maximum > joint_speed+1e-6:
+        raise RuntimeError('Native trajectory violates joint limits or the configured speed ceiling')
     return dict(minimum_joint_margin_rad=margin, maximum_commanded_velocity_rad_s=maximum,
                 geometry_validation='deferred to every final 125 Hz SDK command')
+
+
+def motion_time_scale(minimum_duration, duration_s, speed_scale):
+    target = (minimum_duration if duration_s is None else duration_s)/speed_scale
+    if target < minimum_duration-1e-9:
+        raise RuntimeError(f'Requested {target:.3f}s is below the {minimum_duration:.3f}s '
+                           'schedule minimum under the configured speed ceilings; increase --duration or lower --speed-scale')
+    return minimum_duration/target
 
 
 class SvgStateGuard(FixedPartsGuard):
@@ -94,14 +102,22 @@ class SvgStateGuard(FixedPartsGuard):
 
 class SvgJob:
     def __init__(self, robot, svg, output, *, planner_dir=None, assets=None,
-                 seeds=12, speed_scale=1., plan_only=False, pipeline_started_at=None):
+                 seeds=12, speed_scale=1., plan_only=False, pipeline_started_at=None,
+                 joint_speed=1., tip_speed=.2, duration_s=None):
         now = time.perf_counter()
         self.started = now if pipeline_started_at is None else pipeline_started_at
         self.stage_started = now
         if robot.backend_kind != 'sdk-sim' or robot.transport != 'ros':
             raise ValueError('SVG drawing requires the official SDK simulation ROS backend')
-        if not 0 < speed_scale <= 1 or not 0 <= seeds <= 100:
-            raise ValueError('speed_scale must be in (0,1] and seeds in [0,100]')
+        if not np.isfinite(speed_scale) or not 0 < speed_scale <= 2.5 or not 0 <= seeds <= 100:
+            raise ValueError('speed_scale must be finite and in (0,2.5] and seeds in [0,100]')
+        if any(not np.isfinite(v) or v <= 0 for v in (joint_speed, tip_speed)):
+            raise ValueError('joint_speed and tip_speed must be finite and positive')
+        if duration_s is not None and (not np.isfinite(duration_s) or duration_s <= 0):
+            raise ValueError('duration must be finite and positive')
+        if joint_speed > robot.policy.max_speed_rad_s+1e-9:
+            raise ValueError('joint_speed exceeds the session execution policy')
+        self.joint_speed, self.tip_speed, self.duration_s = joint_speed, tip_speed, duration_s
         self.robot, self.svg, self.output = robot, Path(svg).resolve(), Path(output).resolve()
         self.output.mkdir(parents=True, exist_ok=True)
         original_svg = self.svg.read_bytes()
@@ -113,7 +129,11 @@ class SvgJob:
         self.report = dict(schema='astribot-sdk-svg-run/v1', status='planning',
                            svg=str(self.svg), svg_sha256=hashlib.sha256(original_svg).hexdigest(),
                            model_assets=str(self.assets), model_revision=os.getenv('ASTRIBOT_DRAW_MODEL_REVISION', 'unknown'),
-                           speed_scale=speed_scale, stages={}, completion_behavior='stop_at_drawing_end',
+                           speed_scale=speed_scale, command_preview_s=robot.policy.command_preview_s,
+                           requested_duration_s=duration_s, joint_speed_limit_rad_s=joint_speed,
+                           tip_speed_limit_m_s=tip_speed,
+                           command_speed_ceiling_rad_s=robot.policy.max_speed_rad_s,
+                           stages={}, completion_behavior='stop_at_drawing_end',
                            timings_s=dict(sdk_initialization=max(0., now-self.started)),
                            scope='Official simulation; free-space virtual light tip, not surface-contact drawing',
                            limitations=['Sampled collision checks and upstream compound-joint exclusions.',
@@ -196,9 +216,10 @@ class SvgJob:
                                                                   initial_qpos=initial)
                 self.checkpoint('ik')
                 q, dq, phase, desired = planner.schedule(model, u, targets, torso, home, chains, solved,
-                                                        return_home=False, timing='progress_bound')
+                                                        return_home=False, timing='feedrate',
+                                                        joint_speed=self.joint_speed, tip_speed=self.tip_speed)
                 self.checkpoint('scheduling')
-                checked = validate_native_contract(model, q, dq, phase, desired)
+                checked = validate_native_contract(model, q, dq, phase, desired, joint_speed=self.joint_speed)
                 self.checkpoint('native_plan_validation')
                 break
             except (planner.PlanningError, RuntimeError) as exc:
@@ -211,11 +232,17 @@ class SvgJob:
         self.report.update(selected_torso_candidate=name, ik_search=search, native_plan=checked)
         self.report['stages']['planning'] = 'passed'
         dt = float(model.opt.timestep)
-        self.q, self.dq, self.phase, self.desired, self.dt = q, dq, phase, desired, dt/self.speed_scale
-        np.savez_compressed(self.output/'planner-trajectory.npz', qdes=q, dqdes=dq*self.speed_scale,
+        minimum_duration = (len(q)-1)*dt
+        time_scale = motion_time_scale(minimum_duration, self.duration_s, self.speed_scale)
+        self.report.update(minimum_schedule_duration_s=minimum_duration, effective_time_scale=time_scale)
+        self.q, self.dq, self.phase, self.desired, self.dt = q, dq, phase, desired, dt/time_scale
+        np.savez_compressed(self.output/'planner-trajectory.npz', qdes=q, dqdes=dq*time_scale,
                             phase=phase, desired=desired, dt=self.dt, home=initial)
         self.report['resampled_shape_error_m'] = 0.
         data, indices = self.mujoco.MjData(model), self.guard.indices
+        jacobian = np.zeros((3, model.nv))
+        tip_ids = [model.site(s+'_light').id for s in ('left', 'right')]
+        self.report['maximum_command_tip_speed_m_s'] = 0.
         sample_index = 0
 
         def validate_command(full):
@@ -236,18 +263,33 @@ class SvgJob:
             sample_index += 1
             return distance
 
+        def validate_velocity(full_velocity):
+            self.mujoco.mj_comPos(model, data)
+            for site_id in tip_ids:
+                self.mujoco.mj_jacSite(model, data, jacobian, None, site_id)
+                speed = float(np.linalg.norm(jacobian@full_velocity))
+                self.report['maximum_command_tip_speed_m_s'] = max(self.report['maximum_command_tip_speed_m_s'], speed)
+                if speed > self.tip_speed+1e-6:
+                    raise RuntimeError(f'Tool-tip velocity {speed:.6f} m/s exceeds the configured ceiling')
+            if np.max(np.abs(full_velocity[indices])) > self.joint_speed+1e-6:
+                raise RuntimeError('Resampled joint velocity exceeds the configured ceiling')
+
         print('SVG numerical plan passed; checking geometry once on each final SDK command', flush=True)
         plan_path, validation = export_model_trajectory(self.output/'sdk-plan.npz', model, q,
-            dq*self.speed_scale, self.dt, phase, control_hz=self.robot.policy.control_hz,
+            dq*time_scale, self.dt, phase, control_hz=self.robot.policy.control_hz,
             validate_state=validate_command, provenance=dict(svg_sha256=self.report['svg_sha256'],
                 model_revision=self.report['model_revision'], measured_initial_state=True,
-                speed_scale=self.speed_scale))
+                speed_scale=self.speed_scale, effective_time_scale=time_scale,
+                joint_speed_limit_rad_s=self.joint_speed, tip_speed_limit_m_s=self.tip_speed,
+                command_preview_s=self.robot.policy.command_preview_s), validate_velocity=validate_velocity)
         plan = Trajectory.from_npz(plan_path)
         self.report['command_validation'] = json.loads(validation.read_text())
         self.report['validation_strategy'] = dict(native_geometry_pass=False,
             command_geometry='every final command', control_hz=self.robot.policy.control_hz,
             minimum_clearance_m=.002, maximum_shape_error_m=.001,
-            runtime_geometry_interval_s=.05, timing_method='progress_bound')
+            runtime_geometry_interval_s=.05, timing_method='feedrate')
+        self.report['path_length_m'] = {s: parsed['arms'][s]['length_m'] for s in ('left', 'right')}
+        self.report['feedrate_scope'] = 'Longest synchronized arm targets the configured cruise speed; shorter arm scales with path length; start/stop and joint limits reduce speed'
         self.checkpoint('resampling_and_validation')
         self.report['timings_s']['input_to_trajectory_ready'] = time.perf_counter()-self.started
         self.report.update(plan=str(plan_path), validation=str(validation), duration_s=float(plan.time[-1]))

@@ -122,6 +122,8 @@ class RobotSession:
             raise SessionError(f'stale/invalid feedback receipt age: {age:.3f}s')
 
     def _begin(self, backend, trajectory, handle, state, state_guard=None):
+        if self.backend_kind == 'sdk-hardware' and self.policy.command_preview_s:
+            raise SessionError('command preview is only validated for simulation')
         if self.backend_kind != 'mock':
             expected_scope = 'simulation' if self.backend_kind == 'sdk-sim' else 'hardware'
             if trajectory.scope != expected_scope:
@@ -230,7 +232,8 @@ class RobotSession:
             raise SessionError(f'command deadline missed by {lateness:.4f}s; no catch-up burst')
         plan = job['trajectory']
         elapsed = min(now-job['started'], float(plan.time[-1]))
-        target, target_velocity, phase = plan.sample(elapsed)
+        command_time = min(elapsed+self.policy.command_preview_s, float(plan.time[-1]))
+        target, target_velocity, phase = plan.sample(command_time)
         if elapsed >= plan.time[-1]:
             target_velocity = np.zeros(18)
         lower, upper, velocity_limit = job['limits']
@@ -239,11 +242,14 @@ class RobotSession:
             raise SessionError('interpolated command exceeds runtime limits')
         if job['last_target'] is not None and np.max(np.abs(target-job['last_target'])) > self.policy.max_step_rad:
             raise SessionError('interpolated command step exceeds configured ceiling')
+        if job['last_target'] is None and self.policy.command_preview_s and np.max(np.abs(target-state.position)) > self.policy.max_step_rad:
+            raise SessionError('first preview command step exceeds configured ceiling')
         backend.command(target, 1/self.policy.control_hz, velocity=target_velocity)
         job['last_submit_at'] = now
         job['last_target'] = target
         job['commands'] += 1
-        self._trace(job, 'sample', index=job['index'], trajectory_time_s=elapsed, phase=phase,
+        self._trace(job, 'sample', index=job['index'], trajectory_time_s=elapsed,
+                    command_time_s=command_time, phase=phase,
                     target=target.tolist(), target_velocity=target_velocity.tolist(),
                     measured=state.position.tolist(), velocity=state.velocity.tolist(),
                     auxiliary=self._extra_state(backend) if job['state_guard'] else {},

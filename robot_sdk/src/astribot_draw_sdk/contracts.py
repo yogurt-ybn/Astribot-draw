@@ -37,6 +37,7 @@ def flatten_parts(groups, name):
 class ExecutionPolicy:
     """Application ceilings, not manufacturer ratings; live SDK limits also apply."""
     control_hz: float = 125.
+    command_preview_s: float = 0.
     max_speed_rad_s: float = .3
     max_step_rad: float = .03
     start_tolerance_rad: float = .03
@@ -53,6 +54,9 @@ class ExecutionPolicy:
             if key == 'allow_hardware_motion':
                 if type(value) is not bool:
                     raise ValueError('allow_hardware_motion must be bool')
+            elif key == 'command_preview_s':
+                if type(value) not in (int, float) or not math.isfinite(value) or not 0 <= value <= .03:
+                    raise ValueError('command_preview_s must be finite and between 0 and 0.03 seconds')
             elif type(value) not in (int, float) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f'{key} must be finite and positive')
         if self.control_hz > 250:

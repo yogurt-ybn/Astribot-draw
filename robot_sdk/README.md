@@ -38,8 +38,10 @@ bash robot_sdk/run_sim.sh draw svg_planner/inputs/ginkgo.svg
 bash robot_sdk/run_sim.sh draw /path/to/drawing.svg
 # 仅规划，不申请控制权或发送动作：
 bash robot_sdk/run_sim.sh draw /path/to/drawing.svg --plan-only
-# 可降低执行速度，图形不缩放、不改线：
-bash robot_sdk/run_sim.sh draw /path/to/drawing.svg --speed-scale 0.5
+# 按末端速度规划；耗时由路径长度、起停和关节约束决定：
+bash robot_sdk/run_sim.sh draw /path/to/drawing.svg --joint-speed 1.0 --tip-speed 0.2
+# 更慢，图形不缩放、不改线：
+bash robot_sdk/run_sim.sh draw /path/to/drawing.svg --tip-speed 0.1
 ```
 
 输入采用上游 [SVG_INPUT_INTERFACE.md](../svg_planner/SVG_INPUT_INTERFACE.md)：616×560 画布，两个直接子 `path`，分别 `id="left"` / `id="right"`，支持 `M L C Q Z`。机器人左臂对应画面右侧。普通编辑器导出的 groups、transforms、嵌入位图或多条分离子路径会被明确拒绝，不会静默改图。
@@ -48,7 +50,7 @@ bash robot_sdk/run_sim.sh draw /path/to/drawing.svg --speed-scale 0.5
 
 规划仍使用上游有限躯干候选族和确定性种子预算，不保证所有符合 SVG 格式的图案都能执行。搜索失败或间隙不足时保留拒绝原因。没有自动缩放、镜像、删线或跳到中立首帧。
 
-原始 `04afcd6` 代码需要一次性应用 `robot_sdk/patches/svg-measured-start.patch`；当前分支和部署均已包含该适配，无需重复应用。它给上游 `ik_candidate` 增加可选的实测起点，并给 `schedule` 增加 `return_home` 和 `timing` 参数。SDK 的 `draw` 使用 `return_home=False, timing="progress_bound"`：末帧速度为零，确认反馈收敛后结束，不自动返回。独立 `svg_plan.py` 仍默认返回，原基准不变。上游更新后可通过 `git apply --check robot_sdk/patches/svg-measured-start.patch` 检查是否仍适用。
+原始 `04afcd6` 代码需要一次性应用 `robot_sdk/patches/svg-measured-start.patch`；当前分支和部署均已包含该适配，无需重复应用。它给上游 `ik_candidate` 增加可选的实测起点，并给 `schedule` 增加 `return_home` 和 `timing` 参数。SDK 的 `draw` 使用 `return_home=False, timing="feedrate"`：末帧速度为零，确认反馈收敛后结束，不自动返回。独立 `svg_plan.py` 仍默认返回，原基准不变。上游更新后可通过 `git apply --check robot_sdk/patches/svg-measured-start.patch` 检查是否仍适用。
 
 规划时使用 MuJoCo 几何包围球保守剔除远离的碰撞对，候选对仍调用原生 `mj_geomDistance`，不改变原有 3947 对覆盖和阈值；已与原始穷举查询对比。该优化避免把大量时间用于明显相距很远的几何体。
 
@@ -172,9 +174,9 @@ with RobotSession('sdk-sim', transport='ros',
 
 `Trajectory` 支持不规则原始采样率，位置与解析速度始终同步；文件执行需对应的哈希验证报告。`export_model_trajectory()` 可接其他规划器，参数和模型映射见源码。
 
-执行器使用单调时钟按经过时间取样，默认 125 Hz，下发 `control_way='direct'`、`use_wbc=False`、`add_default_torso=False` 和成对位置/速度。厂家 SDK 自身的 MotionLimiter 仍然存在，必须通过反馈日志验证它对跟踪的影响。Python 调度不是硬实时。
+执行器使用单调时钟按经过时间取样，默认 125 Hz，下发 `control_way='direct'`、`use_wbc=False`、`add_default_torso=False` 和成对位置/速度。当前 SDK 3.4.8 文档说明成对 q/dq 直接转发，不做 SDK 位置滤波/差分；驱动、仿真动力学和反馈链路仍有跟踪时延。Python 调度不是硬实时。
 
-默认检查：速度 <= 0.3 rad/s、单步 <= 0.03 rad、反馈年龄 <= 250 ms、调度延迟 <= 50 ms、跟踪误差 <= 0.15 rad；同时遵守厂家关节限位。不裁剪越界命令，不突发补发过期帧。Link 服务端检查已有控制者；ROS 本地租约不具备跨进程抢占检查。结束后确认反馈收敛，取消/故障时只在仍持有控制权且反馈新鲜时下发当前姿态零速度保持，再释放自己的控制权。传输断开时不能保证保持命令送达，日志会记录失败。
+通用执行策略默认速度 <= 0.3 rad/s；SVG 的 CLI 按 `--joint-speed` 设置应用限速（默认 1 rad/s），并与厂家实际速度限值取较低者。共同检查：单步 <= 0.03 rad、反馈年龄 <= 250 ms、调度延迟 <= 50 ms、跟踪误差 <= 0.15 rad；同时遵守厂家关节限位。不裁剪越界命令，不突发补发过期帧。Link 服务端检查已有控制者；ROS 本地租约不具备跨进程抢占检查。结束后确认反馈收敛，取消/故障时只在仍持有控制权且反馈新鲜时下发当前姿态零速度保持，再释放自己的控制权。传输断开时不能保证保持命令送达，日志会记录失败。
 
 JSONL 包含目标 q/dq、实测 q/dq、阶段、反馈序号/年龄和调度延迟。汇总报告区分 `mock_protocol` 与 `sdk-sim`；离线 mock 通过不能作为仿真动力学通过。
 
@@ -192,8 +194,18 @@ PYTHONPATH=robot_sdk/src python -m unittest discover -s robot_sdk/tests -v
 
 新的不返回版本已在同一官方仿真中验证：35 项 SDK 和 26 项 SVG 测试通过。银杏输入到完整轨迹检查通过约 27.04 秒（IK 4.03 秒、时间规划 0.10 秒、原始轨迹检查 5.06 秒、重采样检查 13.22 秒，另含初始化/模型准备）；运动约 109.41 秒，输入到结果约 138.22 秒。绘制最大反馈 FK 误差约 1.108 mm。结束约 10.95 秒后只读反馈仍停在末端，零速度，无返回阶段。计时不含 shell 文件复制和最终 SDK 关闭，耗时随输入与机器负载变化。见 [不返回验证记录](examples/svg-ginkgo-stop-at-end-verification.json)。
 
-速度规划使用每个样条区间的解析关节导数上界，乘以同一区间的五次平滑进度速度上界，避免把不同时刻的两个全局最大值相乘。保持规划关节速度上限 0.2 rad/s、末端速度上限 0.05 m/s、125 Hz SDK 控制及末帧零速度。独立规划器的默认 `timing="legacy"` 保持历史基准，SDK 使用收紧后的保守上界，不使用均匀抽样估计速度峰值。
+速度规划使用每个样条区间的解析关节导数上界，乘以同一区间的五次平滑进度速度上界，避免把不同时刻的两个全局最大值相乘。独立规划器基准仍为关节 0.2 rad/s、末端 0.05 m/s；SDK 绘图可显式传入速度上限，默认关节 1 rad/s、末端 0.2 m/s，125 Hz SDK 控制及末帧零速度保持。独立规划器的默认 `timing="legacy"` 保持历史基准，当前 SDK 默认使用下面的弧长进给规划；该全局平滑进度方法作为可选 timing 模式保留。
 
 几何检查合并到实际执行的 125 Hz 指令：省去原始 200 Hz 轨迹的重复 FK/几何遍历；原始轨迹仍向量化检查有限数、关节限位和速度。最终每条指令仍做全套碰撞对的保守剔除与精确候选距离查询（间隙至少 2 mm），绘图位置误差最多 1 mm。检查仅运行 MuJoCo 运动学，不计算无关动力学；缓存碰撞类别/名称，避免每帧重复构造数千项字典。执行中仍每 50 ms 检查实际姿态代理碰撞，并持续检查反馈与跟踪。没有提供跳过全部几何检查的执行开关；`native_plan.geometry_validation` 与 `command_validation` 明确区分原始数值检查和最终指令检查。
 
 优化版本在官方仿真中通过 37 项 SDK 与 29 项 SVG 测试。银杏实测：输入到完整检查通过 14.41 秒（原始数值检查 0.007 秒，最终指令逐帧检查 4.69 秒），运动 84.85 秒，输入到核验结果 100.63 秒，125 Hz 平均控制频率保持；左右最大反馈 FK 误差 1.538/1.718 mm，通过 2 mm 阈值。此次从前一轮停留的末端起步，入场姿态与上一轮不同；固定相同原始起点、IK 分支和速度上限的离线计划对比为 109.395→78.675 秒（绘制 103.95→73.23 秒）。新旧几何算法在 21 个姿态、全部 3947 对上距离及几何变换差异均为零；该离线对比没有执行额外动作。结束后只读反馈仍保持末端，轨迹无返回阶段；闭合 SVG 的末端可能与本次起始姿态重合。完整精简证据见 [优化验证记录](examples/svg-ginkgo-optimized-verification.json)。
+
+## 按末端速度执行，不固定总时长
+
+`--tip-speed` 默认 0.2 m/s，是虚拟绘图点的规划目标巡航速度及指令上限；`--joint-speed` 默认 1 rad/s，是 18 个受控关节的规划上限，运行时还与厂家实时限值取较低者。没有固定执行时长：路径更长则用时更长，起停、拐弯以及关节速度/加速度约束会降低局部速度。双臂共用进度以保持既有耦合 IK/碰撞关系；最长一侧以目标速度巡航，较短一侧按路径长度比例同步减速，并非两臂不同长度时仍以同速同时完成。
+
+弧长进给模式以各段关节样条导数/曲率上界构造速度和加速度预算，再前后传播规划进度速度；起点和终点速度为零。关节加速度预算为 2 rad/s²，进度起停对应的工具切向加速度预算为 0.4 m/s²，均为仿真规划参数而非厂家额定值。工具速度留 5% 插值和跟踪裕量，0.2 m/s 的指令巡航名义值约为 0.19 m/s。入场至少 4 秒并检查工具速度，避免用绘制速度强行加快姿态过渡。`--duration` 仅为可选的更慢调试时长，默认不传；短于当前受约束计划则在执行前拒绝。`--speed-scale` 默认 1，保留减速兼容，不传 duration 时若要提高速度应直接调整 tip-speed/joint-speed。
+
+最终每条 125 Hz 计划指令仍检查间隙、形状、关节速度，并用工具点 Jacobian × 解析关节速度检查末端速度。当前快速仿真配置默认使用 20 ms 命令前瞻：名义轨迹/计时不变，成对位置/速度取未来 20 ms 的同一条曲线，补偿测得约 21 ms 的链路/跟踪时延。JSONL 同时记录 trajectory_time_s 与 command_time_s；误差核验仍使用原始名义时刻和原有 2 mm 阈值，不事后平移反馈时间。command-preview-ms 可在 0–30 ms 内调整，0 关闭；硬件执行禁止前瞻配置。
+
+当前弧长进给版本在官方仿真完成验证：43 项 SDK 与 31 项 SVG 测试通过。银杏左右各约 1.953 米，入场 4 秒、绘制 23.72 秒，实际运动 27.729 秒；输入到检查通过 10.25 秒，输入到结果 38.39 秒，平均控制频率 125.00 Hz，结束停在末端。指令峰值：关节 0.422 rad/s、绘图点 0.190 m/s；反馈 FK 位置最大误差 1.696/1.605 mm，通过原 2 mm 检查。接收关节速度经 FK Jacobian 计算的瞬时峰值约 0.223/0.221 m/s，仍有伺服超调：tip-speed 是规划指令约束，并非已实现的物理硬限速。报告将两者分开，未把反馈速度当作通过的速度门限。1 米与 2 米直线合成回归分别约 5.74/11.005 秒，说明耗时随长度改变，非固定时长。见 [弧长进给验证记录](examples/svg-ginkgo-feedrate-verification.json)。
