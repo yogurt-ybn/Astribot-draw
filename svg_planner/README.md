@@ -63,3 +63,7 @@ PYTHON=python ./verify_benchmark.sh
 模型来源：[Astribot-Dev/astribot_descriptions](https://github.com/Astribot-Dev/astribot_descriptions/tree/cab872dc00081d2c5b096c7a19e563050eb7a2ff)。此处保留来源署名，不替上游声明许可证或再分发模型权利。
 
 按用户要求，本次 GitHub 发布不包含 MP4；保留实际轨迹对比图片和 10Hz 复核数据。渲染元数据记录的是原始本地生成过程，不表示视频已上传。
+
+## 面向 agent 的遮挡构图要求
+
+更新后的 [SVG 生成规范](SVG_GENERATION_SPEC.md) 与 [任务提示](AGENT_PROMPT.md) 明确：中心 50 cm（u=[208,408]）是 ASSUMPTION_ONLY 视觉遮挡，不是禁画区域。满足原始对应可达遮罩的完整路径可以进入中央区域；仅独立预览覆盖遮挡层，主要辨识特征尽量在两侧保留。50 cm 尚未经人体/相机标定，不能替代人体安全或全机器人碰撞检查。此文档更新不改变规划器和可达遮罩，也没有新增 IK、规划或仿真结果。`generation/` 内规范与提示保持一致。

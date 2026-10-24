@@ -4,6 +4,10 @@
 
 Start with [`svg_planner/`](svg_planner/README.md): SVG → unchanged geometry → synchronized dual-arm planning with a movable torso and collision checks → MuJoCo validation. The same frozen method/configuration tests all three original SVG inputs: **ginkgo and koi passed; wings was rejected at IK and was not executed**. Includes [agent generation MD](svg_planner/SVG_GENERATION_SPEC.md), tests, [original SVG/PNG test images](svg_planner/inputs/), reports, and [measured trajectory comparison](svg_planner/visuals/three-design-comparison.jpg). Fixed chassis; no hardware-safety certification.
 
+## Agent SVG generation: visual occlusion policy
+
+The updated [agent SVG specification](svg_planner/SVG_GENERATION_SPEC.md#9-center50-可见性假设用户已纠正旧禁画解读) and [prompt](svg_planner/AGENT_PROMPT.md) treat the assumed central 50 cm band as **visual occlusion, not a no-draw zone**. Keep complete source paths; overlay occlusion only in separate previews. Original reachability masks and planner physics are unchanged. This documentation update adds no new IK, planning or simulation results, and is not human-safety validation.
+
 ## Earlier T1 case-specific demonstrations
 
 The earlier case-specific implementation is preserved in [`t1/`](t1/). Start with [T1 setup and limitations](t1/T1_README.md), [T1 agent drawing specification](t1/T1_AGENT_DRAWING_SPEC.md), and the recalculated [616 × 560 canvas](t1/t1-canvas/t1-canvas-overview-zh.png). A [larger 1.271 m wingspan regression](t1/T1_WINGS_README.md) adds verified synchronized approach/draw/return beyond the three small examples.
