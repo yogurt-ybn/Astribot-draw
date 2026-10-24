@@ -1,0 +1,2 @@
+# Preserve the exact bytes referenced by the lookup and SDK validation hashes.
+v1/items/** -text

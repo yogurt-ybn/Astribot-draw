@@ -20,6 +20,12 @@ It plans from the current pose, streams at 125 Hz, and stops at the drawing endp
 
 The latest [five-design simulation regression](robot_sdk/examples/generalization/README.md) uses uniform arc-progress IK sampling with a bounded 0.1 mm source-polyline deviation. The asymmetric spiral motion dropped from 71.12 to 11.67 seconds (1.84 mm peak feedback FK error), while keeping the configured speed/acceleration budgets. All five motions completed; S curves and wings exceeded the unchanged 2 mm audit at 2.04/2.54 mm. The optional `--skip-gripper-checks` flag is limited to simulation drawing and uses fixed finger geometry. Current container checks pass 45 SDK and 34 planner tests.
 
+## Validated light-painting pattern library
+
+The [English recommendation catalog](pattern_library/v1/PATTERN_CATALOG.en.md) lists **58 complete two-arm designs** that finished official T1 simulation. The [lookup JSON](pattern_library/v1/pattern_lookup.json) maps each stable pattern ID to its SVG, precomputed 125 Hz command trajectory and required hash-bound validation file. It also records the trajectory's starting joints and model/profile requirements. IDs 020 and 024 are excluded because the original continuous-IK search rejected them.
+
+This minimal distribution contains the SVGs and the exact optimized execution plans with their small loader-required validation files. Cached plans include the original approach and drawing; a different start pose requires the measured-start SVG planning pipeline. These are simulation results, not hardware qualification.
+
 ## Earlier T1 case-specific demonstrations
 
 The earlier case-specific implementation is preserved in [`t1/`](t1/). Start with [T1 setup and limitations](t1/T1_README.md), [T1 agent drawing specification](t1/T1_AGENT_DRAWING_SPEC.md), and the recalculated [616 × 560 canvas](t1/t1-canvas/t1-canvas-overview-zh.png). A [larger 1.271 m wingspan regression](t1/T1_WINGS_README.md) adds verified synchronized approach/draw/return beyond the three small examples.

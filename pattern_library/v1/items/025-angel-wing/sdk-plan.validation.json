@@ -1,0 +1,22 @@
+{
+  "schema": "astribot-draw-validation/v1",
+  "robot": "t1",
+  "scope": "simulation",
+  "plan_sha256": "fdc3e1301fa8886f270fbe60ef5cb3434968e5e41b8619553c8fab5b11ce40b1",
+  "collision_gate_passed": true,
+  "minimum_resampled_clearance_m": 0.004710329598499673,
+  "sample_count": 2591,
+  "control_hz": 125.0,
+  "source_timestep_s": 0.005,
+  "provenance": {
+    "svg_sha256": "48ab1e30fa6bfd64377eedee4885a911ff3b4b119f9571f88b16603c3455ad98",
+    "model_revision": "279e704ef9543c0e2154cc31aa4bce5b9f769b25",
+    "measured_initial_state": true,
+    "speed_scale": 1.0,
+    "effective_time_scale": 1.0,
+    "joint_speed_limit_rad_s": 1.0,
+    "tip_speed_limit_m_s": 0.2,
+    "command_preview_s": 0.02
+  },
+  "scope_note": "Sampled position geometry only; SDK simulation tracking is validated separately"
+}
