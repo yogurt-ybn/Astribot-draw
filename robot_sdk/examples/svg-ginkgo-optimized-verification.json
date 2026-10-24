@@ -1,0 +1,154 @@
+{
+  "svg_sha256": "2069a373d715ff2ad6a72b07e49177243229ac44ba75d7d413188390b8768d5a",
+  "model_revision": "279e704ef9543c0e2154cc31aa4bce5b9f769b25",
+  "completion_behavior": "stop_at_drawing_end",
+  "timings_s": {
+    "sdk_initialization": 2.362187325001287,
+    "svg_import_and_static": 0.19762477100084652,
+    "model_and_state": 2.086085930997797,
+    "ik": 4.99344093900072,
+    "scheduling": 0.07874439700026414,
+    "native_plan_validation": 0.007126307998987613,
+    "resampling_and_validation": 4.685424934003095,
+    "input_to_trajectory_ready": 14.410636835000332,
+    "execution": 84.92225104399768,
+    "measured_drawing_audit": 1.2937207030008722,
+    "input_to_result": 100.62841251999998
+  },
+  "duration_s": 84.83500000000001,
+  "stages": {
+    "static": "passed",
+    "planning": "passed",
+    "resampling": "passed",
+    "execution": "passed",
+    "measured_drawing": "passed"
+  },
+  "execution": {
+    "execution_id": "c038c32cb77540e4b0d06d9776494ec5",
+    "status": "completed",
+    "error": null,
+    "backend": "sdk-sim",
+    "commands_sent": 10607,
+    "transport": "ros",
+    "elapsed_s": 84.85035348900055,
+    "max_tracking_error_rad": 0.0034996982890933004,
+    "max_lateness_s": 0.005479428040416678,
+    "plan": {
+      "robot": "t1",
+      "samples": 10606,
+      "duration_s": 84.83500000000001,
+      "scope": "simulation",
+      "plan_sha256": "1583b2178ddd9c239430a750c7a76b4801f86676de4700fa5c530d1aa69d7585",
+      "joint_names": [
+        "astribot_torso_joint_1",
+        "astribot_torso_joint_2",
+        "astribot_torso_joint_3",
+        "astribot_torso_joint_4",
+        "astribot_arm_left_joint_1",
+        "astribot_arm_left_joint_2",
+        "astribot_arm_left_joint_3",
+        "astribot_arm_left_joint_4",
+        "astribot_arm_left_joint_5",
+        "astribot_arm_left_joint_6",
+        "astribot_arm_left_joint_7",
+        "astribot_arm_right_joint_1",
+        "astribot_arm_right_joint_2",
+        "astribot_arm_right_joint_3",
+        "astribot_arm_right_joint_4",
+        "astribot_arm_right_joint_5",
+        "astribot_arm_right_joint_6",
+        "astribot_arm_right_joint_7"
+      ]
+    },
+    "evidence_level": "sdk-sim"
+  },
+  "measured_drawing": {
+    "samples": 9809,
+    "position_source": "FK of received SDK joint feedback",
+    "max_error_m": [
+      0.0015379791900994393,
+      0.001718284391039812
+    ],
+    "rms_error_m": [
+      0.0006264637604604595,
+      0.0006309894385676825
+    ],
+    "threshold_m": 0.002
+  },
+  "actual_sampled_minimum_clearance_m": 0.003996163962018309,
+  "scope": "Offline comparison with same original measured start, IK branch, model, SVG and speed ceilings; no extra motion executed",
+  "limitations": [
+    "Sampled collision checks and upstream compound-joint exclusions.",
+    "Passive gripper joints use the near-closed model preset.",
+    "Measured tip positions are FK from joint feedback, not camera measurements."
+  ],
+  "command_validation": {
+    "schema": "astribot-draw-validation/v1",
+    "robot": "t1",
+    "scope": "simulation",
+    "plan_sha256": "1583b2178ddd9c239430a750c7a76b4801f86676de4700fa5c530d1aa69d7585",
+    "collision_gate_passed": true,
+    "minimum_resampled_clearance_m": 0.003978100566116645,
+    "sample_count": 10606,
+    "control_hz": 125.0,
+    "source_timestep_s": 0.005,
+    "provenance": {
+      "svg_sha256": "2069a373d715ff2ad6a72b07e49177243229ac44ba75d7d413188390b8768d5a",
+      "model_revision": "279e704ef9543c0e2154cc31aa4bce5b9f769b25",
+      "measured_initial_state": true,
+      "speed_scale": 1.0
+    },
+    "scope_note": "Sampled position geometry only; SDK simulation tracking is validated separately"
+  },
+  "validation_strategy": {
+    "native_geometry_pass": false,
+    "command_geometry": "every final command",
+    "control_hz": 125.0,
+    "minimum_clearance_m": 0.002,
+    "maximum_shape_error_m": 0.001,
+    "runtime_geometry_interval_s": 0.05,
+    "timing_method": "progress_bound"
+  },
+  "schema": "astribot-svg-sdk-optimized-verification/v1",
+  "date": "2026-10-24",
+  "input": "svg_planner/inputs/ginkgo.svg",
+  "sdk": "3.4.8",
+  "sdk_tests_passed": 37,
+  "upstream_svg_tests_passed": 29,
+  "endpoint_hold": {
+    "max_joint_error_rad": 4.440892098500626e-16,
+    "max_velocity_rad_s": 4.6689789154929733e-14,
+    "seconds_since_execution_end": 29.808666594999522,
+    "max_difference_from_start_rad": 6.661338147750939e-16
+  },
+  "control_rate": {
+    "samples": 10607,
+    "effective_hz": 125.00012414123813,
+    "max_interval_ms": 11.471959998743841
+  },
+  "phase_duration_s": {
+    "approach_both": 6.38,
+    "draw_both": 78.455
+  },
+  "physical_hardware_motion": false,
+  "timing_scope": "CLI SDK initialization through SVG result, excluding shell staging and final SDK shutdown",
+  "comparison_scope": "Latest execution starts at the previous drawing endpoint. The fixed-start timing comparison below uses the same original start and IK branch for both methods.",
+  "collision_equivalence": {
+    "poses": 21,
+    "pairs": 3947,
+    "max_distance_difference_m": 0.0,
+    "max_geometry_transform_difference": 0.0
+  },
+  "fixed_start_timing_comparison": {
+    "legacy": {
+      "duration_s": 109.395,
+      "draw_duration_s": 103.95,
+      "max_velocity_rad_s": 0.19988709328219476
+    },
+    "progress_bound": {
+      "duration_s": 78.675,
+      "draw_duration_s": 73.23,
+      "max_velocity_rad_s": 0.19988709328219476
+    }
+  }
+}

@@ -4,6 +4,18 @@
 
 Start with [`svg_planner/`](svg_planner/README.md): SVG → unchanged geometry → synchronized dual-arm planning with a movable torso and collision checks → MuJoCo validation. The same frozen method/configuration tests all three original SVG inputs: **ginkgo and koi passed; wings was rejected at IK and was not executed**. Includes [agent generation MD](svg_planner/SVG_GENERATION_SPEC.md), tests, [original SVG/PNG test images](svg_planner/inputs/), reports, and [measured trajectory comparison](svg_planner/visuals/three-design-comparison.jpg). Fixed chassis; no hardware-safety certification.
 
+## Execute SVGs in the official T1 simulator
+
+The [simulation SDK adapter](robot_sdk/README.md) connects an existing `simulation-deploy/start-simulation.sh` container to measured-start SVG planning and execution:
+
+```bash
+bash robot_sdk/run_sim.sh draw svg_planner/inputs/ginkgo.svg --joint-speed 1.0 --tip-speed 0.2
+```
+
+It plans from the current pose, streams at 125 Hz, and stops at the drawing endpoint. Defaults are a 1 rad/s joint command ceiling and a 0.2 m/s tool-tip cruise/command ceiling; duration follows path length, start/stop ramps and joint constraints, with no fixed-time default. Shorter arms slow proportionally to preserve synchronized coupled planning. Every final planned command is checked for sampled geometry, joint velocity and Jacobian tool-tip velocity; live vendor limits still apply. The [feedrate verification](robot_sdk/examples/svg-ginkgo-feedrate-verification.json) records 27.73 seconds of motion and maximum position error of 1.70 mm. Actual received-feedback velocity still has transient overshoot (about 0.223 m/s), so the planning ceiling is not a physical speed guarantee. Simulation command preview and nominal trajectory time are logged separately. Drawing accuracy is now report-only: exceeding the 2 mm reference adds a warning while completed motion remains successful; other execution protections remain active. Historical verification keeps its original strict audit statuses. These are joint-feedback FK results, not camera or hardware measurements.
+
+The latest [five-design simulation regression](robot_sdk/examples/generalization/README.md) uses uniform arc-progress IK sampling with a bounded 0.1 mm source-polyline deviation. The asymmetric spiral motion dropped from 71.12 to 11.67 seconds (1.84 mm peak feedback FK error), while keeping the configured speed/acceleration budgets. All five motions completed; S curves and wings exceeded the unchanged 2 mm audit at 2.04/2.54 mm. The optional `--skip-gripper-checks` flag is limited to simulation drawing and uses fixed finger geometry. Current container checks pass 45 SDK and 34 planner tests.
+
 ## Earlier T1 case-specific demonstrations
 
 The earlier case-specific implementation is preserved in [`t1/`](t1/). Start with [T1 setup and limitations](t1/T1_README.md), [T1 agent drawing specification](t1/T1_AGENT_DRAWING_SPEC.md), and the recalculated [616 × 560 canvas](t1/t1-canvas/t1-canvas-overview-zh.png). A [larger 1.271 m wingspan regression](t1/T1_WINGS_README.md) adds verified synchronized approach/draw/return beyond the three small examples.

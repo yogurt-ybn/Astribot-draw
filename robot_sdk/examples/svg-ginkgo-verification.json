@@ -1,0 +1,81 @@
+{
+  "schema": "astribot-svg-sdk-verification/v1",
+  "date": "2026-10-24",
+  "upstream_commit": "04afcd6fa536dc9b31d658c1423ba2bfa2514b4a",
+  "input": "svg_planner/inputs/ginkgo.svg",
+  "input_sha256": "2069a373d715ff2ad6a72b07e49177243229ac44ba75d7d413188390b8768d5a",
+  "model_revision": "279e704ef9543c0e2154cc31aa4bce5b9f769b25",
+  "sdk": "3.4.8",
+  "transport": "ROS2, local SDK simulation",
+  "sdk_tests_passed": 35,
+  "upstream_svg_tests_passed": 25,
+  "stages": {
+    "static": "passed",
+    "planning": "passed",
+    "resampling": "passed",
+    "execution": "passed",
+    "measured_drawing": "passed"
+  },
+  "execution": {
+    "execution_id": "88a8cacf303742c0a17617015e81b6a9",
+    "status": "completed",
+    "error": null,
+    "backend": "sdk-sim",
+    "commands_sent": 27352,
+    "transport": "ros",
+    "elapsed_s": 218.80921979900086,
+    "max_tracking_error_rad": 0.004238523578656395,
+    "max_lateness_s": 0.006878022693854291,
+    "plan": {
+      "robot": "t1",
+      "samples": 27351,
+      "duration_s": 218.8,
+      "scope": "simulation",
+      "plan_sha256": "1cc497454c2ab8c282995ff588a1cca1913d03492a1d42fbcc92442c2ed08469",
+      "joint_names": [
+        "astribot_torso_joint_1",
+        "astribot_torso_joint_2",
+        "astribot_torso_joint_3",
+        "astribot_torso_joint_4",
+        "astribot_arm_left_joint_1",
+        "astribot_arm_left_joint_2",
+        "astribot_arm_left_joint_3",
+        "astribot_arm_left_joint_4",
+        "astribot_arm_left_joint_5",
+        "astribot_arm_left_joint_6",
+        "astribot_arm_left_joint_7",
+        "astribot_arm_right_joint_1",
+        "astribot_arm_right_joint_2",
+        "astribot_arm_right_joint_3",
+        "astribot_arm_right_joint_4",
+        "astribot_arm_right_joint_5",
+        "astribot_arm_right_joint_6",
+        "astribot_arm_right_joint_7"
+      ]
+    },
+    "evidence_level": "sdk-sim"
+  },
+  "measured_drawing": {
+    "samples": 12994,
+    "position_source": "FK of received SDK joint feedback",
+    "max_error_m": [
+      0.0010969721158641545,
+      0.001103665159357597
+    ],
+    "rms_error_m": [
+      0.000384076828238432,
+      0.0003858134954807628
+    ],
+    "threshold_m": 0.002
+  },
+  "actual_sampled_minimum_clearance_m": 0.003981105255760599,
+  "planner_vs_simulator_fk_max_error_m": 8.349770295452321e-16,
+  "resampled_shape_error_m": 5.306962035631293e-05,
+  "physical_hardware_motion": false,
+  "scope": "Official simulation; free-space virtual light tip, not surface-contact drawing",
+  "limitations": [
+    "Sampled collision checks and upstream compound-joint exclusions.",
+    "Passive gripper joints use the near-closed model preset.",
+    "Measured tip positions are FK from joint feedback, not camera measurements."
+  ]
+}

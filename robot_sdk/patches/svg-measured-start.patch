@@ -1,0 +1,157 @@
+--- a/svg_planner/svg_plan.py
++++ b/svg_planner/svg_plan.py
+@@ -50,12 +50,23 @@
+         b=-bend-.12*np.sin(np.pi*u)**2
+         yield 'bend_'+str(bend),np.c_[np.full(len(u),.04),b,-.04-b,np.zeros(len(u))]
+ 
+-def ik_candidate(m,u,targets,torso,seed_count):
++def ik_candidate(m,u,targets,torso,seed_count,initial_qpos=None):
+     d=mujoco.MjData(m);cs=[Chain(m,s,margin=.04) for s in SIDES]
+-    home=np.zeros(m.nq)
+-    for j in np.flatnonzero(m.jnt_limited):
+-        home[m.jnt_qposadr[j]]=np.clip(0.,m.jnt_range[j,0]+.001,m.jnt_range[j,1]-.001)
+-    for c in cs:home[c.qids]=np.clip(np.zeros(7),c.lo,c.hi)
++    if initial_qpos is None:
++        home=np.zeros(m.nq)
++        for j in np.flatnonzero(m.jnt_limited):
++            home[m.jnt_qposadr[j]]=np.clip(0.,m.jnt_range[j,0]+.001,m.jnt_range[j,1]-.001)
++        for c in cs:home[c.qids]=np.clip(np.zeros(7),c.lo,c.hi)
++    else:
++        home=np.array(initial_qpos,dtype=float,copy=True)
++        if home.shape!=(m.nq,) or not np.isfinite(home).all():
++            raise PlanningError('Measured initial_qpos must be a finite full model pose')
++        limited=np.flatnonzero(m.jnt_limited);values=home[m.jnt_qposadr[limited]]
++        if np.any(values<m.jnt_range[limited,0]) or np.any(values>m.jnt_range[limited,1]):
++            raise PlanningError('Measured initial pose exceeds model limits')
++        for c in cs:
++            if np.any(home[c.qids]<c.lo-1e-9) or np.any(home[c.qids]>c.hi+1e-9):
++                raise PlanningError('Measured arm pose is outside transfer planning margins')
+     pairs=collision_pairs(m);rng=np.random.default_rng(36)
+     seeds=[[home[c.qids]]+list(rng.uniform(c.lo,c.hi,(seed_count,7))) for c in cs]
+     diagnostics={'seed_budget_per_arm':seed_count+1,'pair_combination_budget':169,'pair_attempts':[],'arm_branch_seeds':{s:[] for s in SIDES}}
+@@ -116,7 +127,69 @@
+     value=3*a*vertex*vertex+2*b*vertex+c
+     return float(max(np.max(abs(c)),np.max(abs(end)),np.max(np.where(inside,abs(value),0))))
+ 
+-def schedule(m,u,targets,torso,home,cs,solved):
++def progress_velocity_bound(spline):
++    """Conservative |dq/dr| bound for q(smoothstep(r)), by spline interval.
++
++    Bounds each quadratic dq/du exactly, then multiplies by the maximum
++    smoothstep speed over that SAME interval. No sampled velocity maxima.
++    """
++    if spline.x[0]!=0 or spline.x[-1]!=1:raise PlanningError('Progress spline must span [0,1]')
++    a,b,c=spline.c[:3]
++    h=np.diff(spline.x).reshape((-1,)+(1,)*(a.ndim-1))
++    end=3*a*h*h+2*b*h+c
++    vertex=np.divide(-b,3*a,out=np.zeros_like(a),where=a!=0)
++    value=3*a*vertex*vertex+2*b*vertex+c
++    bounds=np.maximum(np.maximum(abs(c),abs(end)),np.where((a!=0)&(vertex>0)&(vertex<h),abs(value),0))
++    lo=np.zeros(len(spline.x));hi=np.ones(len(spline.x))
++    for _ in range(60):
++        r=(lo+hi)/2
++        z=np.minimum(r,1-r);v=z**3*(10+z*(-15+6*z));v=np.where(r<=.5,v,1-v)
++        below=v<spline.x;lo=np.where(below,r,lo);hi=np.where(below,hi,r)
++    left=np.maximum(0,lo[:-1]-1e-9);right=np.minimum(1,hi[1:]+1e-9)
++    peak=np.clip(.5,left,right);weight=30*peak**2*(1-peak)**2
++    weight=weight.reshape((-1,)+(1,)*(a.ndim-1))
++    return float(np.max(bounds*weight)*(1+1e-9))
++
++def feedrate_progress(splines,u,path_length,dt,joint_speed,tip_speed):
++    """Arc-length cruise with bounded joint speed/acceleration and zero endpoints.
++
++    Each progress cell uses exact quadratic derivative and linear curvature
++    bounds of the joint cubics. A forward/backward velocity-squared pass
++    reserves half of a 2 rad/s² joint budget for each chain-rule term.
++    """
++    if not np.isfinite(path_length) or path_length<=0:raise PlanningError('Drawing path length must be positive')
++    dense=np.linspace(0,1,401);dense=dense[np.min(abs(dense[:,None]-u[None,:]),axis=1)>1e-12]
++    grid=np.sort(np.r_[u,dense]);du=np.diff(grid)
++    g=np.zeros(len(du));h=np.zeros(len(du))
++    for spline in splines:
++        p=spline(grid[:-1],1);q=spline(grid[:-1],2);j=spline(grid[:-1],3);dx=du[:,None]
++        end=p+q*dx+.5*j*dx*dx
++        vertex=np.divide(-q,j,out=np.zeros_like(q),where=j!=0)
++        value=p+q*vertex+.5*j*vertex*vertex
++        bound=np.maximum(np.maximum(abs(p),abs(end)),np.where((j!=0)&(vertex>0)&(vertex<dx),abs(value),0))
++        g=np.maximum(g,np.max(bound,axis=1));h=np.maximum(h,np.max(np.maximum(abs(q),abs(q+j*dx)),axis=1))
++    joint_accel=2.;tip_accel=.4
++    # Reserve 5% for interpolation differences and measured simulation tracking overshoot.
++    vmax=np.minimum(.95*tip_speed/path_length,joint_speed/np.maximum(g,1e-15))
++    vmax=np.minimum(vmax,np.sqrt(.5*joint_accel/np.maximum(h,1e-15)))
++    accel=np.minimum(tip_accel/path_length,.5*joint_accel/np.maximum(g,1e-15))
++    v=np.r_[0.,np.minimum(vmax[:-1],vmax[1:]),0.]
++    for k in range(1,len(v)):v[k]=min(v[k],np.sqrt(v[k-1]**2+2*accel[k-1]*du[k-1]))
++    for k in range(len(v)-2,-1,-1):v[k]=min(v[k],np.sqrt(v[k+1]**2+2*accel[k]*du[k]))
++    times=np.r_[0.,np.cumsum(2*du/(v[:-1]+v[1:]))]
++    if not np.isfinite(times[-1]) or times[-1]/dt>200000:raise PlanningError('Feedrate schedule exceeds resource budget')
++    n=int(np.ceil(times[-1]/dt));stretch=times[-1]/(n*dt);sample=np.arange(n+1)*dt*stretch
++    edge=np.clip(np.searchsorted(times,sample,side='right')-1,0,len(du)-1)
++    tau=sample-times[edge];a=(v[edge+1]**2-v[edge]**2)/(2*du[edge])
++    progress=grid[edge]+v[edge]*tau+.5*a*tau*tau;speed=(v[edge]+a*tau)*stretch
++    progress[0],progress[-1],speed[0],speed[-1]=0.,1.,0.,0.
++    print('FEEDRATE_PROFILE',dict(path_length_m=path_length,draw_duration_s=n*dt,
++        target_m_s=tip_speed,peak_target_m_s=float(np.max(speed)*path_length)),flush=True)
++    return np.clip(progress,0,1),np.maximum(speed,0)
++
++def schedule(m,u,targets,torso,home,cs,solved,*,return_home=True,timing='legacy',joint_speed=.2,tip_speed=.05):
++    if timing not in ('legacy','progress_bound','feedrate'):raise PlanningError('Unknown timing method')
++    if not np.isfinite(joint_speed) or not np.isfinite(tip_speed) or min(joint_speed,tip_speed)<=0:raise PlanningError('Speed ceilings must be finite and positive')
+     dt=m.opt.timestep;goal=home.copy();goal[:4]=torso[0]
+     for c,q in zip(cs,solved):goal[c.qids]=q[0]
+     torso_joints=np.array([int(np.flatnonzero(m.jnt_qposadr==i)[0]) for i in range(4)])
+@@ -126,26 +199,44 @@
+     entry=rrt_transfer(m,both,home[both.qids],goal[both.qids],torso[0],home,[(a,b) for a,b,cat in pairs],np.random.default_rng(12345))
+     qs=[];dqs=[];phases=[];desired=[]
+     def transfer(a,b):
+-        T=max(2.,np.max(abs(b-a))*1.875/.2);n=int(np.ceil(T/dt));r=np.arange(n)/n;s=10*r**3-15*r**4+6*r**5;ds=(30*r**2-60*r**3+30*r**4)/(n*dt)
++        T=max(4. if timing=='feedrate' else 2.,np.max(abs(b-a))*1.875/joint_speed)
++        if timing=='feedrate':
++            data=mujoco.MjData(m);jac=np.zeros((3,m.nv));peak=0.
++            for rr in np.linspace(0,1,65):
++                ss=10*rr**3-15*rr**4+6*rr**5;vv=30*rr**2*(1-rr)**2
++                data.qpos[:]=a+ss*(b-a);mujoco.mj_kinematics(m,data);mujoco.mj_comPos(m,data)
++                for side in SIDES:
++                    mujoco.mj_jacSite(m,data,jac,None,m.site(side+'_light').id)
++                    peak=max(peak,float(np.linalg.norm(jac@((b-a)*vv))))
++            T=max(T,1.02*peak/tip_speed)
++        n=int(np.ceil(T/dt));r=np.arange(n)/n;s=10*r**3-15*r**4+6*r**5;ds=(30*r**2-60*r**3+30*r**4)/(n*dt)
+         qs.extend(a+s[:,None]*(b-a));dqs.extend(ds[:,None]*(b-a));phases.extend(['approach_both']*n);desired.extend([np.full((2,3),np.nan)]*n)
+     prev=home.copy()
+     for qq in entry[1:]:
+         nxt=home.copy();nxt[both.qids]=qq;transfer(prev,nxt);prev=nxt
+     aq=np.array(qs);av=np.array(dqs)
+     spl=[CubicSpline(u,q) for q in solved];ts=CubicSpline(u,torso)
+-    T=max(2.,max(1.875*np.linalg.norm(np.diff(p,axis=0),axis=1).sum()/.05 for p in targets),max(1.875*spline_derivative_bound(s)/.2 for s in spl),1.875*spline_derivative_bound(ts)/.2)
+-    n=int(np.ceil(T/dt))
+-    if 2*(n+1)+2*len(qs)+1>200000:raise PlanningError(f'Schedule exceeds 200000-step resource budget ({n} draw steps); inspect curve conditioning/corners')
+-    r=np.linspace(0,1,n+1);s=10*r**3-15*r**4+6*r**5;ds=(30*r**2-60*r**3+30*r**4)/(n*dt)
++    if timing=='feedrate':
++        length=max(np.linalg.norm(np.diff(p,axis=0),axis=1).sum() for p in targets)
++        s,ds=feedrate_progress(spl+[ts],u,length,dt,joint_speed,tip_speed);n=len(s)-1
++    else:
++        bound=(lambda s:1.875*spline_derivative_bound(s)) if timing=='legacy' else progress_velocity_bound
++        T=max(2.,max(1.875*np.linalg.norm(np.diff(p,axis=0),axis=1).sum()/tip_speed for p in targets),max(bound(s)/joint_speed for s in spl),bound(ts)/joint_speed)
++        n=int(np.ceil(T/dt));r=np.linspace(0,1,n+1);s=10*r**3-15*r**4+6*r**5;ds=(30*r**2-60*r**3+30*r**4)/(n*dt)
++    total_steps=(2*(n+1)+2*len(qs)+1) if return_home else len(qs)+n+1
++    if total_steps>200000:raise PlanningError(f'Schedule exceeds 200000-step resource budget ({n} draw steps); inspect curve conditioning/corners')
+     qdraw=np.tile(goal,(n+1,1));dqdraw=np.zeros_like(qdraw);qdraw[:,:4]=ts(s);dqdraw[:,:4]=ts(s,1)*ds[:,None]
+     for c,ss in zip(cs,spl): qdraw[:,c.qids]=ss(s);dqdraw[:,c.qids]=ss(s,1)*ds[:,None]
+     exact=np.stack([np.column_stack([np.interp(s,u,p[:,j]) for j in range(3)]) for p in targets],axis=1)
+     qs.extend(qdraw);dqs.extend(dqdraw);phases.extend(['draw_both']*(n+1));desired.extend(exact)
+-    qs.extend(qdraw[::-1]);dqs.extend(-dqdraw[::-1]);phases.extend(['return_both']*(n+1));desired.extend([np.full((2,3),np.nan)]*(n+1))
+-    qs.extend(aq[::-1]);dqs.extend(-av[::-1]);phases.extend(['return_both']*len(aq));desired.extend([np.full((2,3),np.nan)]*len(aq))
+-    qs.append(home);dqs.append(np.zeros(m.nq));phases.append('return_both');desired.append(np.full((2,3),np.nan))
+-    assert np.allclose(qs[0],home,atol=1e-12) and np.allclose(qs[-1],home,atol=1e-12)
+-    print('SCHEDULE_STEPS',len(qs),'duration_s',len(qs)*dt,flush=True)
++    if return_home:
++        qs.extend(qdraw[::-1]);dqs.extend(-dqdraw[::-1]);phases.extend(['return_both']*(n+1));desired.extend([np.full((2,3),np.nan)]*(n+1))
++        qs.extend(aq[::-1]);dqs.extend(-av[::-1]);phases.extend(['return_both']*len(aq));desired.extend([np.full((2,3),np.nan)]*len(aq))
++        qs.append(home);dqs.append(np.zeros(m.nq));phases.append('return_both');desired.append(np.full((2,3),np.nan))
++    assert np.allclose(qs[0],home,atol=1e-12)
++    assert np.allclose(qs[-1],home if return_home else qdraw[-1],atol=1e-12)
++    assert np.allclose(dqs[-1],0.,atol=1e-12)
++    print('SCHEDULE_STEPS',len(qs),'duration_s',(len(qs)-1)*dt,flush=True)
+     return np.array(qs),np.array(dqs),np.array(phases),np.array(desired)
+ 
+ def validate_plan(m,qs,dqs,phase,desired):

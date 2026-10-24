@@ -1,0 +1,295 @@
+{
+  "patch_sha256": "c2ddf5b182409e1505f141fea9a44ce4b0e6ff33440d6e9e74e62f188fb7876d",
+  "model_revision": "279e704ef9543c0e2154cc31aa4bce5b9f769b25",
+  "settings": {
+    "control_hz": 125,
+    "joint_speed_rad_s": 1,
+    "tip_speed_m_s": 0.2,
+    "command_preview_ms": 20,
+    "skip_gripper_checks": true,
+    "maximum_arc_step_m": 0.0025,
+    "source_sampling_error_budget_m": 0.0001
+  },
+  "tests": {
+    "planner": 34,
+    "sdk": 44,
+    "official_container_all_pass": true
+  },
+  "frozen_start_spiral": {
+    "previous_plan_s": 71.11,
+    "new_plan_s": 11.96,
+    "target_sampling": {
+      "method": "uniform_arc_progress",
+      "knot_count": 373,
+      "maximum_arc_step_m": 0.0024939930265638855,
+      "maximum_source_polyline_deviation_m": 7.821865528373614e-05,
+      "error_budget_m": 0.0001
+    },
+    "source_shape_error_bound_m": 0.0001083041086242551,
+    "full_125hz_command_validation": {
+      "schema": "astribot-draw-validation/v1",
+      "robot": "t1",
+      "scope": "simulation",
+      "plan_sha256": "351f19ca19f5501e2c5a9736899d9b30f80c8328017b53dc61832938833e35e3",
+      "collision_gate_passed": true,
+      "minimum_resampled_clearance_m": 0.004722716807454855,
+      "sample_count": 1496,
+      "control_hz": 125,
+      "source_timestep_s": 0.005,
+      "provenance": {
+        "svg_sha256": "112d185ce0b9b42630d6facaaf8d974b2157efad4ec9f7bf5e366c46af152eb6",
+        "model_revision": "unknown",
+        "measured_initial_state": true,
+        "speed_scale": 1.0,
+        "effective_time_scale": 1.0,
+        "joint_speed_limit_rad_s": 1.0,
+        "tip_speed_limit_m_s": 0.2,
+        "command_preview_s": 0.02
+      },
+      "scope_note": "Sampled position geometry only; SDK simulation tracking is validated separately"
+    }
+  },
+  "motion_completed": 5,
+  "strict_2mm_pass": 3,
+  "cases": [
+    {
+      "candidate": "paired_ellipses",
+      "label": "双椭圆",
+      "motion": "completed",
+      "strict_2mm_status": "completed",
+      "execution_s": 11.873584798999218,
+      "planned_s": 11.86,
+      "planning_s": 6.110607277001691,
+      "total_s": 18.185441543002526,
+      "draw_s": 7.86,
+      "source_sha256": "18136ec5ce46ab32a0e8ada3ee220e75064473c4d125b842520c6fc23c1c2c9c",
+      "target_sampling": {
+        "method": "uniform_arc_progress",
+        "knot_count": 367,
+        "maximum_arc_step_m": 0.00249506564498276,
+        "maximum_source_polyline_deviation_m": 6.64013260230943e-05,
+        "error_budget_m": 0.0001
+      },
+      "source_shape_error_bound_m": 9.06526070197126e-05,
+      "command_tip_speed_max_m_s": 0.17523728229771784,
+      "draw_joint_velocity_peak_rad_s": 0.304701065321346,
+      "draw_joint_acceleration_peak_rad_s2": 1.3149662469654655,
+      "measured": {
+        "samples": 985,
+        "position_source": "FK of received SDK joint feedback",
+        "max_error_m": [
+          0.0013129202703728807,
+          0.0013247574972648697
+        ],
+        "rms_error_m": [
+          0.0006220225555966898,
+          0.0006317732629816807
+        ],
+        "threshold_m": 0.002,
+        "p99_error_mm": [
+          1.2161472372132505,
+          1.234988663811542
+        ]
+      },
+      "error": null,
+      "minimum_sampled_clearance_m": 0.004760851165369097,
+      "previous_execution_s": 13.761306718002743,
+      "previous_max_error_m": 0.001214250085569836
+    },
+    {
+      "candidate": "flowing_s_curves",
+      "label": "S 曲线",
+      "motion": "completed",
+      "strict_2mm_status": "failed",
+      "execution_s": 9.433315730999311,
+      "planned_s": 9.42,
+      "planning_s": 6.16927443700115,
+      "total_s": 15.784882118001406,
+      "draw_s": 5.42,
+      "source_sha256": "e36759993b9e774f825d97b3e029a21e1052bc0495d0d356c93a41834186946b",
+      "target_sampling": {
+        "method": "uniform_arc_progress",
+        "knot_count": 467,
+        "maximum_arc_step_m": 0.001249850428180654,
+        "maximum_source_polyline_deviation_m": 6.066957412620422e-05,
+        "error_budget_m": 0.0001
+      },
+      "source_shape_error_bound_m": 8.807997109953799e-05,
+      "command_tip_speed_max_m_s": 0.19004147981561495,
+      "draw_joint_velocity_peak_rad_s": 0.37821956363607534,
+      "draw_joint_acceleration_peak_rad_s2": 1.4331848240081158,
+      "measured": {
+        "samples": 680,
+        "position_source": "FK of received SDK joint feedback",
+        "max_error_m": [
+          0.00203822270199454,
+          0.0020416027819557866
+        ],
+        "rms_error_m": [
+          0.0006833000918466524,
+          0.0006867823173778428
+        ],
+        "threshold_m": 0.002,
+        "p99_error_mm": [
+          1.345451461932932,
+          1.3470082564731967
+        ]
+      },
+      "error": "RuntimeError: Measured SVG drawing exceeds 2 mm tracking gate: 2.042 mm",
+      "minimum_sampled_clearance_m": 0.004720143173212267,
+      "previous_execution_s": 10.00117196300198,
+      "previous_max_error_m": 0.0012174128598474972
+    },
+    {
+      "candidate": "swept_wings",
+      "label": "展翼轮廓",
+      "motion": "completed",
+      "strict_2mm_status": "failed",
+      "execution_s": 12.505471806998685,
+      "planned_s": 12.49,
+      "planning_s": 6.531638104999729,
+      "total_s": 19.218395739000698,
+      "draw_s": 8.49,
+      "source_sha256": "3284a1220ece40be02b0e33680f2322010e1a742e64eaece127e538568030bb6",
+      "target_sampling": {
+        "method": "uniform_arc_progress",
+        "knot_count": 461,
+        "maximum_arc_step_m": 0.002499222650098371,
+        "maximum_source_polyline_deviation_m": 9.924341174066318e-05,
+        "error_budget_m": 0.0001
+      },
+      "source_shape_error_bound_m": 0.0001311073859415599,
+      "command_tip_speed_max_m_s": 0.18994838236015466,
+      "draw_joint_velocity_peak_rad_s": 0.4040360352927046,
+      "draw_joint_acceleration_peak_rad_s2": 1.435802259332175,
+      "measured": {
+        "samples": 1064,
+        "position_source": "FK of received SDK joint feedback",
+        "max_error_m": [
+          0.0025428480062622523,
+          0.002495889178512385
+        ],
+        "rms_error_m": [
+          0.0006178783414681248,
+          0.0006210277846208067
+        ],
+        "threshold_m": 0.002,
+        "p99_error_mm": [
+          1.5718766966076902,
+          1.5723551987121727
+        ]
+      },
+      "error": "RuntimeError: Measured SVG drawing exceeds 2 mm tracking gate: 2.543 mm",
+      "minimum_sampled_clearance_m": 0.004710330037353612,
+      "previous_execution_s": 14.52205828100341,
+      "previous_max_error_m": 0.001964716868854777
+    },
+    {
+      "candidate": "asymmetric_spirals",
+      "label": "不对称螺旋",
+      "motion": "completed",
+      "strict_2mm_status": "completed",
+      "execution_s": 11.665564251001342,
+      "planned_s": 11.65,
+      "planning_s": 6.145490524999332,
+      "total_s": 18.009397343001183,
+      "draw_s": 7.65,
+      "source_sha256": "112d185ce0b9b42630d6facaaf8d974b2157efad4ec9f7bf5e366c46af152eb6",
+      "target_sampling": {
+        "method": "uniform_arc_progress",
+        "knot_count": 373,
+        "maximum_arc_step_m": 0.0024939930265638855,
+        "maximum_source_polyline_deviation_m": 7.821865528373614e-05,
+        "error_budget_m": 0.0001
+      },
+      "source_shape_error_bound_m": 0.00010407115857473387,
+      "command_tip_speed_max_m_s": 0.19031215899201592,
+      "draw_joint_velocity_peak_rad_s": 0.2957074380553961,
+      "draw_joint_acceleration_peak_rad_s2": 1.308575418843727,
+      "measured": {
+        "samples": 959,
+        "position_source": "FK of received SDK joint feedback",
+        "max_error_m": [
+          0.0018418489335217457,
+          0.0012618491740283098
+        ],
+        "rms_error_m": [
+          0.000592825205277431,
+          0.00041533883035847996
+        ],
+        "threshold_m": 0.002,
+        "p99_error_mm": [
+          1.2878119274866155,
+          0.9758125596999805
+        ]
+      },
+      "error": null,
+      "minimum_sampled_clearance_m": 0.004781009243996055,
+      "previous_execution_s": 71.12131176100229,
+      "previous_max_error_m": 0.0005854964889988286
+    },
+    {
+      "candidate": "tall_ribbons",
+      "label": "高竖曲线",
+      "motion": "completed",
+      "strict_2mm_status": "completed",
+      "execution_s": 9.033239242999116,
+      "planned_s": 9.02,
+      "planning_s": 5.769242164002208,
+      "total_s": 14.9789399470028,
+      "draw_s": 5.0200000000000005,
+      "source_sha256": "3f12011eb03d9f0b91f3cfc01d81f74a968c1a384a93531afac6cc6839278b48",
+      "target_sampling": {
+        "method": "uniform_arc_progress",
+        "knot_count": 298,
+        "maximum_arc_step_m": 0.0024932065331369903,
+        "maximum_source_polyline_deviation_m": 3.4103084212303636e-05,
+        "error_budget_m": 0.0001
+      },
+      "source_shape_error_bound_m": 5.65648999806995e-05,
+      "command_tip_speed_max_m_s": 0.190891459361302,
+      "draw_joint_velocity_peak_rad_s": 0.4702591536935422,
+      "draw_joint_acceleration_peak_rad_s2": 1.3338262091110442,
+      "measured": {
+        "samples": 630,
+        "position_source": "FK of received SDK joint feedback",
+        "max_error_m": [
+          0.0017638439143433026,
+          0.001757958229299842
+        ],
+        "rms_error_m": [
+          0.0006770892863555377,
+          0.000683290896585181
+        ],
+        "threshold_m": 0.002,
+        "p99_error_mm": [
+          1.582090692299277,
+          1.5292763215761693
+        ]
+      },
+      "error": null,
+      "minimum_sampled_clearance_m": 0.0047104657385626525,
+      "previous_execution_s": 9.425888873000076,
+      "previous_max_error_m": 0.0020216536233613113
+    }
+  ],
+  "schema": "astribot-sdk-generalization/v1",
+  "scope": "Official T1 MuJoCo simulation, free-space virtual tool; positions are FK of received SDK joint feedback, not camera or hardware measurements.",
+  "code_base_commit": "156763d62c6420e7bc81a9dcf9f00646b8bada88",
+  "execution_order": [
+    "asymmetric_spirals",
+    "paired_ellipses",
+    "flowing_s_curves",
+    "swept_wings",
+    "tall_ribbons"
+  ],
+  "same_start_replay_scope": "Offline plan-only replay of original recorded SDK snapshot, no control or motion; final 125 Hz command checks passed.",
+  "comparison_scope": "Actual serial runs started from differing current poses; unchanged input SVG hashes. Original strict 2 mm statuses retained.",
+  "gripper_scope": "Explicit simulation-only skip flag; fixed preset finger collision geometry, no physical grasp validation.",
+  "tested_source_sha256": {
+    "svg_planner/svg_plan.py": "f6f2ac30a2cb0b858c8b1de65f972e6ca4e5eb9622be4b99b2d2875ec6cc16b8",
+    "robot_sdk/src/astribot_draw_sdk/svg_runner.py": "9c9909afff42b0d976f2ab44e8d1fd4c529fc38775a07a148a64dddb1c8420bf",
+    "robot_sdk/src/astribot_draw_sdk/cli.py": "f023832cef6ef8cf3a543e3744864ff6a70ebccbb38382d40814d6b1a5510391",
+    "robot_sdk/run_sim.sh": "2b7e9063fd3b56a0880bf8d198f0aaacfe59984e3f32aa3ace38bc7c3e27fde9"
+  }
+}
