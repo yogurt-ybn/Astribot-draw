@@ -4,14 +4,17 @@ import ipaddress
 from pathlib import Path
 import signal
 import socket
+import sys
 from urllib.parse import urlsplit
 
 from flask import Flask, jsonify, request, send_file
 
 if __package__:
     from .web_controller import ControlError, WebController
+    from .startup import PortInUseError, bind_or_reuse
 else:
     from web_controller import ControlError, WebController
+    from startup import PortInUseError, bind_or_reuse
 
 
 def create_app(controller):
@@ -125,7 +128,7 @@ def create_app(controller):
 
     @app.get('/api/v1/capabilities')
     def capabilities():
-        return jsonify(api_version='1', modes=['neon', 'exposure'], light_colors=['cyan', 'white'],
+        return jsonify(application='astribot-lightpainting', api_version='1', modes=['neon', 'exposure'], light_colors=['cyan', 'white'],
                        previews=['camera', 'selected', 'mask', 'result'],
                        frame_format='RGB uint8 HxWx3', mask_values=[0, 1],
                        coordinate_space='processed_frame', timestamp_clock='monotonic_ns',
@@ -145,7 +148,7 @@ def create_app(controller):
 
 
 def main():
-    from waitress import serve
+    from waitress import create_server
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--host', default='0.0.0.0')
     parser.add_argument('--port', default=8765, type=int)
@@ -154,21 +157,40 @@ def main():
     parser.add_argument('--output-dir', type=Path)
     parser.add_argument('--diagnostic', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()
+    if not 1 <= args.port <= 65535:
+        parser.error('--port must be between 1 and 65535')
+    try:
+        listener, url = bind_or_reuse(args.host, args.port)
+    except (PortInUseError, OSError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    if listener is None:
+        print(f'Light painting is already running. Open: {url}', flush=True)
+        print('Camera and settings can be managed in the web page.', flush=True)
+        return 0
     source = args.video if args.video else int(args.camera) if args.camera.isdecimal() else args.camera
-    controller = WebController(source, args.output_dir)
+    controller = server = None
     def shutdown(*_):
         raise KeyboardInterrupt
     signal.signal(signal.SIGTERM, shutdown)
     signal.signal(signal.SIGINT, shutdown)
     try:
-        print(f'Light painting web: http://127.0.0.1:{args.port}', flush=True)
-        serve(create_app(controller), host=args.host, port=args.port, threads=8,
-              max_request_body_size=32*1024, channel_timeout=20)
+        controller = WebController(source, args.output_dir)
+        server = create_server(create_app(controller), sockets=[listener], threads=8,
+                               max_request_body_size=32*1024, channel_timeout=20)
+        print(f'Light painting web: {url}', flush=True)
+        server.run()
     except KeyboardInterrupt:
         pass
     finally:
-        controller.close()
+        if server:
+            server.close()
+            server.task_dispatcher.shutdown()
+        listener.close()
+        if controller:
+            controller.close()
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())
