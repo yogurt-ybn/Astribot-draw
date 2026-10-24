@@ -1,31 +1,12 @@
 {
   "schema": "astribot-light-painting-pattern-lookup/v1",
   "release_id": "2026-10-24-simulation-validated-v1",
-  "distribution": "minimal-svg-command-plan",
   "count": 58,
   "addressing": {
     "format": "relative POSIX file paths",
     "base": "directory containing this JSON file",
     "repository_directory": "pattern_library/v1",
     "resolution": "Resolve assets.path under the configured library root; do not interpret it as a GitHub URL."
-  },
-  "qualification": {
-    "robot": "astribot_t1",
-    "evidence_level": "official_sdk_simulation_completed",
-    "model_revision": "279e704ef9543c0e2154cc31aa4bce5b9f769b25",
-    "control_hz": 125,
-    "joint_speed_limit_rad_s": 1.0,
-    "tip_speed_limit_m_s": 0.2,
-    "command_preview_s": 0.02,
-    "gripper_geometry": "fixed_model_preset; simulation gripper checks skipped",
-    "hardware_validated": false,
-    "arbitrary_start_replay_supported": false,
-    "cached_plan_scope": "original_measured_start_including_approach_and_drawing",
-    "reuse_requirements": [
-      "Match the recorded model, calibration, execution policy, auxiliary geometry and required starting joints.",
-      "A different starting pose requires measured-start SVG replanning; an automatic cached-drawing approach adapter is not included.",
-      "Keep the matching sdk-plan.validation.json with sdk-plan.npz. Preserve the SVG runtime guards when integrating replay."
-    ]
   },
   "joint_names": [
     "astribot_torso_joint_1",
@@ -47,72 +28,91 @@
     "astribot_arm_right_joint_6",
     "astribot_arm_right_joint_7"
   ],
-  "number_index": {
-    "001": "001-heart",
-    "002": "002-balloon",
-    "003": "003-bow",
-    "004": "004-crown",
-    "005": "005-star-five",
-    "006": "006-sparkle",
-    "007": "007-moon",
-    "008": "008-comet",
-    "009": "009-cloud",
-    "010": "010-rainbow",
-    "011": "011-leaf",
-    "012": "012-ginkgo",
-    "013": "013-maple",
-    "014": "014-tulip",
-    "015": "015-lotus",
-    "016": "016-clover-three",
-    "017": "017-clover-four",
-    "018": "018-blossom",
-    "019": "019-daisy",
-    "021": "021-droplet",
-    "022": "022-mountain",
-    "023": "023-mushroom",
-    "025": "025-angel-wing",
-    "026": "026-gull",
-    "027": "027-fish",
-    "028": "028-halo",
-    "029": "029-orbit",
-    "030": "030-cat",
-    "031": "031-rabbit",
-    "032": "032-bear",
-    "033": "033-open-curl",
-    "034": "034-double-wave",
-    "035": "035-rocket",
-    "036": "036-ufo",
-    "037": "037-sailboat",
-    "038": "038-lantern",
-    "039": "039-bell",
-    "040": "040-music",
-    "041": "041-cup",
-    "042": "042-wave",
-    "043": "043-curl",
-    "044": "044-spiral",
-    "045": "045-bolt",
-    "046": "046-diamond",
-    "047": "047-shield",
-    "048": "048-s-ribbon",
-    "049": "049-moon-star-five",
-    "050": "050-blossom-leaf",
-    "051": "051-heart-sparkle",
-    "052": "052-rainbow-cloud",
-    "053": "053-fish-wave",
-    "054": "054-rocket-comet",
-    "055": "055-butterfly-blossom",
-    "056": "056-cat-heart",
-    "057": "057-gull-mountain",
-    "058": "058-leaf-droplet",
-    "059": "059-lantern-blossom",
-    "060": "060-music-sparkle"
+  "execution_index": {
+    "0": "001-heart",
+    "1": "002-balloon",
+    "2": "003-bow",
+    "3": "004-crown",
+    "4": "005-star-five",
+    "5": "006-sparkle",
+    "6": "007-moon",
+    "7": "008-comet",
+    "8": "009-cloud",
+    "9": "010-rainbow",
+    "10": "011-leaf",
+    "11": "012-ginkgo",
+    "12": "013-maple",
+    "13": "014-tulip",
+    "14": "015-lotus",
+    "15": "016-clover-three",
+    "16": "017-clover-four",
+    "17": "018-blossom",
+    "18": "019-daisy",
+    "19": "021-droplet",
+    "20": "022-mountain",
+    "21": "023-mushroom",
+    "22": "025-angel-wing",
+    "23": "026-gull",
+    "24": "027-fish",
+    "25": "028-halo",
+    "26": "029-orbit",
+    "27": "030-cat",
+    "28": "031-rabbit",
+    "29": "032-bear",
+    "30": "033-open-curl",
+    "31": "034-double-wave",
+    "32": "035-rocket",
+    "33": "036-ufo",
+    "34": "037-sailboat",
+    "35": "038-lantern",
+    "36": "039-bell",
+    "37": "040-music",
+    "38": "041-cup",
+    "39": "042-wave",
+    "40": "043-curl",
+    "41": "044-spiral",
+    "42": "045-bolt",
+    "43": "046-diamond",
+    "44": "047-shield",
+    "45": "048-s-ribbon",
+    "46": "049-moon-star-five",
+    "47": "050-blossom-leaf",
+    "48": "051-heart-sparkle",
+    "49": "052-rainbow-cloud",
+    "50": "053-fish-wave",
+    "51": "054-rocket-comet",
+    "52": "055-butterfly-blossom",
+    "53": "056-cat-heart",
+    "54": "057-gull-mountain",
+    "55": "058-leaf-droplet",
+    "56": "059-lantern-blossom",
+    "57": "060-music-sparkle"
+  },
+  "canvas_calibration_sha256": {
+    "calibration.json": "13c7af77a336906ab7f966d28863c6608b422914a084ca964b3303f154e6e114",
+    "mask-left.png": "0d92edc725bc55ca53e2792a2fee3860852b533f58f39228b766eb89de9e2843",
+    "mask-right.png": "4e3c426b323dd63654e03d5c7e265d547e9479922b4d4519b5bc2a586f8fa7fa"
+  },
+  "qualification": {
+    "robot": "astribot_t1",
+    "model_revision": "279e704ef9543c0e2154cc31aa4bce5b9f769b25",
+    "control_hz": 125,
+    "joint_speed_limit_rad_s": 1.0,
+    "tip_speed_limit_m_s": 0.2,
+    "command_preview_s": 0.02,
+    "gripper_geometry": "fixed_model_preset"
   },
   "patterns": {
     "001-heart": {
       "pattern_id": "001-heart",
       "number": "001",
       "name_en": "Rounded Heart Pair",
+      "execution_index": 0,
       "assets": {
+        "source.svg": {
+          "path": "items/001-heart/source.svg",
+          "sha256": "8650097d558b8a5e7a0755c44a815fd644737758733a72f4e062258ec28e3e9e"
+        },
         "sdk-plan.npz": {
           "path": "items/001-heart/sdk-plan.npz",
           "sha256": "6f166d48d6620a62d1ab5edc4260a042bc3260e20382cdd8647bb71ca164222d"
@@ -120,33 +120,8 @@
         "sdk-plan.validation.json": {
           "path": "items/001-heart/sdk-plan.validation.json",
           "sha256": "20fb4705f431276c002c9eacf6e94e66af31e350bfd638ba3af8bb7ec79efd7d"
-        },
-        "source.svg": {
-          "path": "items/001-heart/source.svg",
-          "sha256": "8650097d558b8a5e7a0755c44a815fd644737758733a72f4e062258ec28e3e9e"
         }
       },
-      "duration_s": 15.93,
-      "required_start_position_rad": [
-        0.4850000000000001,
-        -0.9700000000000003,
-        0.48500000000000015,
-        7.555619649763855e-19,
-        0.2452327123116881,
-        -0.1425973384290384,
-        -1.734297595243562,
-        1.5056048953158543,
-        -1.5990768408683355e-06,
-        -0.021033709176430836,
-        0.004025840423171322,
-        -0.21877412727309128,
-        -0.009230789912880063,
-        1.8131408771741089,
-        1.5209336308482144,
-        3.934325585059179e-06,
-        -0.020661289756969944,
-        -0.005727201207829485
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           1.7388206094074318e-19,
@@ -163,7 +138,12 @@
       "pattern_id": "002-balloon",
       "number": "002",
       "name_en": "Balloon with Ribbon Pair",
+      "execution_index": 1,
       "assets": {
+        "source.svg": {
+          "path": "items/002-balloon/source.svg",
+          "sha256": "ac7909aa274e2f6fc2e8df7b3d9f94d296b263a2bf031ffc99eae1b707a7f40e"
+        },
         "sdk-plan.npz": {
           "path": "items/002-balloon/sdk-plan.npz",
           "sha256": "22ef7d226ac349a9a2c33661830b7b88dc3c51cf82a5e4832b480bea0d8017d3"
@@ -171,33 +151,8 @@
         "sdk-plan.validation.json": {
           "path": "items/002-balloon/sdk-plan.validation.json",
           "sha256": "c41a4a05ae3dff897a00a30f8fad0742cce35f26691432f7c4fac412906ef4f8"
-        },
-        "source.svg": {
-          "path": "items/002-balloon/source.svg",
-          "sha256": "ac7909aa274e2f6fc2e8df7b3d9f94d296b263a2bf031ffc99eae1b707a7f40e"
         }
       },
-      "duration_s": 13.13,
-      "required_start_position_rad": [
-        0.2724999999309441,
-        -0.5450000000434976,
-        0.2724999999816949,
-        7.534428337690509e-13,
-        0.14452058702512294,
-        -0.5509381581820674,
-        -2.1271492860198573,
-        1.829084731777675,
-        -2.2462164656177353e-06,
-        -0.016307860177513643,
-        0.005195263162121511,
-        0.0063696579615850814,
-        -0.36903205697929886,
-        2.1255004616691062,
-        1.8288175473064505,
-        1.1673646286909612e-05,
-        -0.01592045220626899,
-        -0.007553119861773545
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           2.472169852659701e-13,
@@ -214,7 +169,12 @@
       "pattern_id": "003-bow",
       "number": "003",
       "name_en": "Ribbon Bow Pair",
+      "execution_index": 2,
       "assets": {
+        "source.svg": {
+          "path": "items/003-bow/source.svg",
+          "sha256": "5e04f116c6df50b0c1f6aacac8b9325b5158b146a545dfa886e088fd41eadc18"
+        },
         "sdk-plan.npz": {
           "path": "items/003-bow/sdk-plan.npz",
           "sha256": "dae1653997ac6aa5bf7eeca8ddcbd6adffcaa6583a39f80772f992aa5d0e8650"
@@ -222,33 +182,8 @@
         "sdk-plan.validation.json": {
           "path": "items/003-bow/sdk-plan.validation.json",
           "sha256": "2057f19c1ff20b599ee352ecac04ff51784b334b96b608cfc0e2a96b7e391e96"
-        },
-        "source.svg": {
-          "path": "items/003-bow/source.svg",
-          "sha256": "5e04f116c6df50b0c1f6aacac8b9325b5158b146a545dfa886e088fd41eadc18"
         }
       },
-      "duration_s": 20.165,
-      "required_start_position_rad": [
-        0.3643450862132334,
-        -0.7286901725195888,
-        0.3643450862425548,
-        5.33886506471872e-13,
-        0.11751005681961546,
-        -0.3828382492636765,
-        -2.1097187320647524,
-        1.5509827370124314,
-        2.374164287368147e-06,
-        0.016407398044286318,
-        -0.006409631528952917,
-        0.043209730539581166,
-        -0.16060606755769444,
-        2.2107804110460716,
-        1.567558664903676,
-        -6.5488747746334556e-06,
-        0.016325497611528378,
-        0.007123901132534109
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           6.688995309540785e-13,
@@ -265,7 +200,12 @@
       "pattern_id": "004-crown",
       "number": "004",
       "name_en": "Rounded Crown Pair",
+      "execution_index": 3,
       "assets": {
+        "source.svg": {
+          "path": "items/004-crown/source.svg",
+          "sha256": "d78d5cdf40a6506acaa29280b278ad7ef05338e1b1693ca198557e3634e3cda4"
+        },
         "sdk-plan.npz": {
           "path": "items/004-crown/sdk-plan.npz",
           "sha256": "518000c707f8326fa731d59c7a2bba17e0b15a17652d2718e016c2a5df6692ae"
@@ -273,42 +213,17 @@
         "sdk-plan.validation.json": {
           "path": "items/004-crown/sdk-plan.validation.json",
           "sha256": "5c0a1485d498670bfeaa229d7bed94b62e037aef0def9241e7451c57a7d2b671"
-        },
-        "source.svg": {
-          "path": "items/004-crown/source.svg",
-          "sha256": "d78d5cdf40a6506acaa29280b278ad7ef05338e1b1693ca198557e3634e3cda4"
         }
       },
-      "duration_s": 17.545,
-      "required_start_position_rad": [
-        0.25031250068340555,
-        -0.5006249995741613,
-        0.2503125001763689,
-        -9.46069995359009e-12,
-        0.0700348687403993,
-        -0.3364613405586658,
-        -1.8328409598036,
-        2.144193133861658,
-        -8.785524089838895e-08,
-        -0.00017450029581084548,
-        0.0002781399095626427,
-        0.03974461256440402,
-        -0.05905060866974002,
-        1.8195049787636859,
-        2.1418601796921855,
-        -9.072940799288099e-09,
-        -0.00023219087424517488,
-        8.975774216721671e-05
-      ],
       "required_auxiliary_positions": {
+        "astribot_head": [
+          -4.109087294895877e-12,
+          3.665375023108923e-10
+        ],
         "astribot_chassis": [
           -2.5868920785293117e-11,
           -1.08728454450591e-13,
           -5.51107220953337e-12
-        ],
-        "astribot_head": [
-          -4.109087294895877e-12,
-          3.665375023108923e-10
         ]
       }
     },
@@ -316,7 +231,12 @@
       "pattern_id": "005-star-five",
       "number": "005",
       "name_en": "Five-point Star Pair",
+      "execution_index": 4,
       "assets": {
+        "source.svg": {
+          "path": "items/005-star-five/source.svg",
+          "sha256": "807db6e6d27226a2b97993186868706e805bbe7e28f58ae20f9a85f1667d5f5a"
+        },
         "sdk-plan.npz": {
           "path": "items/005-star-five/sdk-plan.npz",
           "sha256": "01d8c6ef297f7702bf546c66e19be3dade6bcff3e0c6560643609b61f43dbb32"
@@ -324,42 +244,17 @@
         "sdk-plan.validation.json": {
           "path": "items/005-star-five/sdk-plan.validation.json",
           "sha256": "97953be2b6ca22a73ca3b0fdb49b9340fa5d22acef9a502318105ef0d8baacee"
-        },
-        "source.svg": {
-          "path": "items/005-star-five/source.svg",
-          "sha256": "807db6e6d27226a2b97993186868706e805bbe7e28f58ae20f9a85f1667d5f5a"
         }
       },
-      "duration_s": 13.43,
-      "required_start_position_rad": [
-        0.38718749999347485,
-        -0.7743750000041469,
-        0.3871874999983716,
-        6.075724456735776e-14,
-        0.2477417165395273,
-        -0.0014734131147404674,
-        -1.885860186740546,
-        1.8854058485107785,
-        2.694825480409336e-06,
-        0.005230214269489359,
-        -0.007290249253165608,
-        -0.23322619720625354,
-        0.03588417008721732,
-        1.896286725689542,
-        1.8872636926865942,
-        -2.7546959306866866e-06,
-        0.005220792166240787,
-        0.007384563767502366
-      ],
       "required_auxiliary_positions": {
+        "astribot_head": [
+          3.3435316752742964e-14,
+          -3.231222099425952e-12
+        ],
         "astribot_chassis": [
           1.6155242046541642e-12,
           8.222100693052895e-17,
           -6.5700921948855905e-15
-        ],
-        "astribot_head": [
-          3.3435316752742964e-14,
-          -3.231222099425952e-12
         ]
       }
     },
@@ -367,7 +262,12 @@
       "pattern_id": "006-sparkle",
       "number": "006",
       "name_en": "Four-point Sparkle Pair",
+      "execution_index": 5,
       "assets": {
+        "source.svg": {
+          "path": "items/006-sparkle/source.svg",
+          "sha256": "46472f27f4b56dc838190d1271733f8a6b5403d39a10f820ead6760320ca0b4e"
+        },
         "sdk-plan.npz": {
           "path": "items/006-sparkle/sdk-plan.npz",
           "sha256": "a0426e3906726d7e9099b3cf196d45bfe35fd68eb90d3d31b716b149ce44d975"
@@ -375,33 +275,8 @@
         "sdk-plan.validation.json": {
           "path": "items/006-sparkle/sdk-plan.validation.json",
           "sha256": "22136260256f92bbcd6be96e54cb8b552799af63fb517115422439d34307c97f"
-        },
-        "source.svg": {
-          "path": "items/006-sparkle/source.svg",
-          "sha256": "46472f27f4b56dc838190d1271733f8a6b5403d39a10f820ead6760320ca0b4e"
         }
       },
-      "duration_s": 14.475,
-      "required_start_position_rad": [
-        0.22161622998262975,
-        -0.44323246000971306,
-        0.22161622999584793,
-        1.7267794916952468e-13,
-        -0.23546655230609237,
-        -0.31030788520831093,
-        -2.0852693852053203,
-        1.8795053365353223,
-        -1.4792375975277312e-05,
-        -0.011734780986590013,
-        0.0037261309394660117,
-        0.2600178148929029,
-        -0.2752607296227524,
-        2.0889498531836743,
-        1.8801072687994869,
-        1.4796123364126254e-05,
-        -0.011719825667774323,
-        -0.003818966354987557
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           2.772293272150955e-13,
@@ -418,7 +293,12 @@
       "pattern_id": "007-moon",
       "number": "007",
       "name_en": "Crescent Moon Pair",
+      "execution_index": 6,
       "assets": {
+        "source.svg": {
+          "path": "items/007-moon/source.svg",
+          "sha256": "e913c436777d846703154ea2c4260cb174eb4e7932fbaadc4675d5cd40ff630c"
+        },
         "sdk-plan.npz": {
           "path": "items/007-moon/sdk-plan.npz",
           "sha256": "37a234a778319ac60db59018a5b11276d9ffde2207cd2b0b188ee4bd27eedf3f"
@@ -426,33 +306,8 @@
         "sdk-plan.validation.json": {
           "path": "items/007-moon/sdk-plan.validation.json",
           "sha256": "05c3b67eb5c78e84bbb3e35239f27a4b2763174810e81f953de166cf904dd60b"
-        },
-        "source.svg": {
-          "path": "items/007-moon/source.svg",
-          "sha256": "e913c436777d846703154ea2c4260cb174eb4e7932fbaadc4675d5cd40ff630c"
         }
       },
-      "duration_s": 19.855,
-      "required_start_position_rad": [
-        0.230672019985774,
-        -0.4613440400071324,
-        0.2306720199970003,
-        1.525836320280631e-13,
-        -0.23994975869282084,
-        -0.23075290589095268,
-        -2.0960136664569533,
-        1.8920747156056064,
-        -9.424221170978572e-06,
-        -0.009311761699290499,
-        0.003135758915691982,
-        0.2399283252482334,
-        -0.23078785725703982,
-        2.0960254211993132,
-        1.8920850809148706,
-        9.492260312701311e-06,
-        -0.009311765219474322,
-        -0.003135241207948686
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           3.502007343598089e-13,
@@ -469,7 +324,12 @@
       "pattern_id": "008-comet",
       "number": "008",
       "name_en": "Comet Trail Pair",
+      "execution_index": 7,
       "assets": {
+        "source.svg": {
+          "path": "items/008-comet/source.svg",
+          "sha256": "15b825649de12227bc8e86e9c51b188875a6dd8ce4c7473815ee8339bbfba18f"
+        },
         "sdk-plan.npz": {
           "path": "items/008-comet/sdk-plan.npz",
           "sha256": "13894f6038c87680c0f3fb42a39ca9d714341947f4518677a3ee8e107bf92a01"
@@ -477,33 +337,8 @@
         "sdk-plan.validation.json": {
           "path": "items/008-comet/sdk-plan.validation.json",
           "sha256": "7fbc60b6fbb67c27d6767f31fdd2e16979fd374c0b576e11538baddf42a54c5a"
-        },
-        "source.svg": {
-          "path": "items/008-comet/source.svg",
-          "sha256": "15b825649de12227bc8e86e9c51b188875a6dd8ce4c7473815ee8339bbfba18f"
         }
       },
-      "duration_s": 9.81,
-      "required_start_position_rad": [
-        0.4051056739432129,
-        -0.8102113473743795,
-        0.40510567380159157,
-        4.307589780183472e-13,
-        -0.11866906673026764,
-        -0.16392164686951877,
-        -2.2644183905624904,
-        1.349932660927586,
-        -1.7009183409353784e-05,
-        0.005738021678502899,
-        -0.004117857782811471,
-        -0.2799909086661653,
-        -0.8798069745277504,
-        1.8110255386109122,
-        1.2672479908018304,
-        0.00011543395486129297,
-        0.00315480794276096,
-        0.00871628752992413
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -7.260787247516767e-13,
@@ -520,7 +355,12 @@
       "pattern_id": "009-cloud",
       "number": "009",
       "name_en": "Soft Cloud Pair",
+      "execution_index": 8,
       "assets": {
+        "source.svg": {
+          "path": "items/009-cloud/source.svg",
+          "sha256": "65d98cf812f218951963585fe7113c1f8931baa271affc688716901e12a0fe2f"
+        },
         "sdk-plan.npz": {
           "path": "items/009-cloud/sdk-plan.npz",
           "sha256": "36f1dd42f8007f773ba0f2de0d9cc7edbdd139bb3715b1c1d1d6bce5174d2bfa"
@@ -528,42 +368,17 @@
         "sdk-plan.validation.json": {
           "path": "items/009-cloud/sdk-plan.validation.json",
           "sha256": "37fdb29150635fe7437096bf9c0ce5ddf899d1ba75e4dc39a88ed676f186b3d5"
-        },
-        "source.svg": {
-          "path": "items/009-cloud/source.svg",
-          "sha256": "65d98cf812f218951963585fe7113c1f8931baa271affc688716901e12a0fe2f"
         }
       },
-      "duration_s": 20.025000000000002,
-      "required_start_position_rad": [
-        0.28499999997973313,
-        -0.570000000012859,
-        0.28499999999415265,
-        2.6172199393478395e-13,
-        -0.5195639923920357,
-        -0.5705038681397147,
-        -2.2722209731091985,
-        1.0559966980664106,
-        -2.5738430465446288e-05,
-        -0.03525717530908586,
-        -0.002220078985703307,
-        0.25675657779574323,
-        -0.9064922521829081,
-        1.9915558217128093,
-        0.993909842868134,
-        1.2228293221316645e-05,
-        -0.020665734985004604,
-        0.010752658904577618
-      ],
       "required_auxiliary_positions": {
+        "astribot_head": [
+          9.335797550370178e-14,
+          -9.190668099513182e-12
+        ],
         "astribot_chassis": [
           2.847762522632518e-12,
           -7.65272468651722e-14,
           1.4817371266954248e-14
-        ],
-        "astribot_head": [
-          9.335797550370178e-14,
-          -9.190668099513182e-12
         ]
       }
     },
@@ -571,7 +386,12 @@
       "pattern_id": "010-rainbow",
       "number": "010",
       "name_en": "Rainbow Arch Pair",
+      "execution_index": 9,
       "assets": {
+        "source.svg": {
+          "path": "items/010-rainbow/source.svg",
+          "sha256": "bf61954d3e6fd963d0654ffd495a66de2ea585073a276172abab3e97f8c6f3f4"
+        },
         "sdk-plan.npz": {
           "path": "items/010-rainbow/sdk-plan.npz",
           "sha256": "c7b45bc210d27674849605ae4c0b08fe386bb7c52fe977d676af2f241c026137"
@@ -579,33 +399,8 @@
         "sdk-plan.validation.json": {
           "path": "items/010-rainbow/sdk-plan.validation.json",
           "sha256": "cf796887694ecc647664a3b8a68067c6b8f488d02f868d4a765c3a71434cabc5"
-        },
-        "source.svg": {
-          "path": "items/010-rainbow/source.svg",
-          "sha256": "bf61954d3e6fd963d0654ffd495a66de2ea585073a276172abab3e97f8c6f3f4"
         }
       },
-      "duration_s": 10.07,
-      "required_start_position_rad": [
-        0.2787499999975968,
-        -0.5575000000011225,
-        0.27874999999955136,
-        1.3151273783465474e-14,
-        0.05405876116134251,
-        -0.020363177533840877,
-        -1.8420215833665434,
-        2.127028903081058,
-        -4.100083752797934e-06,
-        -0.0036522826461560915,
-        0.009703329729465296,
-        -0.18896613210192192,
-        -0.34279390197520787,
-        1.852083887004584,
-        2.1287893381340988,
-        4.698034491667482e-06,
-        -0.003783793668380961,
-        -0.009069585809312861
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           6.585102566675651e-14,
@@ -622,7 +417,12 @@
       "pattern_id": "011-leaf",
       "number": "011",
       "name_en": "Sweeping Leaf Pair",
+      "execution_index": 10,
       "assets": {
+        "source.svg": {
+          "path": "items/011-leaf/source.svg",
+          "sha256": "808fbd5c0633d7a48eeccf2ce1ac377d90ac979d1f57c7313c43d6fe96970270"
+        },
         "sdk-plan.npz": {
           "path": "items/011-leaf/sdk-plan.npz",
           "sha256": "9f03c68ffdc915340381ba5f21d9f755e93a4bdb87af929b67bdc21cd1c3cef1"
@@ -630,33 +430,8 @@
         "sdk-plan.validation.json": {
           "path": "items/011-leaf/sdk-plan.validation.json",
           "sha256": "0ccf4a30e941df24e85b1d21169bb00647c9198dc51da5a677b6fd534496998d"
-        },
-        "source.svg": {
-          "path": "items/011-leaf/source.svg",
-          "sha256": "808fbd5c0633d7a48eeccf2ce1ac377d90ac979d1f57c7313c43d6fe96970270"
         }
       },
-      "duration_s": 13.465,
-      "required_start_position_rad": [
-        0.3412499988908789,
-        -0.6825000007169605,
-        0.34124999968611786,
-        1.043664322466777e-11,
-        -0.3503597863301665,
-        -0.4831074048873458,
-        -2.281000000476612,
-        1.068558658757412,
-        1.1730065092651301e-07,
-        -0.0017371815286895758,
-        0.0003387720197058757,
-        0.27510763703259106,
-        -0.5718591662533462,
-        2.1979291287855025,
-        1.0588158127296947,
-        2.7565131855500993e-06,
-        -0.012500737593851933,
-        0.0009583781318276178
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           2.9503628338202305e-12,
@@ -673,7 +448,12 @@
       "pattern_id": "012-ginkgo",
       "number": "012",
       "name_en": "Ginkgo Leaf Pair",
+      "execution_index": 11,
       "assets": {
+        "source.svg": {
+          "path": "items/012-ginkgo/source.svg",
+          "sha256": "62d6e3850fd30a7a0215ff31a2521c2a4e5057e07fb79e2720616e5460139568"
+        },
         "sdk-plan.npz": {
           "path": "items/012-ginkgo/sdk-plan.npz",
           "sha256": "f844370355822bf70763250d1a1eb1b64fd054f7c17b12c5c5d78591492d422c"
@@ -681,33 +461,8 @@
         "sdk-plan.validation.json": {
           "path": "items/012-ginkgo/sdk-plan.validation.json",
           "sha256": "7f7341ea7048959275ca1c3f7886ae635ce21c0edd7ac4602b1ebb73860fb0a6"
-        },
-        "source.svg": {
-          "path": "items/012-ginkgo/source.svg",
-          "sha256": "62d6e3850fd30a7a0215ff31a2521c2a4e5057e07fb79e2720616e5460139568"
         }
       },
-      "duration_s": 19.755,
-      "required_start_position_rad": [
-        0.39708333375726024,
-        -0.7941666674954838,
-        0.3970833337517513,
-        -6.272940431351052e-14,
-        0.21668339359639055,
-        0.09346910823126627,
-        -1.9134440830060035,
-        1.8548235137383904,
-        -1.1863260116236396e-05,
-        0.015934940766232614,
-        -0.012347577614532671,
-        -0.21874706158467094,
-        0.08832457918339696,
-        1.91172192574174,
-        1.8545280987511517,
-        1.188758295782001e-05,
-        0.015940850992032296,
-        0.01229909525980558
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -4.871385633887552e-14,
@@ -724,7 +479,12 @@
       "pattern_id": "013-maple",
       "number": "013",
       "name_en": "Maple Leaf Pair",
+      "execution_index": 12,
       "assets": {
+        "source.svg": {
+          "path": "items/013-maple/source.svg",
+          "sha256": "c06fd120f64c588c6e5b0da06c5db10ba529acf288b0f0f751724901b6bae759"
+        },
         "sdk-plan.npz": {
           "path": "items/013-maple/sdk-plan.npz",
           "sha256": "f3f1ef0dd00a7c3b10c327880b8e9660d297ef7e3991507f40a1b2872084820b"
@@ -732,33 +492,8 @@
         "sdk-plan.validation.json": {
           "path": "items/013-maple/sdk-plan.validation.json",
           "sha256": "c274afa39516c27c320e534618e562d70bfeb03df9c8e3cfb6bb0f9be249f8e3"
-        },
-        "source.svg": {
-          "path": "items/013-maple/source.svg",
-          "sha256": "c06fd120f64c588c6e5b0da06c5db10ba529acf288b0f0f751724901b6bae759"
         }
       },
-      "duration_s": 20.935,
-      "required_start_position_rad": [
-        0.44062500000478805,
-        -0.8812499999968831,
-        0.4406250000012205,
-        -4.039753925353961e-14,
-        0.019880423951628343,
-        -0.055976265235844674,
-        -2.14969637641119,
-        1.4359555487467925,
-        -6.185188340488568e-06,
-        0.008915502298114785,
-        -0.00458982612299734,
-        -0.019901819633412383,
-        -0.056005687335307544,
-        2.149689819870252,
-        1.4359675691463534,
-        6.119558496379394e-06,
-        0.00891537246738965,
-        0.004589477162899455
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -1.7090093403698415e-14,
@@ -775,7 +510,12 @@
       "pattern_id": "014-tulip",
       "number": "014",
       "name_en": "Tulip Pair",
+      "execution_index": 13,
       "assets": {
+        "source.svg": {
+          "path": "items/014-tulip/source.svg",
+          "sha256": "e44b3bbc8e2fc3be99f07b40c4f9d86575649d448e06ce1c1b85b73dc35f085a"
+        },
         "sdk-plan.npz": {
           "path": "items/014-tulip/sdk-plan.npz",
           "sha256": "058c04c623d94f66d3f9852e8ab060c00ed731a30ed91d1548f3d352eb955bbb"
@@ -783,33 +523,8 @@
         "sdk-plan.validation.json": {
           "path": "items/014-tulip/sdk-plan.validation.json",
           "sha256": "1672a1fae21c3a9438f3157311d3ce45718e3b60feaefe372c4a4572f37b1021"
-        },
-        "source.svg": {
-          "path": "items/014-tulip/source.svg",
-          "sha256": "e44b3bbc8e2fc3be99f07b40c4f9d86575649d448e06ce1c1b85b73dc35f085a"
         }
       },
-      "duration_s": 19.47,
-      "required_start_position_rad": [
-        0.4346875002442744,
-        -0.8693749998480625,
-        0.43468750005866175,
-        -2.2171771051812703e-12,
-        0.037561230157939836,
-        -0.07700772956299118,
-        -2.134554115102322,
-        1.458761217633949,
-        -6.210821380072313e-06,
-        0.008865754171410492,
-        -0.004588031077845444,
-        -0.03758101580430547,
-        -0.07703480618384843,
-        2.134550889600795,
-        1.4587735880007564,
-        6.145532873557307e-06,
-        0.008865630944268335,
-        0.004587683924089906
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -1.5607191744191659e-12,
@@ -826,7 +541,12 @@
       "pattern_id": "015-lotus",
       "number": "015",
       "name_en": "Closed Flower Bud Pair",
+      "execution_index": 14,
       "assets": {
+        "source.svg": {
+          "path": "items/015-lotus/source.svg",
+          "sha256": "e5f82e9360a62fbb2c82ff8645bc5164c6f39d90d3cc6c34274aaefe8430a542"
+        },
         "sdk-plan.npz": {
           "path": "items/015-lotus/sdk-plan.npz",
           "sha256": "57fe0323504632bbd8d39426eebf79ce5b040d30b1824e97b1366feae7bb6f5d"
@@ -834,33 +554,8 @@
         "sdk-plan.validation.json": {
           "path": "items/015-lotus/sdk-plan.validation.json",
           "sha256": "aaef055ca195c698879e27c4beb018c0b5167c15e1e6d8b410e47e7b2eb26f9e"
-        },
-        "source.svg": {
-          "path": "items/015-lotus/source.svg",
-          "sha256": "e5f82e9360a62fbb2c82ff8645bc5164c6f39d90d3cc6c34274aaefe8430a542"
         }
       },
-      "duration_s": 13.68,
-      "required_start_position_rad": [
-        0.4382500001803295,
-        -0.8764999998917,
-        0.43825000004115033,
-        -1.720801016184037e-12,
-        0.024690684222708228,
-        -0.0605509033791711,
-        -2.146205776644673,
-        1.4456280685467786,
-        -6.173917444911944e-06,
-        0.008899345235413164,
-        -0.004597929699926865,
-        -0.024712118085832718,
-        -0.06058045648589953,
-        2.146199696707435,
-        1.4456400817129458,
-        6.108408760264049e-06,
-        0.008899217947992687,
-        0.004597580621899143
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -1.7031493243468216e-12,
@@ -877,7 +572,12 @@
       "pattern_id": "016-clover-three",
       "number": "016",
       "name_en": "Three-leaf Clover Pair",
+      "execution_index": 15,
       "assets": {
+        "source.svg": {
+          "path": "items/016-clover-three/source.svg",
+          "sha256": "8f2e35e3d2ca5e695c1438de7a61d6733ab817c9b186da0a558a03908b8f12f3"
+        },
         "sdk-plan.npz": {
           "path": "items/016-clover-three/sdk-plan.npz",
           "sha256": "6a50db60444ba9b122341705797f545c363a73b7892efc6e0cdc58a3d4af8d4d"
@@ -885,33 +585,8 @@
         "sdk-plan.validation.json": {
           "path": "items/016-clover-three/sdk-plan.validation.json",
           "sha256": "ae0c6d152b98dbb438e174d70317a7fff7865e435d021f25aac70588b1b6c332"
-        },
-        "source.svg": {
-          "path": "items/016-clover-three/source.svg",
-          "sha256": "8f2e35e3d2ca5e695c1438de7a61d6733ab817c9b186da0a558a03908b8f12f3"
         }
       },
-      "duration_s": 14.09,
-      "required_start_position_rad": [
-        0.20708333387312258,
-        -0.41416666744072256,
-        0.20708333377594243,
-        -1.399972177297963e-12,
-        -0.3388063133336831,
-        -0.35638071450564673,
-        -2.1072712388555424,
-        1.7948320224772785,
-        -2.717403979586932e-06,
-        -0.018501317863096254,
-        0.007680716183088846,
-        0.33878513311512054,
-        -0.3564129429720967,
-        2.1072822128053463,
-        1.7948426094089602,
-        2.8506910055175384e-06,
-        -0.018501237027641542,
-        -0.007679851597383175
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -3.547603438677983e-12,
@@ -928,7 +603,12 @@
       "pattern_id": "017-clover-four",
       "number": "017",
       "name_en": "Four-leaf Clover Pair",
+      "execution_index": 16,
       "assets": {
+        "source.svg": {
+          "path": "items/017-clover-four/source.svg",
+          "sha256": "047ff3d3c737fea207917d9cfc8172987efb972b9028cf8f9a152aecbcdcea9d"
+        },
         "sdk-plan.npz": {
           "path": "items/017-clover-four/sdk-plan.npz",
           "sha256": "9845e2087f7cdf7c4ea73df0b008e511cda1f80bf7e5534154f3fb3cd668a8e3"
@@ -936,33 +616,8 @@
         "sdk-plan.validation.json": {
           "path": "items/017-clover-four/sdk-plan.validation.json",
           "sha256": "8f7b7a463b47f5bd8ccf4edfc1120583ec32bed331114114c2b1304c83528da2"
-        },
-        "source.svg": {
-          "path": "items/017-clover-four/source.svg",
-          "sha256": "047ff3d3c737fea207917d9cfc8172987efb972b9028cf8f9a152aecbcdcea9d"
         }
       },
-      "duration_s": 15.11,
-      "required_start_position_rad": [
-        0.22000000021750507,
-        -0.43999999986161337,
-        0.2200000000597525,
-        -1.7279752509616869e-12,
-        -0.3105521068227762,
-        -0.2963983978812973,
-        -2.1247194800264655,
-        1.8124854366404686,
-        -3.148197614931234e-07,
-        -0.017790829278002535,
-        0.008159165285505535,
-        0.31053170135292896,
-        -0.2964293483849622,
-        2.1247301921917487,
-        1.8124961133372903,
-        4.4313473894334764e-07,
-        -0.017790755249352763,
-        -0.008158342744079769
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -8.699977551113052e-13,
@@ -979,7 +634,12 @@
       "pattern_id": "018-blossom",
       "number": "018",
       "name_en": "Five-petal Blossom Pair",
+      "execution_index": 17,
       "assets": {
+        "source.svg": {
+          "path": "items/018-blossom/source.svg",
+          "sha256": "ecdc573ad1f3cba241eda6c2652f8c10af7757316564d976b616345c34539bd3"
+        },
         "sdk-plan.npz": {
           "path": "items/018-blossom/sdk-plan.npz",
           "sha256": "3a7913dfdfc752b7a095d5864f4da6a8af6a2471072fae135802b51c05257db9"
@@ -987,42 +647,17 @@
         "sdk-plan.validation.json": {
           "path": "items/018-blossom/sdk-plan.validation.json",
           "sha256": "0a5249b53345bd234012595558fb38920745dfb05dda6f5d99e7c881624f9671"
-        },
-        "source.svg": {
-          "path": "items/018-blossom/source.svg",
-          "sha256": "ecdc573ad1f3cba241eda6c2652f8c10af7757316564d976b616345c34539bd3"
         }
       },
-      "duration_s": 17.94,
-      "required_start_position_rad": [
-        0.22000000003950695,
-        -0.4399999999753819,
-        0.2200000000106226,
-        -3.2600300505545264e-13,
-        -0.31903823808861076,
-        -0.2850098040675433,
-        -2.1268760668830087,
-        1.8126654013160466,
-        3.4968645944784597e-06,
-        -0.01750290235562585,
-        0.007788854870617874,
-        0.3190176254670147,
-        -0.2850412984486907,
-        2.12688632665513,
-        1.8126760110181634,
-        -3.370657245189037e-06,
-        -0.01750283617109077,
-        -0.007788030242745731
-      ],
       "required_auxiliary_positions": {
+        "astribot_head": [
+          -2.3874293368715275e-13,
+          2.1299050273407905e-11
+        ],
         "astribot_chassis": [
           9.99191834322576e-13,
           4.89093766399484e-15,
           -2.417512559505906e-13
-        ],
-        "astribot_head": [
-          -2.3874293368715275e-13,
-          2.1299050273407905e-11
         ]
       }
     },
@@ -1030,7 +665,12 @@
       "pattern_id": "019-daisy",
       "number": "019",
       "name_en": "Six-petal Daisy Pair",
+      "execution_index": 18,
       "assets": {
+        "source.svg": {
+          "path": "items/019-daisy/source.svg",
+          "sha256": "a0f7267afab2ffad2efad99c8d76541bd3e85c239ba7e23e802d0f761ee797c1"
+        },
         "sdk-plan.npz": {
           "path": "items/019-daisy/sdk-plan.npz",
           "sha256": "76bc93315c2b01b64e2f861c866c1d9b1572591da53e2c51c1a613f1a47473b0"
@@ -1038,33 +678,8 @@
         "sdk-plan.validation.json": {
           "path": "items/019-daisy/sdk-plan.validation.json",
           "sha256": "49387865a0d2dba9d0481a61d9877d52abce049b0b5796c6d9247ba579e8684f"
-        },
-        "source.svg": {
-          "path": "items/019-daisy/source.svg",
-          "sha256": "a0f7267afab2ffad2efad99c8d76541bd3e85c239ba7e23e802d0f761ee797c1"
         }
       },
-      "duration_s": 18.615000000000002,
-      "required_start_position_rad": [
-        0.22187500005741367,
-        -0.44374999996380454,
-        0.22187500001559227,
-        -4.666983771666947e-13,
-        -0.3306272403749254,
-        -0.2557976671462314,
-        -2.1348577334310215,
-        1.8116294485818405,
-        1.0965990745242963e-06,
-        -0.009406060765114861,
-        0.00438545322302201,
-        0.33060383699305773,
-        -0.2558332909414387,
-        2.1348662848267033,
-        1.8116398747791513,
-        -1.028121533561872e-06,
-        -0.009406019343415721,
-        -0.004384997149598493
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -2.7897315893375284e-13,
@@ -1081,7 +696,12 @@
       "pattern_id": "021-droplet",
       "number": "021",
       "name_en": "Rounded Water Drop Pair",
+      "execution_index": 19,
       "assets": {
+        "source.svg": {
+          "path": "items/021-droplet/source.svg",
+          "sha256": "cdadc8b4ba5012c16abcb1e98151b02767926d52f0b331022c67a608df413df5"
+        },
         "sdk-plan.npz": {
           "path": "items/021-droplet/sdk-plan.npz",
           "sha256": "62762dcda9de6e502d205874916a068f97d103d1c41612361bbbe4419c018cf7"
@@ -1089,33 +709,8 @@
         "sdk-plan.validation.json": {
           "path": "items/021-droplet/sdk-plan.validation.json",
           "sha256": "2d82521e8fbd7529fc1bc6f317587d0922fa6c696c7576add335fcfe9abfc813"
-        },
-        "source.svg": {
-          "path": "items/021-droplet/source.svg",
-          "sha256": "cdadc8b4ba5012c16abcb1e98151b02767926d52f0b331022c67a608df413df5"
         }
       },
-      "duration_s": 15.265,
-      "required_start_position_rad": [
-        0.2225000000000001,
-        -0.445,
-        0.2225000000000001,
-        -1.0267205329717418e-18,
-        -0.32042083612118516,
-        -0.26499548299054493,
-        -2.13337391036331,
-        1.8119821724244125,
-        1.0552146140307826e-06,
-        -0.009409511768408456,
-        0.004325844580872349,
-        0.3204004052186254,
-        -0.26502685508047,
-        2.1333836426496933,
-        1.8119927953088415,
-        -9.867238693592871e-07,
-        -0.009409467593045942,
-        -0.0043254072166265915
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -2.3779054303051986e-19,
@@ -1132,7 +727,12 @@
       "pattern_id": "022-mountain",
       "number": "022",
       "name_en": "Twin Mountain Peaks Pair",
+      "execution_index": 20,
       "assets": {
+        "source.svg": {
+          "path": "items/022-mountain/source.svg",
+          "sha256": "de56498a6eeb5a8010d5277e940bd88f6a704486bf24995c20ec438ed0dadefe"
+        },
         "sdk-plan.npz": {
           "path": "items/022-mountain/sdk-plan.npz",
           "sha256": "e2fc040159c2861579cb30a754baea1d2ce34c0ce92c42e980ec0a29d446e528"
@@ -1140,33 +740,8 @@
         "sdk-plan.validation.json": {
           "path": "items/022-mountain/sdk-plan.validation.json",
           "sha256": "f6057d24e9b87d06aad33d2bf64253104f8b68c6f126941edc0d59dac7681fcb"
-        },
-        "source.svg": {
-          "path": "items/022-mountain/source.svg",
-          "sha256": "de56498a6eeb5a8010d5277e940bd88f6a704486bf24995c20ec438ed0dadefe"
         }
       },
-      "duration_s": 14.59,
-      "required_start_position_rad": [
-        0.2133375008573218,
-        -0.4266749994786888,
-        0.21333750022599465,
-        -7.368265080067023e-12,
-        -0.36350909965863276,
-        -0.27440898590604157,
-        -2.127002746813215,
-        1.8013264567326925,
-        1.667705424593017e-06,
-        -0.009530938280076706,
-        0.004132835296594593,
-        0.3634880951857175,
-        -0.27444207787256747,
-        2.1270114846234245,
-        1.8013368206936156,
-        -1.5983720353092904e-06,
-        -0.00953089627437061,
-        -0.004132378544850331
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -7.260116227765806e-12,
@@ -1183,7 +758,12 @@
       "pattern_id": "023-mushroom",
       "number": "023",
       "name_en": "Mushroom Pair",
+      "execution_index": 21,
       "assets": {
+        "source.svg": {
+          "path": "items/023-mushroom/source.svg",
+          "sha256": "93824a235485b3e7aab39277a773991eae1493fed1edb81869bc8ca5daa80f74"
+        },
         "sdk-plan.npz": {
           "path": "items/023-mushroom/sdk-plan.npz",
           "sha256": "367b6d38edd57e564e9c6d2f39324d434f71ee3e6b4e1eadeabefa5e1839adca"
@@ -1191,33 +771,8 @@
         "sdk-plan.validation.json": {
           "path": "items/023-mushroom/sdk-plan.validation.json",
           "sha256": "a5e319023d77975e323842c3f2f73486104a7c9136d72fe92f4dbd8d1d8701bd"
-        },
-        "source.svg": {
-          "path": "items/023-mushroom/source.svg",
-          "sha256": "93824a235485b3e7aab39277a773991eae1493fed1edb81869bc8ca5daa80f74"
         }
       },
-      "duration_s": 17.335,
-      "required_start_position_rad": [
-        0.39312500000127837,
-        -0.7862499999994387,
-        0.39312500000019523,
-        -1.3473711703649735e-14,
-        0.22742842279989953,
-        0.04384811243010007,
-        -1.9107898574876245,
-        1.8603659237419667,
-        2.2452402049044313e-05,
-        0.011521752009382028,
-        -0.014235155670823889,
-        -0.24752236984505868,
-        -0.007211089530890087,
-        1.8953154592480665,
-        1.8576378921877625,
-        -2.2279637874461037e-05,
-        0.011538851709845678,
-        0.013972773458133091
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -3.68834351909552e-14,
@@ -1234,7 +789,12 @@
       "pattern_id": "025-angel-wing",
       "number": "025",
       "name_en": "Spread Angel Wing Pair",
+      "execution_index": 22,
       "assets": {
+        "source.svg": {
+          "path": "items/025-angel-wing/source.svg",
+          "sha256": "48ab1e30fa6bfd64377eedee4885a911ff3b4b119f9571f88b16603c3455ad98"
+        },
         "sdk-plan.npz": {
           "path": "items/025-angel-wing/sdk-plan.npz",
           "sha256": "fdc3e1301fa8886f270fbe60ef5cb3434968e5e41b8619553c8fab5b11ce40b1"
@@ -1242,33 +802,8 @@
         "sdk-plan.validation.json": {
           "path": "items/025-angel-wing/sdk-plan.validation.json",
           "sha256": "03b832805d8fdd9ec609758b772cbb19398d5618d7eb3a65bd0857f67df31c01"
-        },
-        "source.svg": {
-          "path": "items/025-angel-wing/source.svg",
-          "sha256": "48ab1e30fa6bfd64377eedee4885a911ff3b4b119f9571f88b16603c3455ad98"
         }
       },
-      "duration_s": 20.72,
-      "required_start_position_rad": [
-        0.42776041625000016,
-        -0.8555208325,
-        0.42776041625000016,
-        1.3192814892264172e-18,
-        0.09752985135774397,
-        -0.02956758492428991,
-        -2.0827742240525446,
-        1.5660204286972657,
-        -3.965646011048458e-05,
-        0.02355084641132291,
-        -0.00693507740685481,
-        -0.09754686686463021,
-        -0.029594457067250918,
-        2.082774661941806,
-        1.5660321109624746,
-        3.948103780746755e-05,
-        0.02355064450508885,
-        0.006934019154233252
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -5.943654416074559e-19,
@@ -1285,7 +820,12 @@
       "pattern_id": "026-gull",
       "number": "026",
       "name_en": "Gull in Flight Pair",
+      "execution_index": 23,
       "assets": {
+        "source.svg": {
+          "path": "items/026-gull/source.svg",
+          "sha256": "59343383582f24bc26fe5a076338a6319390328d6492918d64952c9f780e2f7a"
+        },
         "sdk-plan.npz": {
           "path": "items/026-gull/sdk-plan.npz",
           "sha256": "6c4669b1f9bb3a6dc443eabe752c676841b45b14b8751a167a3bbbe5463915d4"
@@ -1293,33 +833,8 @@
         "sdk-plan.validation.json": {
           "path": "items/026-gull/sdk-plan.validation.json",
           "sha256": "e72f8fd958ffcafc14f7e0937cfa394f8f93aff6a21601e92a9ffe38a524d188"
-        },
-        "source.svg": {
-          "path": "items/026-gull/source.svg",
-          "sha256": "59343383582f24bc26fe5a076338a6319390328d6492918d64952c9f780e2f7a"
         }
       },
-      "duration_s": 11.32,
-      "required_start_position_rad": [
-        0.3474999997854157,
-        -0.6950000001346324,
-        0.3474999999435722,
-        1.961295777405815e-12,
-        0.2427336424726224,
-        -0.7249721191770043,
-        -1.3835667821653235,
-        2.0577836287613698,
-        -5.370964633375356e-06,
-        0.005493663278027024,
-        0.0029789498456539894,
-        -0.25368517126202345,
-        -0.6389965465180412,
-        1.3995351180524558,
-        2.0607798592300037,
-        4.889838452584759e-06,
-        0.005361320613999804,
-        -0.0022934466454742185
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           1.4442701079527145e-12,
@@ -1336,7 +851,12 @@
       "pattern_id": "027-fish",
       "number": "027",
       "name_en": "Rounded Fish Pair",
+      "execution_index": 24,
       "assets": {
+        "source.svg": {
+          "path": "items/027-fish/source.svg",
+          "sha256": "ae00f3d04a03895885b5dbe8f515d43036644fa6969eda2f3e510ab5b036c3ff"
+        },
         "sdk-plan.npz": {
           "path": "items/027-fish/sdk-plan.npz",
           "sha256": "d0982d8bda80dd6ccfcf0fea35f9651d64bdf20ab57a596d4b996713f81d56de"
@@ -1344,33 +864,8 @@
         "sdk-plan.validation.json": {
           "path": "items/027-fish/sdk-plan.validation.json",
           "sha256": "424ee89caa093d60df86766a10307b7e00daa5ef866db61cfa6a189052314343"
-        },
-        "source.svg": {
-          "path": "items/027-fish/source.svg",
-          "sha256": "ae00f3d04a03895885b5dbe8f515d43036644fa6969eda2f3e510ab5b036c3ff"
         }
       },
-      "duration_s": 16.990000000000002,
-      "required_start_position_rad": [
-        0.33249999804210667,
-        -0.665000001168428,
-        0.33249999949001624,
-        1.8357166033830075e-11,
-        -0.08037901365280396,
-        -0.9236311778031908,
-        -1.911520648909411,
-        0.9948218463805247,
-        5.010812751550491e-06,
-        -0.011496915212573464,
-        -0.0074661950732788545,
-        0.10530441614930104,
-        -0.8742827033020308,
-        1.9543923025299925,
-        1.003947960602469,
-        -2.828798825766912e-06,
-        -0.01133283008397941,
-        0.006212644961001563
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           2.140569650196086e-11,
@@ -1387,7 +882,12 @@
       "pattern_id": "028-halo",
       "number": "028",
       "name_en": "Circular Halo Pair",
+      "execution_index": 25,
       "assets": {
+        "source.svg": {
+          "path": "items/028-halo/source.svg",
+          "sha256": "02410f490e4881b8776811b1d98fbe55d7c5e809abd1c3d08ec74cb00fa2634a"
+        },
         "sdk-plan.npz": {
           "path": "items/028-halo/sdk-plan.npz",
           "sha256": "5e67dbb07961a2c9b1dba80a52887a74cc4d770f83e69e833306eff2a0b6c9e7"
@@ -1395,33 +895,8 @@
         "sdk-plan.validation.json": {
           "path": "items/028-halo/sdk-plan.validation.json",
           "sha256": "8cf7e96215968fea6926acc2f18026f90e3474028eb919194e63ef6834fe4002"
-        },
-        "source.svg": {
-          "path": "items/028-halo/source.svg",
-          "sha256": "02410f490e4881b8776811b1d98fbe55d7c5e809abd1c3d08ec74cb00fa2634a"
         }
       },
-      "duration_s": 12.065,
-      "required_start_position_rad": [
-        0.3100000003839767,
-        -0.6199999997631996,
-        0.3100000000974989,
-        -3.7636513095989645e-12,
-        0.331312251959898,
-        -0.4495222906257054,
-        -1.8092040773140006,
-        2.1119092180000587,
-        -1.4347845253651905e-05,
-        0.00780942409143883,
-        0.00295596886848326,
-        -0.2982490058759135,
-        -0.3688752822945574,
-        1.8009070897022137,
-        2.1104397125274,
-        1.312385675384518e-05,
-        0.007654820815993951,
-        -0.002055263411545709
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -2.7764170231582576e-12,
@@ -1438,7 +913,12 @@
       "pattern_id": "029-orbit",
       "number": "029",
       "name_en": "Tilted Orbit Pair",
+      "execution_index": 26,
       "assets": {
+        "source.svg": {
+          "path": "items/029-orbit/source.svg",
+          "sha256": "b6d7a159563fa7dfa419d9201f3cab1c59335f6bfe0d81e95ac5863998ef166b"
+        },
         "sdk-plan.npz": {
           "path": "items/029-orbit/sdk-plan.npz",
           "sha256": "db070ed8a46ada3c7a42a21b545528d2c22c6ada8b9939d9bdaaa2c357e0a170"
@@ -1446,42 +926,17 @@
         "sdk-plan.validation.json": {
           "path": "items/029-orbit/sdk-plan.validation.json",
           "sha256": "624fe0e8c2ccdc0c5dd93a066a6ed4f73e6712a2d6b1de5ca9bfcc8233c85377"
-        },
-        "source.svg": {
-          "path": "items/029-orbit/source.svg",
-          "sha256": "b6d7a159563fa7dfa419d9201f3cab1c59335f6bfe0d81e95ac5863998ef166b"
         }
       },
-      "duration_s": 11.725,
-      "required_start_position_rad": [
-        0.30999999873307865,
-        -0.6200000007825404,
-        0.30999999965891933,
-        9.763735599483558e-12,
-        -0.09323897459092992,
-        -0.7574668906945445,
-        -2.099201921236427,
-        1.179377889242864,
-        -5.763259375327206e-06,
-        -0.0094281173129198,
-        -0.0034402517782215316,
-        0.19966414352121456,
-        -0.629629379530363,
-        2.1716519129523544,
-        1.1926769933874044,
-        2.1762833291320505e-06,
-        -0.008958888462362867,
-        0.0006941191941218023
-      ],
       "required_auxiliary_positions": {
+        "astribot_head": [
+          9.357941971235206e-12,
+          -8.131207096471745e-10
+        ],
         "astribot_chassis": [
           -2.644453168809544e-10,
           -9.743208038357123e-13,
           1.3210045064196092e-11
-        ],
-        "astribot_head": [
-          9.357941971235206e-12,
-          -8.131207096471745e-10
         ]
       }
     },
@@ -1489,7 +944,12 @@
       "pattern_id": "030-cat",
       "number": "030",
       "name_en": "Cat Head Pair",
+      "execution_index": 27,
       "assets": {
+        "source.svg": {
+          "path": "items/030-cat/source.svg",
+          "sha256": "f6a131eb1afe911fd3daa8e6afb7bf8ef113b2ab701badd62f7f959cf4c66be5"
+        },
         "sdk-plan.npz": {
           "path": "items/030-cat/sdk-plan.npz",
           "sha256": "aa19a12aba7633751675d33d0e7d6b975bd5210862f8fb57c9e44cd87bf881d2"
@@ -1497,33 +957,8 @@
         "sdk-plan.validation.json": {
           "path": "items/030-cat/sdk-plan.validation.json",
           "sha256": "f762798591c5be20ed8bc046d5a49e4df8d50773e391b3e44bd19f9656365909"
-        },
-        "source.svg": {
-          "path": "items/030-cat/source.svg",
-          "sha256": "f6a131eb1afe911fd3daa8e6afb7bf8ef113b2ab701badd62f7f959cf4c66be5"
         }
       },
-      "duration_s": 16.75,
-      "required_start_position_rad": [
-        0.2725184848555146,
-        -0.5450369700847599,
-        0.2725184849625037,
-        1.0682950156009318e-12,
-        -0.1742523754176004,
-        -0.7926801074394163,
-        -2.117109607827213,
-        1.2128951808940502,
-        -1.3863744279851411e-05,
-        -0.021193492775773815,
-        -0.004720033960167882,
-        0.3152874924192539,
-        -0.6369899436500436,
-        2.191249932799907,
-        1.2263296281589824,
-        -5.108440284181011e-07,
-        -0.020523001752840567,
-        -4.8212661124174915e-05
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           1.7041674449629296e-12,
@@ -1540,7 +975,12 @@
       "pattern_id": "031-rabbit",
       "number": "031",
       "name_en": "Long-eared Rabbit Pair",
+      "execution_index": 28,
       "assets": {
+        "source.svg": {
+          "path": "items/031-rabbit/source.svg",
+          "sha256": "112846c45e444d7ec6df52ba198e32e7b8ac243da5275892912788ec338fe905"
+        },
         "sdk-plan.npz": {
           "path": "items/031-rabbit/sdk-plan.npz",
           "sha256": "ff585de557f3e33646c95fbb1d2335f7eb18b2faa8df3d19e845f687f38134d3"
@@ -1548,33 +988,8 @@
         "sdk-plan.validation.json": {
           "path": "items/031-rabbit/sdk-plan.validation.json",
           "sha256": "ffa2fed35407dad6dfdac7a801383682f694ecbac489f02f349513c67966140a"
-        },
-        "source.svg": {
-          "path": "items/031-rabbit/source.svg",
-          "sha256": "112846c45e444d7ec6df52ba198e32e7b8ac243da5275892912788ec338fe905"
         }
       },
-      "duration_s": 21.98,
-      "required_start_position_rad": [
-        0.31284272899240917,
-        -0.6256854573515361,
-        0.3128427288096358,
-        -3.4064240889275666e-12,
-        0.2412417217018395,
-        -0.21667426548025998,
-        -1.8320260514774993,
-        2.0889015415036423,
-        5.516981141879317e-07,
-        0.004353364933198105,
-        -0.0013593477348738578,
-        -0.14335518819613538,
-        0.039176206398117,
-        1.844419354695707,
-        2.0910677903095407,
-        -6.679154709394359e-07,
-        0.004156574804801676,
-        0.0025707777827694684
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -1.8698993827048748e-12,
@@ -1591,7 +1006,12 @@
       "pattern_id": "032-bear",
       "number": "032",
       "name_en": "Bear Head Pair",
+      "execution_index": 29,
       "assets": {
+        "source.svg": {
+          "path": "items/032-bear/source.svg",
+          "sha256": "a5463522b7f12dd24bf228d45b79de1de23b4473a429de8c190f57c56362efb3"
+        },
         "sdk-plan.npz": {
           "path": "items/032-bear/sdk-plan.npz",
           "sha256": "9a20c72a52f21dfbacbc979933e1a706f9634f65c51ae4e383fc64d1c861fff9"
@@ -1599,33 +1019,8 @@
         "sdk-plan.validation.json": {
           "path": "items/032-bear/sdk-plan.validation.json",
           "sha256": "4c6062066d3b68b46b0c8206c2006763d2bb12dabab1df8aa642b026cf044f40"
-        },
-        "source.svg": {
-          "path": "items/032-bear/source.svg",
-          "sha256": "a5463522b7f12dd24bf228d45b79de1de23b4473a429de8c190f57c56362efb3"
         }
       },
-      "duration_s": 17.12,
-      "required_start_position_rad": [
-        0.3364373737793771,
-        -0.6728747474821505,
-        0.3364373737570667,
-        -3.246238158815255e-13,
-        0.20495380054748844,
-        -0.06349254761988334,
-        -1.8950376213480575,
-        2.011488827511442,
-        -7.897770386623442e-07,
-        0.002121014318782514,
-        0.0036146655192623757,
-        -0.15837157582246958,
-        0.04331435704875581,
-        1.911549290735475,
-        2.0143561661223934,
-        7.158906907602726e-07,
-        0.002053349209400988,
-        -0.0032558678601135507
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -2.42997224563485e-13,
@@ -1642,7 +1037,12 @@
       "pattern_id": "033-open-curl",
       "number": "033",
       "name_en": "Open Curl Pair",
+      "execution_index": 30,
       "assets": {
+        "source.svg": {
+          "path": "items/033-open-curl/source.svg",
+          "sha256": "de91fd1ed254911d37ce1b448218cf51cd463a19ae6632df3bd8b7e2970e45ab"
+        },
         "sdk-plan.npz": {
           "path": "items/033-open-curl/sdk-plan.npz",
           "sha256": "f39fea35346daacd1cf3668abd6a836b46db3293a3ac738fee216b95b2578dd0"
@@ -1650,33 +1050,8 @@
         "sdk-plan.validation.json": {
           "path": "items/033-open-curl/sdk-plan.validation.json",
           "sha256": "f3b65a31e62c27715f06a9bbbad6a0eb3e65443ffd2c45e8494ca75dc191252c"
-        },
-        "source.svg": {
-          "path": "items/033-open-curl/source.svg",
-          "sha256": "de91fd1ed254911d37ce1b448218cf51cd463a19ae6632df3bd8b7e2970e45ab"
         }
       },
-      "duration_s": 11.915000000000001,
-      "required_start_position_rad": [
-        0.3010937503824252,
-        -0.6021874997628195,
-        0.30109375009506273,
-        -3.215146729252512e-12,
-        0.11923680320318411,
-        0.033543446842013595,
-        -1.8272474873933768,
-        2.112834964519198,
-        5.774901570862634e-07,
-        0.0062634746968126395,
-        -0.0016880549543485672,
-        -0.11924674408256246,
-        0.033508653977491795,
-        1.8272637676251215,
-        2.112844114910895,
-        -6.239263081855337e-07,
-        0.006263440642313972,
-        0.0016877593711608185
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -2.4007607976171633e-12,
@@ -1693,7 +1068,12 @@
       "pattern_id": "034-double-wave",
       "number": "034",
       "name_en": "Double Undulation Pair",
+      "execution_index": 31,
       "assets": {
+        "source.svg": {
+          "path": "items/034-double-wave/source.svg",
+          "sha256": "d45e816b0ac4c0e0288d6cb8b56fe5eda97693a83a67e0e5d4ac50c29508567f"
+        },
         "sdk-plan.npz": {
           "path": "items/034-double-wave/sdk-plan.npz",
           "sha256": "4c12159a750cc24f8ea854d27ec55418600b4f3b7442f6cc40e8abcfbe51bdc1"
@@ -1701,33 +1081,8 @@
         "sdk-plan.validation.json": {
           "path": "items/034-double-wave/sdk-plan.validation.json",
           "sha256": "bfbfb147ffe40dcbe1669b6df05200deb8be303eecff43d681bc0b9f07a541d1"
-        },
-        "source.svg": {
-          "path": "items/034-double-wave/source.svg",
-          "sha256": "d45e816b0ac4c0e0288d6cb8b56fe5eda97693a83a67e0e5d4ac50c29508567f"
         }
       },
-      "duration_s": 11.05,
-      "required_start_position_rad": [
-        0.28430703594538,
-        -0.5686140726821719,
-        0.28430703617469766,
-        2.7522095780741148e-12,
-        -0.14562680689594049,
-        -0.22482202559536443,
-        -2.1910641977539504,
-        1.749076204782009,
-        -1.825586148381319e-05,
-        -0.01705925268917074,
-        0.007969175263813019,
-        0.14560487527552718,
-        -0.22484911214137296,
-        2.191073817644033,
-        1.7490882341870952,
-        1.8379413978524825e-05,
-        -0.017059137594978662,
-        -0.007968448241315897
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           2.902153576945887e-12,
@@ -1744,7 +1099,12 @@
       "pattern_id": "035-rocket",
       "number": "035",
       "name_en": "Small Rocket Pair",
+      "execution_index": 32,
       "assets": {
+        "source.svg": {
+          "path": "items/035-rocket/source.svg",
+          "sha256": "abfcb24589117e7dbd66c4c8ecac806b387b9a9400df29a9b93cf580df4e2e3b"
+        },
         "sdk-plan.npz": {
           "path": "items/035-rocket/sdk-plan.npz",
           "sha256": "a621fbd0f9c5c242c60d2ac9b9484b0dce91ac7629618b21d8315deeabc6ff9c"
@@ -1752,33 +1112,8 @@
         "sdk-plan.validation.json": {
           "path": "items/035-rocket/sdk-plan.validation.json",
           "sha256": "80ee314fec6640aea0ea2ce830429c99f558dc8ec65ae7cf045d5d48b6fd4319"
-        },
-        "source.svg": {
-          "path": "items/035-rocket/source.svg",
-          "sha256": "abfcb24589117e7dbd66c4c8ecac806b387b9a9400df29a9b93cf580df4e2e3b"
         }
       },
-      "duration_s": 18.515,
-      "required_start_position_rad": [
-        0.3099999999587188,
-        -0.6200000000273855,
-        0.309999999987701,
-        2.929738525908248e-13,
-        -0.39886758899462604,
-        -0.5177367962983894,
-        -2.277243600959929,
-        1.1108354955293644,
-        -1.975179592131113e-06,
-        -0.009718663975474476,
-        -0.0007258363955315712,
-        0.39884009683997623,
-        -0.5177554027738451,
-        2.2772421641800267,
-        1.1108548851288522,
-        2.045919559867826e-06,
-        -0.00971850238194757,
-        0.0007263843985241235
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           2.0967889329522907e-15,
@@ -1795,7 +1130,12 @@
       "pattern_id": "036-ufo",
       "number": "036",
       "name_en": "Flying Saucer Pair",
+      "execution_index": 33,
       "assets": {
+        "source.svg": {
+          "path": "items/036-ufo/source.svg",
+          "sha256": "f8b8a56440c4356cd08292b59a88006b9124a7d5a2ecbe2f06c40190a3c3cf2d"
+        },
         "sdk-plan.npz": {
           "path": "items/036-ufo/sdk-plan.npz",
           "sha256": "405ffd0f54d15941f28d671baa6b4a518893133a5bb4330171f261b9c09364d6"
@@ -1803,33 +1143,8 @@
         "sdk-plan.validation.json": {
           "path": "items/036-ufo/sdk-plan.validation.json",
           "sha256": "5842e4eb9d4a8c59160902a416d97d8d87fc3898305ac01f01d93058ada43ace"
-        },
-        "source.svg": {
-          "path": "items/036-ufo/source.svg",
-          "sha256": "f8b8a56440c4356cd08292b59a88006b9124a7d5a2ecbe2f06c40190a3c3cf2d"
         }
       },
-      "duration_s": 14.855,
-      "required_start_position_rad": [
-        0.19561449375079093,
-        -0.39122898750930524,
-        0.19561449374606996,
-        -2.1912141642928316e-13,
-        -0.34631188521606115,
-        -0.3774151840369062,
-        -2.0656925327696722,
-        1.8302441062505495,
-        -2.223910296078717e-06,
-        -0.008105051423999423,
-        0.0011548325378749093,
-        0.3462966858751243,
-        -0.37744172431514206,
-        2.065705063720266,
-        1.8302543653432513,
-        2.283015821833283e-06,
-        -0.008105043783140864,
-        -0.001154396661948715
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -1.5843972487198746e-12,
@@ -1846,7 +1161,12 @@
       "pattern_id": "037-sailboat",
       "number": "037",
       "name_en": "Sailboat Pair",
+      "execution_index": 34,
       "assets": {
+        "source.svg": {
+          "path": "items/037-sailboat/source.svg",
+          "sha256": "63211bc8b80951bd4c538e6476832ecabd17d9739764662fbb55d9756b6a9e87"
+        },
         "sdk-plan.npz": {
           "path": "items/037-sailboat/sdk-plan.npz",
           "sha256": "358757e7830626ba709f72571034b3bab1aa74fdccff45cb180c5e92264e8d01"
@@ -1854,33 +1174,8 @@
         "sdk-plan.validation.json": {
           "path": "items/037-sailboat/sdk-plan.validation.json",
           "sha256": "775b59918ac1f437f6a0a3166b53ae987bfb3b8876354ff777f2fe7d6a7ce715"
-        },
-        "source.svg": {
-          "path": "items/037-sailboat/source.svg",
-          "sha256": "63211bc8b80951bd4c538e6476832ecabd17d9739764662fbb55d9756b6a9e87"
         }
       },
-      "duration_s": 18.6,
-      "required_start_position_rad": [
-        0.34618513495922254,
-        -0.6923702700273839,
-        0.34618513498902564,
-        3.196853100267855e-13,
-        0.20788832064711688,
-        0.03367687036462403,
-        -1.8635675690485005,
-        2.0168206781593816,
-        1.8351299216282996e-06,
-        0.006478159108732635,
-        -0.005499046759237167,
-        -0.20789951473333643,
-        0.033644127044617035,
-        1.8635811929227586,
-        2.0168303511008783,
-        -1.8828139810901988e-06,
-        0.00647811714305841,
-        0.005498729463160227
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           1.0606507604746042e-16,
@@ -1897,7 +1192,12 @@
       "pattern_id": "038-lantern",
       "number": "038",
       "name_en": "Round Lantern Pair",
+      "execution_index": 35,
       "assets": {
+        "source.svg": {
+          "path": "items/038-lantern/source.svg",
+          "sha256": "de06c18000a5114889e79ffbecc7ad2eadb41875311fb32d98222928bdcdc386"
+        },
         "sdk-plan.npz": {
           "path": "items/038-lantern/sdk-plan.npz",
           "sha256": "8b26600cb8dbf1cfa2e7e349af677768a09ee690a1b45e99368097b1cd02606e"
@@ -1905,33 +1205,8 @@
         "sdk-plan.validation.json": {
           "path": "items/038-lantern/sdk-plan.validation.json",
           "sha256": "07762037e71e07794c83733bc627ca18c3b244fd1f5ed1bc5881639b348f797f"
-        },
-        "source.svg": {
-          "path": "items/038-lantern/source.svg",
-          "sha256": "de06c18000a5114889e79ffbecc7ad2eadb41875311fb32d98222928bdcdc386"
         }
       },
-      "duration_s": 19.145,
-      "required_start_position_rad": [
-        0.38663210500775796,
-        -0.7732642099953569,
-        0.38663210500179085,
-        -7.015820149499844e-14,
-        0.22465048201426194,
-        0.08399075609405214,
-        -1.8904840785211412,
-        1.8996889529132126,
-        1.5347578167224702e-06,
-        0.007923609399157936,
-        -0.004444225532641795,
-        -0.2246604073158187,
-        0.0839622791522367,
-        1.8904942283401887,
-        1.8996987108497825,
-        -1.593273314992626e-06,
-        0.00792357156771355,
-        0.004443852290437601
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -7.391395193554262e-14,
@@ -1948,7 +1223,12 @@
       "pattern_id": "039-bell",
       "number": "039",
       "name_en": "Festive Bell Pair",
+      "execution_index": 36,
       "assets": {
+        "source.svg": {
+          "path": "items/039-bell/source.svg",
+          "sha256": "237f56252dc4d69113f67376e3a72db4e2b71145556779ab531765ec8bfcb55c"
+        },
         "sdk-plan.npz": {
           "path": "items/039-bell/sdk-plan.npz",
           "sha256": "8cfba919a69cab65028e86c6d930028332f1ec78ce2c514878f1c9df669d7ef5"
@@ -1956,33 +1236,8 @@
         "sdk-plan.validation.json": {
           "path": "items/039-bell/sdk-plan.validation.json",
           "sha256": "6d4578ae620232c1fc8a218e4bb34c83f1fad3b347970e938bd89422c6677708"
-        },
-        "source.svg": {
-          "path": "items/039-bell/source.svg",
-          "sha256": "237f56252dc4d69113f67376e3a72db4e2b71145556779ab531765ec8bfcb55c"
         }
       },
-      "duration_s": 21.885,
-      "required_start_position_rad": [
-        0.20874999998588817,
-        -0.4175000000102934,
-        0.20874999999559085,
-        8.814216543707945e-14,
-        -0.3017662410490312,
-        -0.20911206416873154,
-        -2.0210044828327933,
-        1.9514188307524531,
-        -6.188717890340584e-07,
-        -0.002696704616483842,
-        -0.0014385561065861474,
-        0.30175051428246313,
-        -0.2091457097101736,
-        2.0210166381184114,
-        1.9514281646540075,
-        6.386618991085638e-07,
-        -0.0026967458830728748,
-        0.0014387990584023473
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -1.5147595248390005e-13,
@@ -1999,7 +1254,12 @@
       "pattern_id": "040-music",
       "number": "040",
       "name_en": "Musical Note Pair",
+      "execution_index": 37,
       "assets": {
+        "source.svg": {
+          "path": "items/040-music/source.svg",
+          "sha256": "e4001f65c7e75b434d6c6ebe777512ad872db2668ac054f4634d51dd7b170355"
+        },
         "sdk-plan.npz": {
           "path": "items/040-music/sdk-plan.npz",
           "sha256": "9f034ba795a9d44be9ab8baadb3dde9d12a1e6338d77b7ef63e9770f7974dae3"
@@ -2007,33 +1267,8 @@
         "sdk-plan.validation.json": {
           "path": "items/040-music/sdk-plan.validation.json",
           "sha256": "3a8bf816b0d826ec6cc4a09a62f73d776357e490e5cc84f77e5595beaecccd39"
-        },
-        "source.svg": {
-          "path": "items/040-music/source.svg",
-          "sha256": "e4001f65c7e75b434d6c6ebe777512ad872db2668ac054f4634d51dd7b170355"
         }
       },
-      "duration_s": 20.91,
-      "required_start_position_rad": [
-        0.2077814044635403,
-        -0.41556281032149334,
-        0.2077814048614012,
-        4.6434949083269995e-12,
-        -0.3232408825688006,
-        -0.2524605170561829,
-        -2.060830211633152,
-        1.8951603936937753,
-        -2.446728815548144e-06,
-        -0.002989244725966409,
-        -0.0014752125770638137,
-        0.3232286950239899,
-        -0.25248527333618265,
-        2.060842565334672,
-        1.895170338318711,
-        2.4687095054648066e-06,
-        -0.002989279145476491,
-        0.0014754588800629264
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           5.264422323555395e-12,
@@ -2050,7 +1285,12 @@
       "pattern_id": "041-cup",
       "number": "041",
       "name_en": "Warm Drink Cup Pair",
+      "execution_index": 38,
       "assets": {
+        "source.svg": {
+          "path": "items/041-cup/source.svg",
+          "sha256": "146020a0fbdb861f33891a21e4e70df439e03f2503c062a9288ad7e430ae93ff"
+        },
         "sdk-plan.npz": {
           "path": "items/041-cup/sdk-plan.npz",
           "sha256": "23e3fc4552fe39c0a4c1096b2f1e1adc935888067eccea58e988b10862810512"
@@ -2058,42 +1298,17 @@
         "sdk-plan.validation.json": {
           "path": "items/041-cup/sdk-plan.validation.json",
           "sha256": "52f1aec59efa5c99b58ec285d5a85422d508c309daf4473ea5859068e328111c"
-        },
-        "source.svg": {
-          "path": "items/041-cup/source.svg",
-          "sha256": "146020a0fbdb861f33891a21e4e70df439e03f2503c062a9288ad7e430ae93ff"
         }
       },
-      "duration_s": 19.69,
-      "required_start_position_rad": [
-        0.35667714477009427,
-        -0.713354290142009,
-        0.35667714494242436,
-        -1.86588034512768e-12,
-        0.1232947403844659,
-        0.08410367309404546,
-        -1.990131762386469,
-        1.9292891126542957,
-        -1.0033559578723489e-05,
-        -0.006096452080353635,
-        0.007474272136383726,
-        -0.5307596368680495,
-        -0.7085255117481029,
-        1.923576893883125,
-        1.9178944660383244,
-        1.6778574532457922e-05,
-        -0.006553888961336393,
-        -0.00490182921069329
-      ],
       "required_auxiliary_positions": {
+        "astribot_head": [
+          1.6743868911294134e-12,
+          -1.5391073189841883e-10
+        ],
         "astribot_chassis": [
           -4.31350197301644e-11,
           1.7347756109764032e-13,
           -2.7781832422357375e-12
-        ],
-        "astribot_head": [
-          1.6743868911294134e-12,
-          -1.5391073189841883e-10
         ]
       }
     },
@@ -2101,7 +1316,12 @@
       "pattern_id": "042-wave",
       "number": "042",
       "name_en": "Gentle Wave Pair",
+      "execution_index": 39,
       "assets": {
+        "source.svg": {
+          "path": "items/042-wave/source.svg",
+          "sha256": "8b970f26a118ceead98778601ba5a3e719acb1d98fa1e98244e3fc92ed1fedf9"
+        },
         "sdk-plan.npz": {
           "path": "items/042-wave/sdk-plan.npz",
           "sha256": "ac15c505de6a9461ccaf3ae2bdc33b1b4de7405ad8f358f1f1ae17e0fadfa5f9"
@@ -2109,33 +1329,8 @@
         "sdk-plan.validation.json": {
           "path": "items/042-wave/sdk-plan.validation.json",
           "sha256": "c16f6bce86d677881af003bc06db3c9b5e05a2475c28dde77f3412dddc58937f"
-        },
-        "source.svg": {
-          "path": "items/042-wave/source.svg",
-          "sha256": "8b970f26a118ceead98778601ba5a3e719acb1d98fa1e98244e3fc92ed1fedf9"
         }
       },
-      "duration_s": 10.17,
-      "required_start_position_rad": [
-        0.24566864258311907,
-        -0.4913372849483115,
-        0.24566864252200044,
-        6.020196661213501e-13,
-        -0.07468138009632494,
-        -0.07465921925028483,
-        -1.870328129963235,
-        2.116225438022166,
-        3.259580126047692e-07,
-        4.9865016671873644e-05,
-        -0.0013636951111072341,
-        -0.4248892882718182,
-        -0.8500844951782638,
-        2.0886787719451236,
-        2.1519317414143666,
-        5.168697778578091e-07,
-        0.000587700879497057,
-        -0.0023407423492638373
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -5.359922034107125e-13,
@@ -2152,7 +1347,12 @@
       "pattern_id": "043-curl",
       "number": "043",
       "name_en": "Flowing Vertical Curl Pair",
+      "execution_index": 40,
       "assets": {
+        "source.svg": {
+          "path": "items/043-curl/source.svg",
+          "sha256": "36b65e40faef1c80f76be85f20800c38ee39bd5e04e441d8b84f1edab656a74f"
+        },
         "sdk-plan.npz": {
           "path": "items/043-curl/sdk-plan.npz",
           "sha256": "944d25852103aaf22f6942f27d99802c079003a45919525cce5b829ec34e3300"
@@ -2160,33 +1360,8 @@
         "sdk-plan.validation.json": {
           "path": "items/043-curl/sdk-plan.validation.json",
           "sha256": "b0c2f9c267383144d7b6b24af1cd51c33257c61a5228225a824a1b6d3182ae45"
-        },
-        "source.svg": {
-          "path": "items/043-curl/source.svg",
-          "sha256": "36b65e40faef1c80f76be85f20800c38ee39bd5e04e441d8b84f1edab656a74f"
         }
       },
-      "duration_s": 13.185,
-      "required_start_position_rad": [
-        0.30999999940196776,
-        -0.6200000004013138,
-        0.3099999998180194,
-        -6.214530804760145e-13,
-        -0.40353982073769945,
-        -0.5127411745425509,
-        -2.281000000173622,
-        1.1077345325427461,
-        3.7423060235082596e-07,
-        -0.0017360384669276763,
-        0.00034610608297548076,
-        -0.4255271747519577,
-        -1.3989263497763689,
-        1.8741105340572113,
-        1.0324055861166275,
-        2.26992598404466e-05,
-        -0.013933684064008547,
-        0.01987192199710491
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -2.3160318512143197e-13,
@@ -2203,7 +1378,12 @@
       "pattern_id": "044-spiral",
       "number": "044",
       "name_en": "Inward Spiral Pair",
+      "execution_index": 41,
       "assets": {
+        "source.svg": {
+          "path": "items/044-spiral/source.svg",
+          "sha256": "ce514eb6d0ebb8a8e160702d641d67a78b37a97e9b1f985dce3b719fd7f95683"
+        },
         "sdk-plan.npz": {
           "path": "items/044-spiral/sdk-plan.npz",
           "sha256": "a4966f00f69346d872b5031c114ad3c05a8cb0df8c81678c6ad850b4484de0e0"
@@ -2211,42 +1391,17 @@
         "sdk-plan.validation.json": {
           "path": "items/044-spiral/sdk-plan.validation.json",
           "sha256": "1b897bd8e306f1a1fe8dac80c2d763aa9702dde8e7a388ce29ffc274121467c4"
-        },
-        "source.svg": {
-          "path": "items/044-spiral/source.svg",
-          "sha256": "ce514eb6d0ebb8a8e160702d641d67a78b37a97e9b1f985dce3b719fd7f95683"
         }
       },
-      "duration_s": 20.14,
-      "required_start_position_rad": [
-        0.18948415247747263,
-        -0.3789683050137157,
-        0.18948415249390313,
-        -4.8158147998763854e-14,
-        -0.2987169889771916,
-        -0.2913282911266149,
-        -1.8675196094620805,
-        2.0356285248063806,
-        6.9854218649523985e-06,
-        -0.011111681203443068,
-        0.007145281286524325,
-        -0.2644325948022054,
-        -1.00045561365491,
-        2.1562065329876434,
-        2.082604907433176,
-        1.23068993821578e-05,
-        -0.011119650692522852,
-        -0.008560652213666267
-      ],
       "required_auxiliary_positions": {
+        "astribot_head": [
+          2.0167635481267034e-13,
+          -1.7168424184322438e-11
+        ],
         "astribot_chassis": [
           -1.3280345404804052e-11,
           7.482098030728593e-14,
           -2.0351562001188517e-13
-        ],
-        "astribot_head": [
-          2.0167635481267034e-13,
-          -1.7168424184322438e-11
         ]
       }
     },
@@ -2254,7 +1409,12 @@
       "pattern_id": "045-bolt",
       "number": "045",
       "name_en": "Rounded Lightning Bolt Pair",
+      "execution_index": 42,
       "assets": {
+        "source.svg": {
+          "path": "items/045-bolt/source.svg",
+          "sha256": "4db97a3a72b0d8bc740676f4f5c390047bf186c8dbb13322c9701826a14520a4"
+        },
         "sdk-plan.npz": {
           "path": "items/045-bolt/sdk-plan.npz",
           "sha256": "f3b77679edcffafcaa845174335e6f5ad84e20a8fb4e5d68328c21c58b49075f"
@@ -2262,33 +1422,8 @@
         "sdk-plan.validation.json": {
           "path": "items/045-bolt/sdk-plan.validation.json",
           "sha256": "5a5239e13da001689e46571cecd7f9e0a25e139ee0873f9ac1b1fcef63f3eb3a"
-        },
-        "source.svg": {
-          "path": "items/045-bolt/source.svg",
-          "sha256": "4db97a3a72b0d8bc740676f4f5c390047bf186c8dbb13322c9701826a14520a4"
         }
       },
-      "duration_s": 14.11,
-      "required_start_position_rad": [
-        0.2945122114821927,
-        -0.58902442236334,
-        0.29451221130672667,
-        1.1656301728694677e-12,
-        -0.04989989436816069,
-        -0.05582787139344995,
-        -2.090463990633222,
-        1.9287368706675618,
-        -1.796824368641393e-05,
-        -0.0025439104534085593,
-        0.005364382029918189,
-        -0.5426359708378031,
-        -0.795241352896252,
-        2.1650419679987687,
-        1.9403041713422524,
-        5.217344159886675e-05,
-        -0.001821263717553354,
-        -0.01006964183446375
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -2.53588770618913e-12,
@@ -2305,7 +1440,12 @@
       "pattern_id": "046-diamond",
       "number": "046",
       "name_en": "Rounded Diamond Pair",
+      "execution_index": 43,
       "assets": {
+        "source.svg": {
+          "path": "items/046-diamond/source.svg",
+          "sha256": "270ae84edefd45c237188213168da16c62f3b5eb91e58b8022ae5a869d2d473e"
+        },
         "sdk-plan.npz": {
           "path": "items/046-diamond/sdk-plan.npz",
           "sha256": "e7ddb299bdad170262ec25fdf98eefef7ee4d16dc473234526ae33fd073e2517"
@@ -2313,33 +1453,8 @@
         "sdk-plan.validation.json": {
           "path": "items/046-diamond/sdk-plan.validation.json",
           "sha256": "1bfe139ff211e2c147fd44fa64ed9263739642038db04e0540b6b3135161fa21"
-        },
-        "source.svg": {
-          "path": "items/046-diamond/source.svg",
-          "sha256": "270ae84edefd45c237188213168da16c62f3b5eb91e58b8022ae5a869d2d473e"
         }
       },
-      "duration_s": 15.995000000000001,
-      "required_start_position_rad": [
-        0.24357273705178534,
-        -0.48714547527370883,
-        0.24357273738117496,
-        6.475208182237115e-13,
-        -0.24273946318154238,
-        -0.35352519799385423,
-        -2.1818851232666328,
-        1.7078729876949694,
-        8.535427088083262e-07,
-        -0.0015757968389588852,
-        -0.0009398384422482956,
-        -0.3457874011942738,
-        -0.8949477226864231,
-        2.2662614705105515,
-        1.7206420346016027,
-        2.072452323201015e-06,
-        -0.00108114807678304,
-        -0.0021761588613979756
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           3.826235491466165e-12,
@@ -2356,7 +1471,12 @@
       "pattern_id": "047-shield",
       "number": "047",
       "name_en": "Guardian Shield Pair",
+      "execution_index": 44,
       "assets": {
+        "source.svg": {
+          "path": "items/047-shield/source.svg",
+          "sha256": "b37746e546b9e18131ac8cd16313b11f52ad7b02fe86f34bd1ef600b3b061fd7"
+        },
         "sdk-plan.npz": {
           "path": "items/047-shield/sdk-plan.npz",
           "sha256": "3cac90ee658800d68b0d786fadd4a481e50e0880ba1f2a66ac31b5fe8da02715"
@@ -2364,42 +1484,17 @@
         "sdk-plan.validation.json": {
           "path": "items/047-shield/sdk-plan.validation.json",
           "sha256": "085b8bea95d0cbf3a311726210b2d195f95eb1e10aea7055a5182c1b42d52bf0"
-        },
-        "source.svg": {
-          "path": "items/047-shield/source.svg",
-          "sha256": "b37746e546b9e18131ac8cd16313b11f52ad7b02fe86f34bd1ef600b3b061fd7"
         }
       },
-      "duration_s": 20.23,
-      "required_start_position_rad": [
-        0.203915699785778,
-        -0.4078314034081009,
-        0.203915700848789,
-        -2.0510006149939237e-12,
-        -0.36609265209743164,
-        -0.2699857255683278,
-        -2.0827407209930997,
-        1.851293683058536,
-        -1.9934545538415152e-06,
-        -0.007516926723577504,
-        0.0016495465944921025,
-        -0.31574210063436337,
-        -0.9472736122193225,
-        2.2810000006911832,
-        1.8777137065596718,
-        -9.94660075688181e-08,
-        -0.00019758487496197695,
-        -0.0003858632266567499
-      ],
       "required_auxiliary_positions": {
+        "astribot_head": [
+          1.0463857462584475e-11,
+          -9.166401406349142e-10
+        ],
         "astribot_chassis": [
           -3.8774672049565955e-10,
           2.92649934760258e-12,
           -5.441420981651023e-12
-        ],
-        "astribot_head": [
-          1.0463857462584475e-11,
-          -9.166401406349142e-10
         ]
       }
     },
@@ -2407,7 +1502,12 @@
       "pattern_id": "048-s-ribbon",
       "number": "048",
       "name_en": "Sweeping S Curve Pair",
+      "execution_index": 45,
       "assets": {
+        "source.svg": {
+          "path": "items/048-s-ribbon/source.svg",
+          "sha256": "925cc03c98e3cd394a32235f8f202ab01cd3d00cd5ed1a6c269df3ae1455dfed"
+        },
         "sdk-plan.npz": {
           "path": "items/048-s-ribbon/sdk-plan.npz",
           "sha256": "f7761843ed663445e4a34f826c4f5177c93f812ffe889ac5a54839bb8d17adad"
@@ -2415,33 +1515,8 @@
         "sdk-plan.validation.json": {
           "path": "items/048-s-ribbon/sdk-plan.validation.json",
           "sha256": "7c12b33723da31d26e08316549f5a5b021909a0926995dbf5c6e6b10b7127026"
-        },
-        "source.svg": {
-          "path": "items/048-s-ribbon/source.svg",
-          "sha256": "925cc03c98e3cd394a32235f8f202ab01cd3d00cd5ed1a6c269df3ae1455dfed"
         }
       },
-      "duration_s": 10.2,
-      "required_start_position_rad": [
-        0.22122533312237483,
-        -0.44245066461707394,
-        0.2212253326662792,
-        5.488997088544838e-12,
-        -0.18169299944237297,
-        -0.08876174239149134,
-        -1.838072768246578,
-        2.1125733288772066,
-        1.0177606231723243e-07,
-        -0.0017890518388734632,
-        -0.0009021214960247508,
-        -0.49620732892903213,
-        -0.9971681644922523,
-        2.2206546464584482,
-        2.173063146992347,
-        8.930466179869256e-07,
-        -0.0011958612390766906,
-        -0.0035409626114203665
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -4.667709933453139e-12,
@@ -2458,7 +1533,12 @@
       "pattern_id": "049-moon-star-five",
       "number": "049",
       "name_en": "Moon and Star",
+      "execution_index": 46,
       "assets": {
+        "source.svg": {
+          "path": "items/049-moon-star-five/source.svg",
+          "sha256": "a9988a858206080d1509111e7e4b9cb4e181599bb4d204a8e87557da3f718def"
+        },
         "sdk-plan.npz": {
           "path": "items/049-moon-star-five/sdk-plan.npz",
           "sha256": "7fa51620465bea10c869829e6cf34569dac51b2d8465ab40df483abac5edada5"
@@ -2466,42 +1546,17 @@
         "sdk-plan.validation.json": {
           "path": "items/049-moon-star-five/sdk-plan.validation.json",
           "sha256": "124bd179813c32f3bc42b72a2e90de258dd18f543c1d64f89b9f519f98581d6c"
-        },
-        "source.svg": {
-          "path": "items/049-moon-star-five/source.svg",
-          "sha256": "a9988a858206080d1509111e7e4b9cb4e181599bb4d204a8e87557da3f718def"
         }
       },
-      "duration_s": 22.245,
-      "required_start_position_rad": [
-        0.2500000029921837,
-        -0.4999999981051685,
-        0.25000000086279883,
-        -2.3077174445451432e-11,
-        0.4721479071766171,
-        -1.3125320746885552,
-        -2.2313870990050195,
-        1.1462188558972093,
-        -1.9054613544099814e-05,
-        -0.018674074705213435,
-        -0.005532766334439411,
-        -0.4720857875081968,
-        -1.3124945348243156,
-        2.231378860676732,
-        1.1462354620677995,
-        1.91920732019972e-05,
-        -0.018673877194665303,
-        0.005534242822738014
-      ],
       "required_auxiliary_positions": {
+        "astribot_head": [
+          -2.047202323239421e-11,
+          1.7626899830004113e-09
+        ],
         "astribot_chassis": [
           6.091508087458148e-10,
           2.831422943403521e-13,
           -2.868975324342622e-11
-        ],
-        "astribot_head": [
-          -2.047202323239421e-11,
-          1.7626899830004113e-09
         ]
       }
     },
@@ -2509,7 +1564,12 @@
       "pattern_id": "050-blossom-leaf",
       "number": "050",
       "name_en": "Blossom and Leaf",
+      "execution_index": 47,
       "assets": {
+        "source.svg": {
+          "path": "items/050-blossom-leaf/source.svg",
+          "sha256": "3e46fe6e5a5eba6c7ee0b3d624c185f634352a45d1a7dd332acda30c90795b5f"
+        },
         "sdk-plan.npz": {
           "path": "items/050-blossom-leaf/sdk-plan.npz",
           "sha256": "b12e96f8ceda9f128090915133c398cd443b9e8927c13bf3050680fd9d569c1a"
@@ -2517,42 +1577,17 @@
         "sdk-plan.validation.json": {
           "path": "items/050-blossom-leaf/sdk-plan.validation.json",
           "sha256": "eb13a1c6ae269094834a6b57774b32b990adff286d48e4055551b48912e7853f"
-        },
-        "source.svg": {
-          "path": "items/050-blossom-leaf/source.svg",
-          "sha256": "3e46fe6e5a5eba6c7ee0b3d624c185f634352a45d1a7dd332acda30c90795b5f"
         }
       },
-      "duration_s": 19.455000000000002,
-      "required_start_position_rad": [
-        0.313360951851054,
-        -0.6267219037621324,
-        0.313360951870133,
-        5.045672752761556e-13,
-        -0.13033317309362694,
-        -0.16322295334116468,
-        -2.264760516841261,
-        1.2922396740644797,
-        -2.2242200842915437e-05,
-        0.003181644202666217,
-        -0.004093687605120297,
-        -0.330581930927219,
-        -0.9123917033877444,
-        2.272000658339915,
-        1.9009784816918882,
-        6.339499740242887e-06,
-        -0.009453205532527481,
-        -0.004769741800710824
-      ],
       "required_auxiliary_positions": {
+        "astribot_head": [
+          5.697968925353053e-13,
+          -4.137859355132562e-11
+        ],
         "astribot_chassis": [
           -5.950314904697268e-11,
           8.043843039487982e-13,
           3.340670983509934e-13
-        ],
-        "astribot_head": [
-          5.697968925353053e-13,
-          -4.137859355132562e-11
         ]
       }
     },
@@ -2560,7 +1595,12 @@
       "pattern_id": "051-heart-sparkle",
       "number": "051",
       "name_en": "Heart and Sparkle",
+      "execution_index": 48,
       "assets": {
+        "source.svg": {
+          "path": "items/051-heart-sparkle/source.svg",
+          "sha256": "0787b99905aa60277305a0a1d89fd135ecdc2a2d5998a47a53bee1fb0d09711f"
+        },
         "sdk-plan.npz": {
           "path": "items/051-heart-sparkle/sdk-plan.npz",
           "sha256": "ce89acf5ac4f3f63d1321484f6f8ac81780969bf83915477192e9e542b713258"
@@ -2568,33 +1608,8 @@
         "sdk-plan.validation.json": {
           "path": "items/051-heart-sparkle/sdk-plan.validation.json",
           "sha256": "21347eea0ef968f0670ce06f812a56368dd6482134212e2ab40d2d68de7ff281"
-        },
-        "source.svg": {
-          "path": "items/051-heart-sparkle/source.svg",
-          "sha256": "0787b99905aa60277305a0a1d89fd135ecdc2a2d5998a47a53bee1fb0d09711f"
         }
       },
-      "duration_s": 17.490000000000002,
-      "required_start_position_rad": [
-        0.30947916686074695,
-        -0.618958333759047,
-        0.3094791668711147,
-        1.7318311875574564e-13,
-        -0.3262593327846351,
-        -0.3225214663625142,
-        -2.1207304630173605,
-        1.803796847607685,
-        1.5466399052304086e-06,
-        -0.008803697833211917,
-        0.0037733578164610886,
-        -0.49968958003909175,
-        -0.8896224904979898,
-        1.6611696948444958,
-        1.7642404546972603,
-        1.1072340425296739e-05,
-        0.010137741413428977,
-        -0.0013149360855033052
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           7.211218527228319e-14,
@@ -2611,7 +1626,12 @@
       "pattern_id": "052-rainbow-cloud",
       "number": "052",
       "name_en": "Rainbow and Cloud",
+      "execution_index": 49,
       "assets": {
+        "source.svg": {
+          "path": "items/052-rainbow-cloud/source.svg",
+          "sha256": "54c4b5b48f6f5a15873cfcc0f439067bf4a9ffa868d8b93d71a6b3e86deafece"
+        },
         "sdk-plan.npz": {
           "path": "items/052-rainbow-cloud/sdk-plan.npz",
           "sha256": "b1ab4df45f569251baf45c93edea4adb5c87b3af4ff4bafc7b69c6a922f4679e"
@@ -2619,33 +1639,8 @@
         "sdk-plan.validation.json": {
           "path": "items/052-rainbow-cloud/sdk-plan.validation.json",
           "sha256": "dd88cc31c3855be5f5c4291b048dee8715fc76b57047ca3ad245c2414bd5eed5"
-        },
-        "source.svg": {
-          "path": "items/052-rainbow-cloud/source.svg",
-          "sha256": "54c4b5b48f6f5a15873cfcc0f439067bf4a9ffa868d8b93d71a6b3e86deafece"
         }
       },
-      "duration_s": 21.915,
-      "required_start_position_rad": [
-        0.2515860091110923,
-        -0.5031720205396608,
-        0.2515860097695041,
-        -2.600499213420299e-12,
-        -0.19530279878801435,
-        -0.11250099053493152,
-        -2.1724271365021846,
-        1.8343679545761067,
-        -2.0766384897621846e-05,
-        -0.015683931201996657,
-        0.010393951799113094,
-        -0.3451220323038198,
-        -0.8586730180000844,
-        2.2404526528273254,
-        1.912490606776081,
-        5.43128417571521e-06,
-        -0.006779364771629928,
-        -0.004815457440866944
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           8.171137568614296e-12,
@@ -2662,7 +1657,12 @@
       "pattern_id": "053-fish-wave",
       "number": "053",
       "name_en": "Fish and Wave",
+      "execution_index": 50,
       "assets": {
+        "source.svg": {
+          "path": "items/053-fish-wave/source.svg",
+          "sha256": "cdf75e2d229d14c59ce4caa60c39a194bb4dcc41df94773c4121b192dfbc3b08"
+        },
         "sdk-plan.npz": {
           "path": "items/053-fish-wave/sdk-plan.npz",
           "sha256": "643a201eb32c07a176b087b9e92f57c0b7a484246482e0c0b8b86afbabe41a4b"
@@ -2670,33 +1670,8 @@
         "sdk-plan.validation.json": {
           "path": "items/053-fish-wave/sdk-plan.validation.json",
           "sha256": "588163af716c51b5e7a25a4c54dec6915304b10ce6130741b117224d8f016514"
-        },
-        "source.svg": {
-          "path": "items/053-fish-wave/source.svg",
-          "sha256": "cdf75e2d229d14c59ce4caa60c39a194bb4dcc41df94773c4121b192dfbc3b08"
         }
       },
-      "duration_s": 17.565,
-      "required_start_position_rad": [
-        0.30999999998602373,
-        -0.6200000000084491,
-        0.3099999999964721,
-        6.644237801702069e-13,
-        -0.3512449654882731,
-        -0.4804619633811622,
-        -2.2810000000106956,
-        1.0553691265016594,
-        -3.983296549971967e-08,
-        -0.002050731418092353,
-        0.00022075592091563015,
-        -0.04299395182865818,
-        -0.023180724355979336,
-        1.8425730757736702,
-        2.1306290335175646,
-        4.1376589193222765e-06,
-        -0.0036065410873232155,
-        -0.009743048021298278
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           1.4062356198791466e-13,
@@ -2713,7 +1688,12 @@
       "pattern_id": "054-rocket-comet",
       "number": "054",
       "name_en": "Rocket and Comet Trail",
+      "execution_index": 51,
       "assets": {
+        "source.svg": {
+          "path": "items/054-rocket-comet/source.svg",
+          "sha256": "ec2d0eaf78532c7da0070c4bfca0de7b27c9df03566cef7441c29cd3fa57bc5e"
+        },
         "sdk-plan.npz": {
           "path": "items/054-rocket-comet/sdk-plan.npz",
           "sha256": "f17c8b775a2a6c0f9b3444818a9420c705835435e9dc37fb4add61f7b2a16277"
@@ -2721,33 +1701,8 @@
         "sdk-plan.validation.json": {
           "path": "items/054-rocket-comet/sdk-plan.validation.json",
           "sha256": "0454b6c38bc80e35397e7a283948aab9199d01e44dab3ef5df7be2b955ef3b95"
-        },
-        "source.svg": {
-          "path": "items/054-rocket-comet/source.svg",
-          "sha256": "ec2d0eaf78532c7da0070c4bfca0de7b27c9df03566cef7441c29cd3fa57bc5e"
         }
       },
-      "duration_s": 22.375,
-      "required_start_position_rad": [
-        0.30999999997477967,
-        -0.6200000000152004,
-        0.30999999999361333,
-        -8.856940320186359e-13,
-        0.17351396431782712,
-        -0.01970506349858444,
-        -1.7983113172320555,
-        2.109563412024232,
-        -1.1025065407248054e-05,
-        0.00791452763459597,
-        -0.001022440891346655,
-        0.4034820752717834,
-        -0.5127917201640175,
-        2.281000000019999,
-        1.107681494943491,
-        -1.4750864131506065e-07,
-        -0.0015958860912018609,
-        -0.00029713055116314285
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           1.7707522024541616e-13,
@@ -2764,7 +1719,12 @@
       "pattern_id": "055-butterfly-blossom",
       "number": "055",
       "name_en": "Butterfly Wing and Blossom",
+      "execution_index": 52,
       "assets": {
+        "source.svg": {
+          "path": "items/055-butterfly-blossom/source.svg",
+          "sha256": "403cfccecbebe56864c0fb43bdb13c2a057308100398b041ec686c09f52da370"
+        },
         "sdk-plan.npz": {
           "path": "items/055-butterfly-blossom/sdk-plan.npz",
           "sha256": "bdab8df84e964a29ef787d76922b703138dad56d26e37c3d8780ef00aba6552e"
@@ -2772,33 +1732,8 @@
         "sdk-plan.validation.json": {
           "path": "items/055-butterfly-blossom/sdk-plan.validation.json",
           "sha256": "3de97f7b76164cc1717774f9f21e3b08199106f67c52d5e7115864649ab75126"
-        },
-        "source.svg": {
-          "path": "items/055-butterfly-blossom/source.svg",
-          "sha256": "403cfccecbebe56864c0fb43bdb13c2a057308100398b041ec686c09f52da370"
         }
       },
-      "duration_s": 23.365000000000002,
-      "required_start_position_rad": [
-        0.2403072461984127,
-        -0.48061449415616225,
-        0.24030724669290413,
-        -1.1951532738474354e-11,
-        -0.37906394715498926,
-        -0.36017471883003455,
-        -2.065069505428633,
-        1.8260586724585313,
-        -2.2755116563401727e-06,
-        -0.008294550929449808,
-        0.0010806400358607403,
-        -0.4711324589094654,
-        -1.497999999352653,
-        1.879400400995449,
-        0.9537569142703181,
-        -3.2000967256098335e-09,
-        1.7444583395189533e-05,
-        -0.00011015532570187146
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           6.549527558871951e-12,
@@ -2815,7 +1750,12 @@
       "pattern_id": "056-cat-heart",
       "number": "056",
       "name_en": "Cat and Heart",
+      "execution_index": 53,
       "assets": {
+        "source.svg": {
+          "path": "items/056-cat-heart/source.svg",
+          "sha256": "bc13d55c539f6829466544615af1eb5381020b6f4cac86fd7c9f2c17c54c9ef6"
+        },
         "sdk-plan.npz": {
           "path": "items/056-cat-heart/sdk-plan.npz",
           "sha256": "59d905fbd4e995bf1c3bc94057f997c09b7628fd1121d67a7654477e93adba96"
@@ -2823,42 +1763,17 @@
         "sdk-plan.validation.json": {
           "path": "items/056-cat-heart/sdk-plan.validation.json",
           "sha256": "7519d7ee49f10fcf6f3febffad075fe4b64fc4a2667885e408ee8e5148f37033"
-        },
-        "source.svg": {
-          "path": "items/056-cat-heart/source.svg",
-          "sha256": "bc13d55c539f6829466544615af1eb5381020b6f4cac86fd7c9f2c17c54c9ef6"
         }
       },
-      "duration_s": 23.705000000000002,
-      "required_start_position_rad": [
-        0.27218749999306824,
-        -0.544375000005039,
-        0.27218749999785813,
-        -1.8994129311482542e-13,
-        0.22612098993479837,
-        0.14311727683850045,
-        -1.623887346711538,
-        2.1178231541019135,
-        -2.370874563677415e-05,
-        0.008940578550635419,
-        -0.0024143053366102877,
-        -0.3066349617202743,
-        -0.9078403304251517,
-        2.2701449707639694,
-        1.830715838345221,
-        7.95640049367117e-06,
-        -0.011893614995510313,
-        -0.002612676657642202
-      ],
       "required_auxiliary_positions": {
+        "astribot_head": [
+          -2.754525058364782e-14,
+          3.201841742493041e-12
+        ],
         "astribot_chassis": [
           1.5691682410422406e-11,
           5.167611861772775e-14,
           1.3757928831065988e-12
-        ],
-        "astribot_head": [
-          -2.754525058364782e-14,
-          3.201841742493041e-12
         ]
       }
     },
@@ -2866,7 +1781,12 @@
       "pattern_id": "057-gull-mountain",
       "number": "057",
       "name_en": "Gull and Mountains",
+      "execution_index": 54,
       "assets": {
+        "source.svg": {
+          "path": "items/057-gull-mountain/source.svg",
+          "sha256": "a5f4be7eb2a94ad25d37631cd38784fde69e5e3d7d3aa56c28304c2e2eb7723e"
+        },
         "sdk-plan.npz": {
           "path": "items/057-gull-mountain/sdk-plan.npz",
           "sha256": "9eb36ba4e653897d4b89fa1932d29e9ee76b7233f8b88989694de4e819fb78a8"
@@ -2874,33 +1794,8 @@
         "sdk-plan.validation.json": {
           "path": "items/057-gull-mountain/sdk-plan.validation.json",
           "sha256": "492128994012b1b4a008ff3bc2d669a440f422b66afb7b7d5c0085220b9b7b22"
-        },
-        "source.svg": {
-          "path": "items/057-gull-mountain/source.svg",
-          "sha256": "a5f4be7eb2a94ad25d37631cd38784fde69e5e3d7d3aa56c28304c2e2eb7723e"
         }
       },
-      "duration_s": 17.425,
-      "required_start_position_rad": [
-        0.29267136480805583,
-        -0.5853427284744168,
-        0.2926713644902147,
-        9.43020324032134e-12,
-        0.14521950664840533,
-        0.0485842097659548,
-        -1.8447769587054759,
-        2.0863357578902906,
-        8.121284225287739e-07,
-        0.004454741527475595,
-        -0.0024809570457603606,
-        -0.4991527927658469,
-        -0.8550027731522587,
-        2.259598939303663,
-        1.847257557923264,
-        -6.057956250218617e-06,
-        -0.0095156579523934,
-        -0.0007900104632259552
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -1.257915373656362e-12,
@@ -2917,7 +1812,12 @@
       "pattern_id": "058-leaf-droplet",
       "number": "058",
       "name_en": "Leaf and Water Drop",
+      "execution_index": 55,
       "assets": {
+        "source.svg": {
+          "path": "items/058-leaf-droplet/source.svg",
+          "sha256": "a0db308f0b203a0d9722a312b5fd842b838e47133a37909592020c205ea8a4fc"
+        },
         "sdk-plan.npz": {
           "path": "items/058-leaf-droplet/sdk-plan.npz",
           "sha256": "9ffa0cf1f550031042b254e7d3aef95786ade85360d4d9dad3d0af8e51d358db"
@@ -2925,33 +1825,8 @@
         "sdk-plan.validation.json": {
           "path": "items/058-leaf-droplet/sdk-plan.validation.json",
           "sha256": "c12ceef143cab20c7f1bc0cbe43733c65b19ab41d63df14aa88bb2875202c217"
-        },
-        "source.svg": {
-          "path": "items/058-leaf-droplet/source.svg",
-          "sha256": "a0db308f0b203a0d9722a312b5fd842b838e47133a37909592020c205ea8a4fc"
         }
       },
-      "duration_s": 15.855,
-      "required_start_position_rad": [
-        0.36281250033052104,
-        -0.7256249997899124,
-        0.36281250009141175,
-        -8.636766050343953e-12,
-        -0.3746930620135813,
-        -0.5027089196234662,
-        -2.280999999807526,
-        1.0748435495576936,
-        1.2249452065914764e-07,
-        -0.0016860193258265619,
-        0.0002973545956286432,
-        -0.6031748918512126,
-        -0.9895166611836306,
-        1.7538002348342987,
-        1.8150026680848603,
-        -3.965705574142948e-05,
-        0.01205721540046496,
-        0.011094609321628087
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           -1.7252812711344491e-12,
@@ -2968,7 +1843,12 @@
       "pattern_id": "059-lantern-blossom",
       "number": "059",
       "name_en": "Lantern and Blossom",
+      "execution_index": 56,
       "assets": {
+        "source.svg": {
+          "path": "items/059-lantern-blossom/source.svg",
+          "sha256": "2c8dbb98491357d010b7fb448b8e637e8975eefffdbd36392c14119bdec3001b"
+        },
         "sdk-plan.npz": {
           "path": "items/059-lantern-blossom/sdk-plan.npz",
           "sha256": "d6a3c65412774bf6ad3b2ae92caa8e60bd1a934c66f003b6258d830ed6b0e684"
@@ -2976,33 +1856,8 @@
         "sdk-plan.validation.json": {
           "path": "items/059-lantern-blossom/sdk-plan.validation.json",
           "sha256": "eeb60e5fe2990a812e759340075e62f3788abed7cd7567c61d420cd47f6105cc"
-        },
-        "source.svg": {
-          "path": "items/059-lantern-blossom/source.svg",
-          "sha256": "2c8dbb98491357d010b7fb448b8e637e8975eefffdbd36392c14119bdec3001b"
         }
       },
-      "duration_s": 23.07,
-      "required_start_position_rad": [
-        0.3052104168760045,
-        -0.6104208337489918,
-        0.30521041687544603,
-        4.7377742829448896e-14,
-        0.21162280217072127,
-        0.10162926634133845,
-        -1.916478729773245,
-        1.805034178730513,
-        -1.896331192410022e-05,
-        0.016923174028657104,
-        -0.011985375736029527,
-        -0.2801295381548698,
-        -0.9445389901398514,
-        2.281000000002725,
-        1.8124868481433454,
-        -1.6817107443194684e-07,
-        -0.00023447839486872226,
-        -0.0003324596696293339
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           5.1412555025498773e-14,
@@ -3019,7 +1874,12 @@
       "pattern_id": "060-music-sparkle",
       "number": "060",
       "name_en": "Musical Note and Sparkle",
+      "execution_index": 57,
       "assets": {
+        "source.svg": {
+          "path": "items/060-music-sparkle/source.svg",
+          "sha256": "a7090c73599727f768f2bf637f413c1f790376874dd4115ce52d2686df72a5ff"
+        },
         "sdk-plan.npz": {
           "path": "items/060-music-sparkle/sdk-plan.npz",
           "sha256": "015404d5f32b51ad03802dccff66bf318a4ef96e98490d2e70c566ea5a270ee1"
@@ -3027,33 +1887,8 @@
         "sdk-plan.validation.json": {
           "path": "items/060-music-sparkle/sdk-plan.validation.json",
           "sha256": "ee4b1da5e6cad1f9386565bb0d931e871f30a3903d8f37a6cbb1d0746b0c6c0a"
-        },
-        "source.svg": {
-          "path": "items/060-music-sparkle/source.svg",
-          "sha256": "a7090c73599727f768f2bf637f413c1f790376874dd4115ce52d2686df72a5ff"
         }
       },
-      "duration_s": 21.705000000000002,
-      "required_start_position_rad": [
-        0.21531249927706103,
-        -0.43062500044581725,
-        0.21531249980538672,
-        -5.1567923917726545e-12,
-        -0.3051293662837153,
-        -0.20809206676454542,
-        -2.020964022923837,
-        1.9510571890876285,
-        -6.280608078070611e-07,
-        -0.0027629005489415727,
-        -0.0014801711162454785,
-        -0.3442432256129681,
-        -0.910977237983283,
-        2.2810000003459217,
-        1.8290443367316889,
-        -8.948074093095093e-08,
-        -0.00023870476040239934,
-        -0.0003120649083001145
-      ],
       "required_auxiliary_positions": {
         "astribot_head": [
           5.338446139911818e-12,
@@ -3065,6 +1900,1400 @@
           -9.612644213582003e-12
         ]
       }
+    }
+  },
+  "canvas_drawing_entries": {
+    "001-heart": {
+      "plan_sha256": "6f166d48d6620a62d1ab5edc4260a042bc3260e20382cdd8647bb71ca164222d",
+      "time_in_archived_plan_s": 4.49,
+      "position_rad": [
+        0.27250000000000013,
+        -0.5450000000000003,
+        0.27250000000000013,
+        0.0,
+        0.13630358417490981,
+        -0.5491531413872377,
+        -2.075116101855152,
+        1.7762605690411535,
+        0.009530511935537899,
+        0.0833419831023545,
+        0.11072484827025993,
+        -0.03510502393673095,
+        -0.4252935983762579,
+        2.091360139120545,
+        1.7834883189525823,
+        -0.016228384869586755,
+        0.07110181637144027,
+        -0.07222110978620663
+      ]
+    },
+    "002-balloon": {
+      "plan_sha256": "22ef7d226ac349a9a2c33661830b7b88dc3c51cf82a5e4832b480bea0d8017d3",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.4500000000000001,
+        -0.9000000000000002,
+        0.4500000000000001,
+        0.0,
+        0.11280449301914186,
+        -0.3946422578798023,
+        -1.9538926605419404,
+        1.3397107038011535,
+        0.006072224098398525,
+        -0.13394522139716702,
+        -0.006633506048697462,
+        -0.030103805358207256,
+        -0.21856987887910326,
+        2.084985802179573,
+        1.3682709545062874,
+        -0.0012871244856370095,
+        -0.14194363059371418,
+        -0.0012741833614740366
+      ]
+    },
+    "003-bow": {
+      "plan_sha256": "dae1653997ac6aa5bf7eeca8ddcbd6adffcaa6583a39f80772f992aa5d0e8650",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.2503125000000001,
+        -0.5006250000000002,
+        0.2503125000000001,
+        0.0,
+        0.0982832776884332,
+        -0.4139452784142707,
+        -1.864925253745177,
+        2.072662057074841,
+        -0.01841186536002505,
+        0.14174006520150245,
+        -0.046868924788230744,
+        0.039473121508633524,
+        -0.07546805173034755,
+        1.8566509020669026,
+        2.0727890061589305,
+        0.02218896848530234,
+        0.13290700054442706,
+        0.07337738686724657
+      ]
+    },
+    "004-crown": {
+      "plan_sha256": "518000c707f8326fa731d59c7a2bba17e0b15a17652d2718e016c2a5df6692ae",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.38718750000000013,
+        -0.7743750000000003,
+        0.38718750000000013,
+        0.0,
+        0.2918471124672755,
+        -0.12605297611226904,
+        -1.8469424582768084,
+        1.9258929132294769,
+        -0.0020799226738329197,
+        -0.09338658880572182,
+        0.009452864820156764,
+        -0.2763938096362116,
+        -0.08572626982273188,
+        1.8089960488060475,
+        1.881890573673836,
+        0.02258755142211216,
+        0.0027489721393010873,
+        -0.10871695439855147
+      ]
+    },
+    "005-star-five": {
+      "plan_sha256": "01d8c6ef297f7702bf546c66e19be3dade6bcff3e0c6560643609b61f43dbb32",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.22161623000000014,
+        -0.4432324600000003,
+        0.22161623000000014,
+        0.0,
+        -0.1652733821382399,
+        -0.4081668433166597,
+        -2.070942650362643,
+        1.8769916677984115,
+        -0.00477303677159415,
+        -0.008412696589420923,
+        0.022723175432278035,
+        0.18683339417847736,
+        -0.3786323054950089,
+        2.073072362753081,
+        1.877684675245542,
+        0.004419675951250911,
+        -0.00954879697854499,
+        -0.019892508455750618
+      ]
+    },
+    "006-sparkle": {
+      "plan_sha256": "a0426e3906726d7e9099b3cf196d45bfe35fd68eb90d3d31b716b149ce44d975",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.23067202000000014,
+        -0.4613440400000003,
+        0.23067202000000014,
+        0.0,
+        -0.2009523916231854,
+        -0.2864873885900679,
+        -2.088924630045098,
+        1.8888994007805568,
+        2.0520365630244583e-05,
+        -0.004948619028501557,
+        0.004226889668927243,
+        0.22534183614943368,
+        -0.25170880093477677,
+        2.09270923085807,
+        1.8895141888298654,
+        -2.1297585436726938e-05,
+        -0.004928433656567504,
+        -0.004340277092459242
+      ]
+    },
+    "007-moon": {
+      "plan_sha256": "37a234a778319ac60db59018a5b11276d9ffde2207cd2b0b188ee4bd27eedf3f",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.4051056737500001,
+        -0.8102113475000002,
+        0.4051056737500001,
+        0.0,
+        -0.13708588624390378,
+        -0.1415466312046263,
+        -2.281,
+        1.3557869304290888,
+        -1.5085893330766857e-06,
+        -0.00023888824611862877,
+        0.0003823063823607854,
+        -0.9600328749640569,
+        -1.4686443934143727,
+        1.9571439095933456,
+        1.343697824084572,
+        -0.04463597187908119,
+        -0.10091044025272629,
+        0.013005391187316147
+      ]
+    },
+    "008-comet": {
+      "plan_sha256": "13894f6038c87680c0f3fb42a39ca9d714341947f4518677a3ee8e107bf92a01",
+      "time_in_archived_plan_s": 4.23,
+      "position_rad": [
+        0.39750000000000013,
+        -0.7950000000000003,
+        0.39750000000000013,
+        0.0,
+        0.3290621971377063,
+        0.161,
+        -1.52367358861645,
+        1.9320285241359563,
+        0.0007184702836162744,
+        0.016955721260194238,
+        -0.023356797172311483,
+        -0.2901739541930787,
+        -0.42725645577191707,
+        1.3958537461396812,
+        1.876659898725606,
+        -0.04469692165757881,
+        0.07620671340200831,
+        0.04370758599997711
+      ]
+    },
+    "009-cloud": {
+      "plan_sha256": "36f1dd42f8007f773ba0f2de0d9cc7edbdd139bb3715b1c1d1d6bce5174d2bfa",
+      "time_in_archived_plan_s": 4.12,
+      "position_rad": [
+        0.2787500000000001,
+        -0.5575000000000002,
+        0.2787500000000001,
+        0.0,
+        0.053497688006292295,
+        -0.027436544098906744,
+        -1.8163315404687668,
+        2.074227346812205,
+        0.03476443539132183,
+        0.09874822432062985,
+        0.0609303552532519,
+        -0.20025630218600707,
+        -0.37626333818906754,
+        1.8271764202838303,
+        2.073412763961638,
+        -0.03869416306851116,
+        0.1040678432054631,
+        -0.06466406657360357
+      ]
+    },
+    "010-rainbow": {
+      "plan_sha256": "c7b45bc210d27674849605ae4c0b08fe386bb7c52fe977d676af2f241c026137",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3412500000000001,
+        -0.6825000000000002,
+        0.3412500000000001,
+        0.0,
+        0.2034963748928036,
+        0.09405273401231841,
+        -1.8166973978110288,
+        2.067762974179196,
+        2.6120362610909636e-05,
+        -0.024469025891345506,
+        -0.0025909909115873196,
+        -0.3160022852458605,
+        -0.24636121175677425,
+        1.7926541059861365,
+        2.062976995107421,
+        -8.163544109766225e-05,
+        -0.02608137623839377,
+        0.015915099534420288
+      ]
+    },
+    "011-leaf": {
+      "plan_sha256": "9f03c68ffdc915340381ba5f21d9f755e93a4bdb87af929b67bdc21cd1c3cef1",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.39708333375000016,
+        -0.7941666675000003,
+        0.39708333375000016,
+        0.0,
+        0.23678666366727155,
+        0.027159197837800114,
+        -1.9231033597633171,
+        1.785963809397511,
+        -0.019145548024955977,
+        0.13915477646754473,
+        -0.07884862085499009,
+        -0.27761826344589347,
+        -0.07644343546183861,
+        1.8416380003401398,
+        1.7974180495690566,
+        -0.03216628618170083,
+        0.10929973149988903,
+        -0.03443138006192489
+      ]
+    },
+    "012-ginkgo": {
+      "plan_sha256": "f844370355822bf70763250d1a1eb1b64fd054f7c17b12c5c5d78591492d422c",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.4406250000000001,
+        -0.8812500000000002,
+        0.4406250000000001,
+        0.0,
+        0.02514101200857537,
+        -0.0733244086530801,
+        -2.117803889315681,
+        1.4998233534366576,
+        -0.00962898401751161,
+        -0.13813981388398844,
+        0.04150135915292943,
+        -0.027646773836297805,
+        -0.07741389916106926,
+        2.1149464165664815,
+        1.4993690463515945,
+        0.009638246036158024,
+        -0.13824046170822246,
+        -0.04118541667711067
+      ]
+    },
+    "013-maple": {
+      "plan_sha256": "f3f1ef0dd00a7c3b10c327880b8e9660d297ef7e3991507f40a1b2872084820b",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.4346875000000001,
+        -0.8693750000000002,
+        0.4346875000000001,
+        0.0,
+        0.02418787142874901,
+        -0.055690554584068706,
+        -2.1492016585640856,
+        1.457986970241223,
+        -4.3528868935026784e-05,
+        0.015662771691165592,
+        -0.003581045269347356,
+        -0.024209459008569467,
+        -0.05572028380588177,
+        2.149195761715042,
+        1.4579989125658228,
+        4.341402324467849e-05,
+        0.015662642195755277,
+        0.0035803144145474435
+      ]
+    },
+    "014-tulip": {
+      "plan_sha256": "058c04c623d94f66d3f9852e8ab060c00ed731a30ed91d1548f3d352eb955bbb",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.4382500000000002,
+        -0.8765000000000004,
+        0.4382500000000002,
+        0.0,
+        0.034814686206874335,
+        -0.07686396936498519,
+        -2.133914234378973,
+        1.4471752688672512,
+        1.9155786798744316e-05,
+        0.0015797500111971205,
+        -0.003544622590206411,
+        -0.034834385212308666,
+        -0.07689092132243353,
+        2.1339106699942123,
+        1.4471876484907022,
+        -1.9167636774915825e-05,
+        0.0015796652610473695,
+        0.0035446188314190935
+      ]
+    },
+    "015-lotus": {
+      "plan_sha256": "57fe0323504632bbd8d39426eebf79ce5b040d30b1824e97b1366feae7bb6f5d",
+      "time_in_archived_plan_s": 4.545,
+      "position_rad": [
+        0.20708333375000015,
+        -0.4141666675000003,
+        0.20708333375000015,
+        0.0,
+        -0.24352654438071025,
+        -0.48431430590724317,
+        -2.106591510787206,
+        1.7459460039164238,
+        0.004006039457696633,
+        0.07605558441562313,
+        -0.016411891023553764,
+        0.24350470197262575,
+        -0.48434270001314417,
+        2.1066022288358575,
+        1.7459572874710076,
+        -0.004017939458805803,
+        0.07605653211945648,
+        0.01640077779742164
+      ]
+    },
+    "016-clover-three": {
+      "plan_sha256": "6a50db60444ba9b122341705797f545c363a73b7892efc6e0cdc58a3d4af8d4d",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.22000000000000014,
+        -0.4400000000000003,
+        0.22000000000000014,
+        0.0,
+        -0.2906994571437945,
+        -0.32289786845131113,
+        -2.119382027796849,
+        1.807523243099978,
+        0.00012107408153331432,
+        -0.008895255467010603,
+        0.010531352574697048,
+        0.29067853878747874,
+        -0.3229288407796672,
+        2.11939331378668,
+        1.8075340086088272,
+        -0.00012101287070946032,
+        -0.0088951321310121,
+        -0.0105311058750101
+      ]
+    },
+    "017-clover-four": {
+      "plan_sha256": "9845e2087f7cdf7c4ea73df0b008e511cda1f80bf7e5534154f3fb3cd668a8e3",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.22000000000000014,
+        -0.4400000000000003,
+        0.22000000000000014,
+        0.0,
+        -0.3105521068227762,
+        -0.2963983978812973,
+        -2.1247194800264655,
+        1.8124854366404686,
+        -3.148197614931234e-07,
+        -0.017790829278002535,
+        0.008159165285505535,
+        0.31053170135292896,
+        -0.2964293483849622,
+        2.1247301921917487,
+        1.8124961133372903,
+        4.4313473894334764e-07,
+        -0.017790755249352763,
+        -0.008158342744079769
+      ]
+    },
+    "018-blossom": {
+      "plan_sha256": "3a7913dfdfc752b7a095d5864f4da6a8af6a2471072fae135802b51c05257db9",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.2218750000000001,
+        -0.4437500000000002,
+        0.2218750000000001,
+        0.0,
+        -0.31231660061996114,
+        -0.2803583240260884,
+        -2.128753519513177,
+        1.813411178728054,
+        2.1169491841616094e-05,
+        -0.014591717415460287,
+        0.007533153081921497,
+        0.31229601142063634,
+        -0.28038965924581316,
+        2.128763780713972,
+        1.8134218205934138,
+        -2.1064633386201195e-05,
+        -0.014591646889745206,
+        -0.007532485993191026
+      ]
+    },
+    "019-daisy": {
+      "plan_sha256": "76bc93315c2b01b64e2f861c866c1d9b1572591da53e2c51c1a613f1a47473b0",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.2225000000000001,
+        -0.4450000000000002,
+        0.2225000000000001,
+        0.0,
+        -0.32840411674474823,
+        -0.25428450828835025,
+        -2.1355795419281507,
+        1.811636437320223,
+        4.1251426052737305e-06,
+        -0.008004009654892452,
+        0.004071231592817343,
+        0.3283807192185783,
+        -0.2543200769857733,
+        2.1355880834200227,
+        1.8116468772487992,
+        -4.066920404598616e-06,
+        -0.00800396807353923,
+        -0.004070848338824054
+      ]
+    },
+    "021-droplet": {
+      "plan_sha256": "62762dcda9de6e502d205874916a068f97d103d1c41612361bbbe4419c018cf7",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.21333750000000012,
+        -0.42667500000000025,
+        0.21333750000000012,
+        0.0,
+        -0.3534960052531268,
+        -0.2880014676258958,
+        -2.126254194211339,
+        1.8016119462110105,
+        -4.266062397890219e-05,
+        -0.010994257036503896,
+        0.00017427361547210553,
+        0.35347552472657207,
+        -0.288033542482094,
+        2.126263645303412,
+        1.8016224753599683,
+        4.274169923615167e-05,
+        -0.0109942614946004,
+        -0.00017363776458177862
+      ]
+    },
+    "022-mountain": {
+      "plan_sha256": "e2fc040159c2861579cb30a754baea1d2ce34c0ce92c42e980ec0a29d446e528",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3931250000000001,
+        -0.7862500000000002,
+        0.3931250000000001,
+        0.0,
+        0.17807117411291273,
+        0.161,
+        -1.9461998297228034,
+        1.868976868648659,
+        0.0005539248743814035,
+        0.008109350691441693,
+        -0.00569116832170747,
+        -0.2810179760003082,
+        -0.10481257468406555,
+        1.8085799777895728,
+        1.857828107937113,
+        0.023972668380866327,
+        -0.0007518718501053952,
+        -0.11268383888673657
+      ]
+    },
+    "023-mushroom": {
+      "plan_sha256": "367b6d38edd57e564e9c6d2f39324d434f71ee3e6b4e1eadeabefa5e1839adca",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.4277604162500001,
+        -0.8555208325000002,
+        0.4277604162500001,
+        0.0,
+        0.10988251312211433,
+        -0.05793994447758909,
+        -2.0457791985895724,
+        1.62540345446211,
+        -0.003846470058379072,
+        -0.1112987296104391,
+        0.03991777389623025,
+        -0.13218595432196192,
+        -0.09988441694260324,
+        2.0236964886222406,
+        1.6217102440897346,
+        0.0038620954534161656,
+        -0.11213411870077741,
+        -0.03652448560839425
+      ]
+    },
+    "025-angel-wing": {
+      "plan_sha256": "fdc3e1301fa8886f270fbe60ef5cb3434968e5e41b8619553c8fab5b11ce40b1",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3475000000000001,
+        -0.6950000000000002,
+        0.3475000000000001,
+        0.0,
+        0.2367154767912484,
+        -0.7624446982652103,
+        -1.3825630716635,
+        2.065869227720502,
+        0.012594640402373474,
+        -0.014238248543080194,
+        -0.010714272707924008,
+        -0.2430065070498237,
+        -0.6768691152010408,
+        1.3291210313914346,
+        2.0341234844646,
+        0.01647888132566012,
+        0.053481452168155405,
+        -0.11866556962895672
+      ]
+    },
+    "026-gull": {
+      "plan_sha256": "6c4669b1f9bb3a6dc443eabe752c676841b45b14b8751a167a3bbbe5463915d4",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3325000000000002,
+        -0.6650000000000004,
+        0.3325000000000002,
+        0.0,
+        0.4547802188686656,
+        -0.647698644149571,
+        -1.7429468935616845,
+        2.061656820919393,
+        -0.013830542575360563,
+        0.03232337737055001,
+        0.13033545696036167,
+        -0.43019489661407895,
+        -0.5955869641629244,
+        1.7333257905695143,
+        2.065944438602765,
+        0.010648779648804929,
+        0.019711913470624405,
+        -0.1308137600546779
+      ]
+    },
+    "027-fish": {
+      "plan_sha256": "d0982d8bda80dd6ccfcf0fea35f9651d64bdf20ab57a596d4b996713f81d56de",
+      "time_in_archived_plan_s": 4.075,
+      "position_rad": [
+        0.3100000000000001,
+        -0.6200000000000002,
+        0.3100000000000001,
+        0.0,
+        0.3220007241638746,
+        -0.437842612493457,
+        -1.7746919581585714,
+        2.06248697642234,
+        0.03689768509767819,
+        0.10142677433720992,
+        0.06578947010323671,
+        -0.29920698603914825,
+        -0.3810188186219527,
+        1.771401327824846,
+        2.063005414220968,
+        -0.03611560470827263,
+        0.09882116529587519,
+        -0.06096823163347184
+      ]
+    },
+    "028-halo": {
+      "plan_sha256": "5e67dbb07961a2c9b1dba80a52887a74cc4d770f83e69e833306eff2a0b6c9e7",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3100000000000001,
+        -0.6200000000000002,
+        0.3100000000000001,
+        0.0,
+        -0.07568910203588103,
+        -0.7908481118756318,
+        -2.072649263763016,
+        1.2323584372982455,
+        -0.012362230836516053,
+        -0.14105497767363967,
+        0.008595420473532706,
+        0.1556351102929553,
+        -0.6924004966987111,
+        2.12655646120733,
+        1.2420107689963176,
+        0.012973659307933275,
+        -0.1393488719689211,
+        -0.011244690854317061
+      ]
+    },
+    "029-orbit": {
+      "plan_sha256": "db070ed8a46ada3c7a42a21b545528d2c22c6ada8b9939d9bdaaa2c357e0a170",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.27251848500000014,
+        -0.5450369700000003,
+        0.27251848500000014,
+        0.0,
+        -0.15146195641514743,
+        -0.8171714368678491,
+        -2.1054830917167977,
+        1.2008887709336271,
+        3.1217799721340876e-05,
+        0.00010289962220955088,
+        -0.0010801761815604149,
+        0.26784599775367934,
+        -0.6892378104652582,
+        2.1649840195758614,
+        1.2116496841739426,
+        -4.086454812854643e-05,
+        -0.00021181322392483108,
+        0.003519649566364337
+      ]
+    },
+    "030-cat": {
+      "plan_sha256": "aa19a12aba7633751675d33d0e7d6b975bd5210862f8fb57c9e44cd87bf881d2",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.31284272875000013,
+        -0.6256854575000003,
+        0.31284272875000013,
+        0.0,
+        0.28046440944384693,
+        -0.3214133242788823,
+        -1.8229736721730236,
+        2.0380267063381736,
+        0.03561918554493639,
+        0.10512241524869992,
+        0.023737359280162976,
+        -0.20522925416330517,
+        -0.132787741201025,
+        1.819465369968924,
+        2.032850242174988,
+        -0.03738722748573316,
+        0.11428816014426985,
+        -0.028179149111902307
+      ]
+    },
+    "031-rabbit": {
+      "plan_sha256": "ff585de557f3e33646c95fbb1d2335f7eb18b2faa8df3d19e845f687f38134d3",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3364373737500001,
+        -0.6728747475000002,
+        0.3364373737500001,
+        0.0,
+        0.2665957696035054,
+        -0.20691019634429175,
+        -1.8750435482227825,
+        2.021512859953018,
+        -0.0002027161800122387,
+        -0.02399922223771887,
+        0.01512564638468766,
+        -0.15975918793672028,
+        0.03960963495201852,
+        1.9012651371091918,
+        2.0259426925839534,
+        0.00013996503165765337,
+        -0.02245099279225866,
+        -0.022526310949253014
+      ]
+    },
+    "032-bear": {
+      "plan_sha256": "9a20c72a52f21dfbacbc979933e1a706f9634f65c51ae4e383fc64d1c861fff9",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3010937500000001,
+        -0.6021875000000002,
+        0.3010937500000001,
+        0.0,
+        0.15904805141516176,
+        -0.07661702973738463,
+        -1.8330859028615196,
+        2.0908512519032314,
+        0.00014010972960552343,
+        0.04861659746399313,
+        -0.023311168213071908,
+        -0.11735983511236855,
+        0.036479625275163664,
+        1.842548488614199,
+        2.092409433478047,
+        -0.00023509572198510256,
+        0.04747913912467024,
+        0.03019347581893214
+      ]
+    },
+    "033-open-curl": {
+      "plan_sha256": "f39fea35346daacd1cf3668abd6a836b46db3293a3ac738fee216b95b2578dd0",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.2739788037500001,
+        -0.5479576075000002,
+        0.2739788037500001,
+        0.0,
+        -0.4313997519050594,
+        -0.4797628279950669,
+        -2.2730025975524653,
+        1.3194882485043287,
+        -0.012961744142637515,
+        -0.12795250163873417,
+        0.015421237997574054,
+        0.4313727585763004,
+        -0.47978516296778184,
+        2.2730037319131964,
+        1.3195039845428533,
+        0.01296276336114767,
+        -0.12795102561993585,
+        -0.015418475313262531
+      ]
+    },
+    "034-double-wave": {
+      "plan_sha256": "4c12159a750cc24f8ea854d27ec55418600b4f3b7442f6cc40e8abcfbe51bdc1",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3100000000000001,
+        -0.6200000000000002,
+        0.3100000000000001,
+        0.0,
+        0.14663868929041837,
+        0.04330735013916038,
+        -1.859769317056009,
+        2.0629332924573456,
+        -0.001820554844294687,
+        0.09904928101386234,
+        -0.10980469172600382,
+        -0.14664980255184712,
+        0.04326858412322461,
+        1.8597833136940893,
+        2.062944505094168,
+        0.0018199469741695092,
+        0.09904755127116627,
+        0.10980064668218932
+      ]
+    },
+    "035-rocket": {
+      "plan_sha256": "a621fbd0f9c5c242c60d2ac9b9484b0dce91ac7629618b21d8315deeabc6ff9c",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.19561449375000012,
+        -0.39122898750000024,
+        0.19561449375000012,
+        0.0,
+        -0.27203735015427083,
+        -0.4924531593001332,
+        -2.082445632972561,
+        1.7503314611552305,
+        -0.020913396770632642,
+        0.14318418234620006,
+        -0.05537271303799263,
+        0.27201914091322016,
+        -0.49247642925044116,
+        2.0824268429226938,
+        1.7503432208159482,
+        0.020874031926296416,
+        0.14319017430180486,
+        0.05529191027777216
+      ]
+    },
+    "036-ufo": {
+      "plan_sha256": "405ffd0f54d15941f28d671baa6b4a518893133a5bb4330171f261b9c09364d6",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3461851350000001,
+        -0.6923702700000002,
+        0.3461851350000001,
+        0.0,
+        0.17138229058453439,
+        0.11376310501559408,
+        -1.9095624297217646,
+        1.9549034386891304,
+        0.007639114349915704,
+        0.13244146410238958,
+        -0.06602572155234163,
+        -0.17139351332987682,
+        0.11373254381794635,
+        1.9095565097453366,
+        1.9549147067821595,
+        -0.007640484378925119,
+        0.1324403250956306,
+        0.06598829653075752
+      ]
+    },
+    "037-sailboat": {
+      "plan_sha256": "358757e7830626ba709f72571034b3bab1aa74fdccff45cb180c5e92264e8d01",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3866321050000001,
+        -0.7732642100000002,
+        0.3866321050000001,
+        0.0,
+        0.2382379741523956,
+        0.04757114669620947,
+        -1.877308051118718,
+        1.921792108667881,
+        9.921868078849254e-05,
+        -0.04218775119961398,
+        0.0015970178785074476,
+        -0.23824935210409479,
+        0.04753932181822079,
+        1.877318743180779,
+        1.9218017256654503,
+        -9.891909723257973e-05,
+        -0.04218779370097002,
+        -0.0015952063926485166
+      ]
+    },
+    "038-lantern": {
+      "plan_sha256": "8b26600cb8dbf1cfa2e7e349af677768a09ee690a1b45e99368097b1cd02606e",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.20875000000000016,
+        -0.4175000000000003,
+        0.20875000000000016,
+        0.0,
+        -0.21992852390846304,
+        -0.3438197978986938,
+        -2.009978658059283,
+        1.9508738266909487,
+        -0.0006401145864661794,
+        -0.004251132526897165,
+        0.005233386206473976,
+        0.2199144604966178,
+        -0.34384674392224934,
+        2.009994768067094,
+        1.9508836036351782,
+        0.0006399321724707844,
+        -0.00425092315220079,
+        -0.005232708026375761
+      ]
+    },
+    "039-bell": {
+      "plan_sha256": "8cfba919a69cab65028e86c6d930028332f1ec78ce2c514878f1c9df669d7ef5",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.20778140500000014,
+        -0.4155628100000003,
+        0.20778140500000014,
+        0.0,
+        -0.3363292359639421,
+        -0.23255170640850828,
+        -2.0561973953299026,
+        1.9043945946454959,
+        2.7153163018888125e-05,
+        -0.021453735268435758,
+        0.013516071624622115,
+        0.33631227457723123,
+        -0.23258433922117433,
+        2.056208597074685,
+        1.9044041021267217,
+        -2.6999062755951406e-05,
+        -0.02145369186125457,
+        -0.013515028912115822
+      ]
+    },
+    "040-music": {
+      "plan_sha256": "9f034ba795a9d44be9ab8baadb3dde9d12a1e6338d77b7ef63e9770f7974dae3",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3566771450000001,
+        -0.7133542900000002,
+        0.3566771450000001,
+        0.0,
+        0.0867451130156824,
+        0.15187900849092548,
+        -2.0206658023822994,
+        1.9029059949217184,
+        0.003710026271688002,
+        0.054595474279921924,
+        -0.011373414813705488,
+        -1.036969166389377,
+        -1.0961186077253324,
+        2.2301807716691933,
+        1.990641260312591,
+        -0.06161343320301691,
+        -0.054243558361871,
+        -0.04196547200222845
+      ]
+    },
+    "041-cup": {
+      "plan_sha256": "23e3fc4552fe39c0a4c1096b2f1e1adc935888067eccea58e988b10862810512",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.24566864250000003,
+        -0.49133728500000007,
+        0.24566864250000003,
+        0.0,
+        -0.0861013137143348,
+        -0.051501836587907586,
+        -1.8881899182360813,
+        2.0798263355575077,
+        -0.001297709071637706,
+        0.0732647676566913,
+        -0.03406334036417516,
+        -0.368002423680501,
+        -0.8073887764603767,
+        2.024822995046014,
+        2.102120132423046,
+        -0.006816729972461231,
+        0.08630654394403933,
+        -0.04206745180917841
+      ]
+    },
+    "042-wave": {
+      "plan_sha256": "ac15c505de6a9461ccaf3ae2bdc33b1b4de7405ad8f358f1f1ae17e0fadfa5f9",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3100000000000001,
+        -0.6200000000000002,
+        0.3100000000000001,
+        0.0,
+        0.13239924554092505,
+        0.1006190706981082,
+        -1.8159567195738882,
+        2.116199829004672,
+        0.0004378286877043533,
+        -0.002675516681228629,
+        -0.017808817008003318,
+        -0.52839048430122,
+        -0.7962252513624337,
+        1.9518823263623952,
+        2.1368474524585777,
+        -0.0018216477783718243,
+        -0.00819875634441552,
+        0.0719253684421086
+      ]
+    },
+    "043-curl": {
+      "plan_sha256": "944d25852103aaf22f6942f27d99802c079003a45919525cce5b829ec34e3300",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.4162500000000001,
+        -0.8325000000000002,
+        0.4162500000000001,
+        0.0,
+        0.04152056384425406,
+        -0.09048204851374529,
+        -2.1183470232347097,
+        1.4466871261804037,
+        0.015524591827034463,
+        0.15693163526821857,
+        0.03706859763423038,
+        -0.5001827408102765,
+        -1.124261439769023,
+        1.6891808964441537,
+        1.4005142562881954,
+        -0.06221023757866184,
+        0.08853451038614449,
+        0.009161770897615603
+      ]
+    },
+    "044-spiral": {
+      "plan_sha256": "a4966f00f69346d872b5031c114ad3c05a8cb0df8c81678c6ad850b4484de0e0",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.2739788037500001,
+        -0.5479576075000002,
+        0.2739788037500001,
+        0.0,
+        -0.4412606688144707,
+        -0.4709337328246806,
+        -2.2746656609047915,
+        1.3247007239649358,
+        -0.01591252005775628,
+        -0.13873682376166396,
+        0.02485404408868403,
+        -0.4546508368337492,
+        -1.1985541124456591,
+        2.1976653054384427,
+        1.3104814028726273,
+        0.005812230608196554,
+        -0.13875941878661713,
+        -0.005535099976926181
+      ]
+    },
+    "045-bolt": {
+      "plan_sha256": "f3b77679edcffafcaa845174335e6f5ad84e20a8fb4e5d68328c21c58b49075f",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.24357273750000014,
+        -0.48714547500000027,
+        0.24357273750000014,
+        0.0,
+        -0.2952522703561142,
+        -0.29206200856684295,
+        -2.1850787935583558,
+        1.7386219174565234,
+        -0.002449627651072783,
+        -0.06232703399157935,
+        0.02434296082959629,
+        -0.3729759425532842,
+        -0.9096150138944783,
+        2.281,
+        1.7221432623093194,
+        -1.1113433535657156e-08,
+        -1.442817125557461e-05,
+        -0.00028594307887391996
+      ]
+    },
+    "046-diamond": {
+      "plan_sha256": "e7ddb299bdad170262ec25fdf98eefef7ee4d16dc473234526ae33fd073e2517",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.20391570125000008,
+        -0.40783140250000016,
+        0.20391570125000008,
+        0.0,
+        -0.29398389289783927,
+        -0.3768092677585028,
+        -2.0886111103944156,
+        1.8175604225051185,
+        -0.00024632756202891995,
+        0.05608660452931114,
+        -0.037411984628531056,
+        -0.2980267251394389,
+        -0.9402174870181199,
+        2.267527175107762,
+        1.8423024870886762,
+        -0.0008453105020506727,
+        0.06752599746445065,
+        -0.0034133099063260418
+      ]
+    },
+    "047-shield": {
+      "plan_sha256": "3cac90ee658800d68b0d786fadd4a481e50e0880ba1f2a66ac31b5fe8da02715",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.22122533250000015,
+        -0.4424506650000003,
+        0.22122533250000015,
+        0.0,
+        -0.18256338828572416,
+        -0.10454386454127167,
+        -1.895089410261414,
+        2.048341077888927,
+        -0.0028306445993419734,
+        0.12175038422247346,
+        -0.11167234851429178,
+        -0.3656171545230212,
+        -0.9347312547009251,
+        2.134901557243291,
+        2.095759418859724,
+        0.003352923640778537,
+        0.11881135909402472,
+        0.04817848671554903
+      ]
+    },
+    "048-s-ribbon": {
+      "plan_sha256": "f7761843ed663445e4a34f826c4f5177c93f812ffe889ac5a54839bb8d17adad",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3100000000000001,
+        -0.6200000000000002,
+        0.3100000000000001,
+        0.0,
+        0.7411797381396161,
+        -0.9781627645416264,
+        -2.0892636880657816,
+        2.156905569919398,
+        0.052890008247990214,
+        0.008218372321773809,
+        -0.013849464330636043,
+        -0.6462996724360032,
+        -0.9153218240896683,
+        2.0496004666612375,
+        2.149863413426574,
+        -0.0037501171723915133,
+        -0.005330651992321803,
+        0.08854392323770303
+      ]
+    },
+    "049-moon-star-five": {
+      "plan_sha256": "7fa51620465bea10c869829e6cf34569dac51b2d8465ab40df483abac5edada5",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3133609518750002,
+        -0.6267219037500004,
+        0.3133609518750002,
+        0.0,
+        -0.14659403538404056,
+        -0.14308505416050346,
+        -2.281,
+        1.2968165437664314,
+        -1.226398424472213e-05,
+        -0.00016749798596467927,
+        0.0004735770089356818,
+        -0.3625660305660448,
+        -0.9342552722652592,
+        2.265789226610819,
+        1.8326645577447913,
+        -0.02571753369191202,
+        0.1278138678604966,
+        -0.06269554823493523
+      ]
+    },
+    "050-blossom-leaf": {
+      "plan_sha256": "b12e96f8ceda9f128090915133c398cd443b9e8927c13bf3050680fd9d569c1a",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.30947916687500016,
+        -0.6189583337500003,
+        0.30947916687500016,
+        0.0,
+        -0.2474903783974366,
+        -0.4339342872624096,
+        -2.133921116989244,
+        1.731290442503291,
+        -0.02895465577981644,
+        0.12667763327283302,
+        -0.057427278310330176,
+        -0.4799427546065788,
+        -0.8414944372806084,
+        1.724078916892135,
+        1.777502290846063,
+        -0.012251953029695433,
+        -0.021759686273434442,
+        0.12944287689441875
+      ]
+    },
+    "051-heart-sparkle": {
+      "plan_sha256": "ce89acf5ac4f3f63d1321484f6f8ac81780969bf83915477192e9e542b713258",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.2515860100000002,
+        -0.5031720200000004,
+        0.2515860100000002,
+        0.0,
+        -0.15967558885374983,
+        -0.15892486520575377,
+        -2.1585651303844413,
+        1.8241132310832073,
+        1.6899602930392308e-05,
+        0.0014624580146525307,
+        0.01269419577616972,
+        -0.35351878972675765,
+        -0.8683223435070948,
+        2.1917622053106225,
+        1.8933247919575844,
+        0.027105510970337473,
+        0.03216274797632953,
+        -0.11402451113677986
+      ]
+    },
+    "052-rainbow-cloud": {
+      "plan_sha256": "b1ab4df45f569251baf45c93edea4adb5c87b3af4ff4bafc7b69c6a922f4679e",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3100000000000001,
+        -0.6200000000000002,
+        0.3100000000000001,
+        0.0,
+        0.18624308849654123,
+        0.161,
+        -1.8334297741744685,
+        2.0433322021638265,
+        0.0003191453075464435,
+        0.008300354249201586,
+        -0.014065857973252284,
+        -0.045552100278682915,
+        -0.04236509699495029,
+        1.9007883757313613,
+        2.0784218455421297,
+        0.026885783857101716,
+        0.09530521708279494,
+        0.10394315411299243
+      ]
+    },
+    "053-fish-wave": {
+      "plan_sha256": "643a201eb32c07a176b087b9e92f57c0b7a484246482e0c0b8b86afbabe41a4b",
+      "time_in_archived_plan_s": 4.04,
+      "position_rad": [
+        0.3100000000000001,
+        -0.6200000000000002,
+        0.3100000000000001,
+        0.0,
+        0.20600503668956655,
+        -0.1276604841597035,
+        -1.829968309361177,
+        2.0560124356207896,
+        -0.02996759204580643,
+        0.10915960688712402,
+        -0.0723626888781427,
+        -0.1494531224974146,
+        0.050958951168447904,
+        1.8059637075275463,
+        2.1176299773783294,
+        -1.4425181009350993e-05,
+        -0.007108689481211555,
+        0.006843615045270404
+      ]
+    },
+    "054-rocket-comet": {
+      "plan_sha256": "f17c8b775a2a6c0f9b3444818a9420c705835435e9dc37fb4add61f7b2a16277",
+      "time_in_archived_plan_s": 6.2,
+      "position_rad": [
+        0.2965572468750001,
+        -0.5931144937500002,
+        0.2965572468750001,
+        0.0,
+        -0.31739433409221174,
+        -0.4989959309559058,
+        -2.0394709951616323,
+        1.8324399395350317,
+        -0.005612489429118934,
+        -0.04359694882014927,
+        0.024154967733405145,
+        -0.20511075677716417,
+        -0.6624085788653958,
+        1.201383270614599,
+        1.8270684350782043,
+        0.03657149308940693,
+        0.012570981444130951,
+        -0.08796649882592344
+      ]
+    },
+    "055-butterfly-blossom": {
+      "plan_sha256": "bdab8df84e964a29ef787d76922b703138dad56d26e37c3d8780ef00aba6552e",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.2721875000000002,
+        -0.5443750000000004,
+        0.2721875000000002,
+        0.0,
+        0.22212079916001018,
+        0.13420585131409243,
+        -1.6859164117089573,
+        2.0763177990981547,
+        0.002388287723970319,
+        0.08868217836776685,
+        -0.11937240715555643,
+        -0.2828386763567131,
+        -0.9018321715820194,
+        2.218405749852264,
+        1.7599367084381272,
+        -0.023075333958280368,
+        0.11930167978069194,
+        -0.0823154449745999
+      ]
+    },
+    "056-cat-heart": {
+      "plan_sha256": "59d905fbd4e995bf1c3bc94057f997c09b7628fd1121d67a7654477e93adba96",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.29267136437500013,
+        -0.5853427287500003,
+        0.29267136437500013,
+        0.0,
+        0.12723146004583358,
+        0.08967909547655306,
+        -1.7990060849202234,
+        2.0910142517663823,
+        -0.0017108051223416797,
+        -0.005788524014571768,
+        0.09495606044807951,
+        -0.41409223367900233,
+        -0.8006279723897016,
+        2.2227646742872325,
+        1.8394503013935104,
+        -9.389400531632956e-05,
+        -0.006577211435312769,
+        0.013484124863872557
+      ]
+    },
+    "057-gull-mountain": {
+      "plan_sha256": "9eb36ba4e653897d4b89fa1932d29e9ee76b7233f8b88989694de4e819fb78a8",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.36281250000000015,
+        -0.7256250000000003,
+        0.36281250000000015,
+        0.0,
+        0.1914048626977272,
+        0.06976712767534497,
+        -1.8108895064964008,
+        2.0855334436275026,
+        9.087836250906069e-05,
+        0.0027805281812677426,
+        -0.016874506047806992,
+        -0.6079325618881095,
+        -1.012286578257533,
+        1.8014823294798987,
+        1.819562204949677,
+        -0.005797246292225934,
+        -0.003278424008766553,
+        0.11941241019865104
+      ]
+    },
+    "058-leaf-droplet": {
+      "plan_sha256": "9ffa0cf1f550031042b254e7d3aef95786ade85360d4d9dad3d0af8e51d358db",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.3052104168750001,
+        -0.6104208337500002,
+        0.3052104168750001,
+        0.0,
+        0.22732915873703458,
+        0.04294681848980889,
+        -1.9142917058179127,
+        1.7226668248979253,
+        0.000497935811112109,
+        0.16681395558808015,
+        -0.05150259310460231,
+        -0.2801495958329691,
+        -0.9445485872718263,
+        2.281,
+        1.8123844679944476,
+        5.123024365061622e-07,
+        -1.9356174066966796e-05,
+        -0.00035423704992526615
+      ]
+    },
+    "059-lantern-blossom": {
+      "plan_sha256": "d6a3c65412774bf6ad3b2ae92caa8e60bd1a934c66f003b6258d830ed6b0e684",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.21531250000000018,
+        -0.43062500000000037,
+        0.21531250000000018,
+        0.0,
+        -0.2336946909012846,
+        -0.32631930570700923,
+        -2.012170046710124,
+        1.9392197507517637,
+        0.0014414519960420375,
+        0.018921163518217425,
+        0.0009189863202748491,
+        -0.3141344379320587,
+        -0.8950875379113439,
+        2.2660895251754347,
+        1.8242668106919873,
+        -1.5125861275863603e-05,
+        0.004421559062301675,
+        0.005774146141011801
+      ]
+    },
+    "060-music-sparkle": {
+      "plan_sha256": "015404d5f32b51ad03802dccff66bf318a4ef96e98490d2e70c566ea5a270ee1",
+      "time_in_archived_plan_s": 4.0,
+      "position_rad": [
+        0.29367458250000017,
+        -0.5873491650000003,
+        0.29367458250000017,
+        0.0,
+        0.09173565196404768,
+        0.15975800583655086,
+        -2.014651402170117,
+        1.895836428638841,
+        0.0015060038850123994,
+        0.02197877959949473,
+        0.006267653238870224,
+        -0.3607555846317126,
+        -0.8816176660823396,
+        2.2661264870645303,
+        1.8953255898650982,
+        -2.5926749581333644e-05,
+        0.031101969564008822,
+        0.005148739437272409
+      ]
     }
   }
 }

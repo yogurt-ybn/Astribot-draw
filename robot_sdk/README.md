@@ -165,7 +165,25 @@ bash robot_sdk/run_sim.sh run output/t1-waves/sdk-plan.npz --output output/t1-wa
 
 执行前将仿真初始化到轨迹首帧，或由规划器从反馈姿态生成经过检查的接近段。默认首帧误差大于 0.03 rad 会拒绝并报告偏差最大的关节；执行器不会自动插入接近动作。相机/世界坐标旋转属于规划模型，关节命令不再额外旋转。HDF5 全身回放需要独立的全身/WBC 契约，不能塞进本 18 关节接口。
 
-## Python 接口
+## 选择已保存的图案轨迹（0–57，官方仿真）
+
+```bash
+bash robot_sdk/run_pattern.sh --list
+bash robot_sdk/run_pattern.sh       # 提示输入 0–57
+bash robot_sdk/run_pattern.sh 0     # 爱心
+bash robot_sdk/run_pattern.sh 57    # 音符与星光
+bash robot_sdk/run_pattern.sh 0 --plan-only
+```
+
+脚本使用图案库的固定连续编号 0–57。`--list` 显示准确对应关系。需要已启动的官方 `astribot-simulation` 容器，以及 `pattern_library/v1/pattern_lookup.json` 和三个对应文件：`source.svg`、`sdk-plan.npz`、`sdk-plan.validation.json`。
+
+绘制段固定在原画布世界坐标，不绑定上一次测试的机器人起点。脚本丢弃缓存中的旧进场，读取当前关节反馈，为共享躯干和双臂重新检查/规划到精确绘制起点的进场，然后复用缓存的躯干与双臂绘制曲线；不重新求整段绘制 IK、不移动或缩放 SVG。查询文件的 `canvas_drawing_entries` 保存由原优化计划提取的零速度绘制起点和时间，并绑定原命令轨迹 SHA256。
+
+保持 125 Hz、关节上限 1 rad/s、末端上限 0.2 m/s，以及当前仿真使用的固定夹爪几何。最终每条命令仍检查几何、源 SVG 形状和速度，执行时保留反馈与实际姿态保护；检查失败时不发送该次绘制运动。正常绘制结束停在末端。模型 revision、画布标定、头部/底盘位置需与缓存几何相符。`--output DIRECTORY` 指定报告目录；默认保存在 `output/pattern-编号-时间/`。Ctrl+C 取消当前任务。
+
+已在官方仿真验证：48 项 SDK 测试、34 项规划器测试及全部 58 个编号的新进场与缓存绘制衔接检查通过。0 和 57 号已分别完成实际运动，约 15.45 秒与 21.72 秒；结束停在绘制末端。
+
+## Python 接口（通用轨迹）
 
 ```python
 from astribot_draw_sdk import RobotSession, Trajectory

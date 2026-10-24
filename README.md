@@ -22,9 +22,17 @@ The latest [five-design simulation regression](robot_sdk/examples/generalization
 
 ## Validated light-painting pattern library
 
-The [English recommendation catalog](pattern_library/v1/PATTERN_CATALOG.en.md) lists **58 complete two-arm designs** that finished official T1 simulation. The [lookup JSON](pattern_library/v1/pattern_lookup.json) maps each stable pattern ID to its SVG, precomputed 125 Hz command trajectory and required hash-bound validation file. It also records the trajectory's starting joints and model/profile requirements. IDs 020 and 024 are excluded because the original continuous-IK search rejected them.
+The [English pattern index](pattern_library/v1/PATTERN_CATALOG.en.md) contains 58 concise descriptions indexed 0–57. The [lookup JSON](pattern_library/v1/pattern_lookup.json) resolves each index to its SVG, saved command trajectory and required hash-bound validation file.
 
-This minimal distribution contains the SVGs and the exact optimized execution plans with their small loader-required validation files. Cached plans include the original approach and drawing; a different start pose requires the measured-start SVG planning pipeline. These are simulation results, not hardware qualification.
+With the official simulator running:
+
+```bash
+bash robot_sdk/run_pattern.sh --list
+bash robot_sdk/run_pattern.sh       # enter 0–57
+bash robot_sdk/run_pattern.sh 0
+```
+
+The script plans a checked approach from current feedback to the exact fixed-canvas drawing start, discards the historical approach and reuses the cached coupled torso/arm drawing curve. It runs at 125 Hz and stops at the drawing endpoint. See [simulation SDK usage](robot_sdk/README.md) for checks and runtime settings.
 
 ## Earlier T1 case-specific demonstrations
 

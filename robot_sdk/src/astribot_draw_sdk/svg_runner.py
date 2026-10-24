@@ -234,33 +234,8 @@ class SvgJob:
         self.guard = SvgStateGuard(auxiliary, model, initial, self.checker,
                                    skip_gripper_checks=self.skip_gripper_checks)
         self.verify_kinematics()
-        u, targets = planner.shared_targets(parsed, sampling='uniform')
-        self.report['target_sampling'] = parsed['metadata']['shared_target_sampling']
-        self.checkpoint('model_and_state')
-        self.report['candidate_failures'] = []
-        for name, torso in planner.torso_candidates(u, targets):
-            try:
-                print('SVG_CANDIDATE', name, flush=True)
-                home, chains, solved, search = planner.ik_candidate(model, u, targets, torso, self.seeds,
-                                                                  initial_qpos=initial)
-                self.checkpoint('ik')
-                q, dq, phase, desired = planner.schedule(model, u, targets, torso, home, chains, solved,
-                                                        return_home=False, timing='feedrate',
-                                                        joint_speed=self.joint_speed, tip_speed=self.tip_speed)
-                self.checkpoint('scheduling')
-                checked = validate_native_contract(model, q, dq, phase, desired, joint_speed=self.joint_speed)
-                self.checkpoint('native_plan_validation')
-                break
-            except (planner.PlanningError, RuntimeError) as exc:
-                self.checkpoint('rejected_candidate_work')
-                self.report['candidate_failures'].append(dict(candidate=name, error=str(exc)))
-                print('SVG_REJECT', name, str(exc), flush=True)
-                self.save_report()
-        else:
-            raise RuntimeError('No checked SVG plan from measured state; see svg-run.json candidate_failures')
-        self.report.update(selected_torso_candidate=name, ik_search=search, native_plan=checked)
-        self.report['stages']['planning'] = 'passed'
-        dt = float(model.opt.timestep)
+        q, dq, phase, desired = self.plan_motion(parsed)
+        dt = getattr(self, 'plan_timestep', float(model.opt.timestep))
         minimum_duration = (len(q)-1)*dt
         time_scale = motion_time_scale(minimum_duration, self.duration_s, self.speed_scale)
         self.report.update(minimum_schedule_duration_s=minimum_duration, effective_time_scale=time_scale)
@@ -356,6 +331,37 @@ class SvgJob:
         self.checkpoint('measured_drawing_audit')
         self.report['status'] = 'completed'
         return self.report
+
+    def plan_motion(self, parsed):
+        """Fresh SVG planning; cache jobs override only this planning boundary."""
+        planner, model, initial = self.planner, self.model, self.initial
+        u, targets = planner.shared_targets(parsed, sampling='uniform')
+        self.report['target_sampling'] = parsed['metadata']['shared_target_sampling']
+        self.checkpoint('model_and_state')
+        self.report['candidate_failures'] = []
+        for name, torso in planner.torso_candidates(u, targets):
+            try:
+                print('SVG_CANDIDATE', name, flush=True)
+                home, chains, solved, search = planner.ik_candidate(model, u, targets, torso, self.seeds,
+                                                                  initial_qpos=initial)
+                self.checkpoint('ik')
+                q, dq, phase, desired = planner.schedule(model, u, targets, torso, home, chains, solved,
+                                                        return_home=False, timing='feedrate',
+                                                        joint_speed=self.joint_speed, tip_speed=self.tip_speed)
+                self.checkpoint('scheduling')
+                checked = validate_native_contract(model, q, dq, phase, desired, joint_speed=self.joint_speed)
+                self.checkpoint('native_plan_validation')
+                break
+            except (planner.PlanningError, RuntimeError) as exc:
+                self.checkpoint('rejected_candidate_work')
+                self.report['candidate_failures'].append(dict(candidate=name, error=str(exc)))
+                print('SVG_REJECT', name, str(exc), flush=True)
+                self.save_report()
+        else:
+            raise RuntimeError('No checked SVG plan from measured state; see svg-run.json candidate_failures')
+        self.report.update(selected_torso_candidate=name, ik_search=search, native_plan=checked)
+        self.report['stages']['planning'] = 'passed'
+        return q, dq, phase, desired
 
     def drawing_target(self, t):
         index = min(max(0, int(t/self.dt)), len(self.q)-1)
