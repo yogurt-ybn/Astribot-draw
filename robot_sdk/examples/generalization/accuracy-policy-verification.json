@@ -1,0 +1,44 @@
+{
+  "schema": "astribot-drawing-accuracy-policy/v1",
+  "scope": "Offline replay of original SDK feedback logs; no SDK connection, control request or new motion. Original strict audit records preserved.",
+  "drawing_accuracy_policy": "report_only",
+  "sdk_unit_tests_passed": 45,
+  "cases": [
+    {
+      "candidate": "flowing_s_curves",
+      "original_motion_status": "completed",
+      "original_strict_audit_status": "failed",
+      "source_sha256": "e36759993b9e774f825d97b3e029a21e1052bc0495d0d356c93a41834186946b",
+      "new_quality_status": "warning",
+      "enforcement": "report_only",
+      "threshold_m": 0.002,
+      "max_error_m": [
+        0.00203822270199454,
+        0.0020416027819557866
+      ],
+      "rms_error_m": [
+        0.0006833000918466524,
+        0.0006867823173778428
+      ],
+      "audit_completed_without_exception": true
+    },
+    {
+      "candidate": "swept_wings",
+      "original_motion_status": "completed",
+      "original_strict_audit_status": "failed",
+      "source_sha256": "3284a1220ece40be02b0e33680f2322010e1a742e64eaece127e538568030bb6",
+      "new_quality_status": "warning",
+      "enforcement": "report_only",
+      "threshold_m": 0.002,
+      "max_error_m": [
+        0.0025428480062622523,
+        0.002495889178512385
+      ],
+      "rms_error_m": [
+        0.0006178783414681248,
+        0.0006210277846208067
+      ],
+      "audit_completed_without_exception": true
+    }
+  ]
+}

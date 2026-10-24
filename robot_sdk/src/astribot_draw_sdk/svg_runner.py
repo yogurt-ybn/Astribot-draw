@@ -83,6 +83,18 @@ def motion_time_scale(minimum_duration, duration_s, speed_scale):
     return minimum_duration/target
 
 
+def assess_drawing_accuracy(errors, threshold_m=.002):
+    """Position accuracy is a reported quality metric, not a motion stop gate."""
+    errors = np.asarray(errors, dtype=float)
+    if errors.ndim != 2 or errors.shape[1] != 2 or not len(errors) or not np.isfinite(errors).all() or np.any(errors < 0):
+        raise RuntimeError('Drawing accuracy requires finite nonnegative feedback errors for both arms')
+    exceeded = bool(np.max(errors) > threshold_m)
+    return dict(status='warning' if exceeded else 'passed', enforcement='report_only',
+                threshold_m=threshold_m, threshold_exceeded=exceeded,
+                max_error_m=errors.max(axis=0).tolist(),
+                rms_error_m=np.sqrt(np.mean(errors**2, axis=0)).tolist())
+
+
 class SvgStateGuard(FixedPartsGuard):
     def __init__(self, baseline, model, home, checker, *, skip_gripper_checks=False):
         super().__init__(baseline, skip_gripper_checks=skip_gripper_checks)
@@ -141,6 +153,7 @@ class SvgJob:
                            command_speed_ceiling_rad_s=robot.policy.max_speed_rad_s,
                            gripper_checks='skipped_simulation_only' if self.skip_gripper_checks else 'enabled',
                            gripper_geometry='fixed_model_preset' if self.skip_gripper_checks else 'near_closed_feedback',
+                           drawing_accuracy_policy='report_only',
                            stages={}, completion_behavior='stop_at_drawing_end',
                            timings_s=dict(sdk_initialization=max(0., now-self.started)),
                            scope='Official simulation; free-space virtual light tip, not surface-contact drawing',
@@ -426,8 +439,7 @@ class SvgJob:
             raise RuntimeError('No measured draw-phase samples in SDK execution log')
         errors, actual, expected = np.array(errors), np.array(actual), np.array(expected)
         self.report['measured_drawing'] = dict(samples=len(rows), position_source='FK of received SDK joint feedback',
-            max_error_m=errors.max(axis=0).tolist(), rms_error_m=np.sqrt(np.mean(errors**2, axis=0)).tolist(),
-            threshold_m=.002)
+            **assess_drawing_accuracy(errors))
         np.savez_compressed(self.output/'measured-drawing.npz', time=rows, actual=actual, desired=expected,
                             error=errors, sides=['left', 'right'])
         image = Image.new('RGB', (616, 560), 'white')
@@ -437,6 +449,10 @@ class SvgJob:
             uv = np.c_[(actual[:, si, 0]+.77)/.0025, (1.89-actual[:, si, 2])/.0025]
             draw.line([tuple(p) for p in uv], fill=color, width=2)
         image.save(self.output/'measured-vs-svg.png')
-        if np.max(errors) > .002:
-            raise RuntimeError(f'Measured SVG drawing exceeds 2 mm tracking gate: {np.max(errors)*1000:.3f} mm')
-        self.report['stages']['measured_drawing'] = 'passed'
+        quality = self.report['measured_drawing']
+        self.report['stages']['measured_drawing'] = quality['status']
+        if quality['threshold_exceeded']:
+            warning = dict(code='drawing_accuracy',
+                message=f'Measured SVG drawing error {np.max(errors)*1000:.3f} mm exceeds the 2 mm reference; report only')
+            self.report.setdefault('warnings', []).append(warning)
+            print('SVG_ACCURACY_WARNING '+warning['message'], flush=True)

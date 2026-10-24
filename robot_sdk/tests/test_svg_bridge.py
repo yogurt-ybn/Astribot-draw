@@ -11,7 +11,7 @@ from astribot_draw_sdk import RobotSession, T1_JOINTS, Trajectory
 from astribot_draw_sdk.backends import MOCK_HOME, MockBackend
 from astribot_draw_sdk.cli import drawing_policy
 from astribot_draw_sdk.ros_feedback import AUXILIARY_PARTS
-from astribot_draw_sdk.svg_runner import FixedPartsGuard, full_pose, validate_auxiliary, validate_native_contract, motion_time_scale
+from astribot_draw_sdk.svg_runner import FixedPartsGuard, full_pose, validate_auxiliary, validate_native_contract, motion_time_scale, assess_drawing_accuracy
 
 
 def auxiliary():
@@ -20,6 +20,18 @@ def auxiliary():
 
 
 class SvgBoundaryTests(unittest.TestCase):
+    def test_drawing_accuracy_reports_deviation_without_rejecting_completed_motion(self):
+        errors = np.array([[.001, .004], [.003, .002]])
+        report = assess_drawing_accuracy(errors)
+        self.assertEqual(report['status'], 'warning')
+        self.assertEqual(report['enforcement'], 'report_only')
+        self.assertTrue(report['threshold_exceeded'])
+        np.testing.assert_allclose(report['max_error_m'], [.003, .004])
+        np.testing.assert_allclose(report['rms_error_m'], np.sqrt(np.mean(errors**2, axis=0)))
+        self.assertEqual(assess_drawing_accuracy([[.001, .002]])['status'], 'passed')
+        for invalid in ([], [[np.nan, 0.]], [[0., np.inf]], [[-.001, .001]]):
+            with self.assertRaisesRegex(RuntimeError, 'finite nonnegative'):
+                assess_drawing_accuracy(invalid)
     def test_target_duration_cannot_force_motion_above_configured_speed_ceilings(self):
         self.assertEqual(motion_time_scale(20., 40., 1.), .5)
         self.assertEqual(motion_time_scale(20., 40., 2.), 1.)
