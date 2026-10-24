@@ -1,0 +1,9 @@
+{
+  "status": "interrupted_not_failure",
+  "reason": "Superseded by uniformly applied common-home v2 before baseline dynamic completion; preserve evidence, prioritize all-three final benchmark",
+  "completed_cases": [],
+  "ginkgo": "IK/RRT/full-plan passed; dynamic run interrupted after at least10000steps; not validated complete",
+  "koi": "not_run",
+  "wings": "not_run",
+  "unix": 1792819814.561939
+}

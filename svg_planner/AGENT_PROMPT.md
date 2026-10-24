@@ -1,0 +1,1 @@
+请仅依据 SVG_GENERATION_SPEC.md 和 t1-canvas/ 中的标定/遮罩，独立生成三组不同的双臂一笔画 SVG 候选，其中一组为展开翅膀。先阅读规范，不参考已有设计或旧候选。每组先写 SVG 原稿，再运行 validate_and_render.py 生成同源 PNG 和报告；失败时修正原稿并记录原因。不得修改规范、校验器、标定或遮罩，不修改机器人代码，不运行真机、不上传 GitHub。将输出放到 generated/，说明静态检查结果并保持机械可执行性 UNVALIDATED。请提交 SVG，不用 JSON 点序列代替。

@@ -1,0 +1,287 @@
+{
+  "candidate": "koi",
+  "source_sha256": "6f970acb2a26ae055324f3c96f5db3bc05042869dd51f0fc43e9f2d01ce8ffb8",
+  "static": "PASS",
+  "mechanical_feasibility": "UNVALIDATED",
+  "ik": "not_run",
+  "full_plan": "not_run",
+  "simulation": "not_run",
+  "modification_log": [
+    "v1→v1.1：重写为圆滑三次贝塞尔轮廓，圆化羽尖、叶缘、鱼尾及闭合缝；原稿保存在attempts/v1。"
+  ],
+  "masks": {
+    "status": "PASS",
+    "scope": "sampled marginal mask only",
+    "arms": {
+      "left": {
+        "checked_cells": 952,
+        "envelope_px": 0.1
+      },
+      "right": {
+        "checked_cells": 952,
+        "envelope_px": 0.1
+      }
+    }
+  },
+  "format_and_masks": "PASS",
+  "smoothness": {
+    "status": "PASS",
+    "contract": "v1.1",
+    "scope": "finite analytic-derivative geometric design prefilter, not motion feasibility",
+    "max_join_angle_deg": 5.0,
+    "curvature_limit_per_px": 0.1,
+    "samples_per_segment": 1025,
+    "arms": {
+      "left": {
+        "status": "PASS",
+        "closed": true,
+        "segments": 18,
+        "max_sampled_curvature_per_px": 0.07418739854160512,
+        "joins": [
+          {
+            "from": 0,
+            "to": 1,
+            "angle_deg": 7.658369466765373e-14
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "angle_deg": 7.294952952106413e-07
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "angle_deg": 0.0
+          },
+          {
+            "from": 3,
+            "to": 4,
+            "angle_deg": 5.574724551475109e-06
+          },
+          {
+            "from": 4,
+            "to": 5,
+            "angle_deg": 4.950356012358543e-06
+          },
+          {
+            "from": 5,
+            "to": 6,
+            "angle_deg": 0.0
+          },
+          {
+            "from": 6,
+            "to": 7,
+            "angle_deg": 2.022203969731681e-06
+          },
+          {
+            "from": 7,
+            "to": 8,
+            "angle_deg": 7.546272485508451e-06
+          },
+          {
+            "from": 8,
+            "to": 9,
+            "angle_deg": 0.0
+          },
+          {
+            "from": 9,
+            "to": 10,
+            "angle_deg": 7.546272485508451e-06
+          },
+          {
+            "from": 10,
+            "to": 11,
+            "angle_deg": 2.0222041996296597e-06
+          },
+          {
+            "from": 11,
+            "to": 12,
+            "angle_deg": 0.0
+          },
+          {
+            "from": 12,
+            "to": 13,
+            "angle_deg": 5.166556342653024e-06
+          },
+          {
+            "from": 13,
+            "to": 14,
+            "angle_deg": 0.0
+          },
+          {
+            "from": 14,
+            "to": 15,
+            "angle_deg": 3.2577153145327334e-06
+          },
+          {
+            "from": 15,
+            "to": 16,
+            "angle_deg": 0.0
+          },
+          {
+            "from": 16,
+            "to": 17,
+            "angle_deg": 4.267548043241927e-06
+          },
+          {
+            "from": 17,
+            "to": 0,
+            "angle_deg": 5.6900639139894605e-06
+          }
+        ],
+        "errors": []
+      },
+      "right": {
+        "status": "PASS",
+        "closed": true,
+        "segments": 18,
+        "max_sampled_curvature_per_px": 0.07418739854160715,
+        "joins": [
+          {
+            "from": 0,
+            "to": 1,
+            "angle_deg": 7.658369466765373e-14
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "angle_deg": 7.294952330101299e-07
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "angle_deg": 0.0
+          },
+          {
+            "from": 3,
+            "to": 4,
+            "angle_deg": 5.574724350780379e-06
+          },
+          {
+            "from": 4,
+            "to": 5,
+            "angle_deg": 4.950355872703203e-06
+          },
+          {
+            "from": 5,
+            "to": 6,
+            "angle_deg": 0.0
+          },
+          {
+            "from": 6,
+            "to": 7,
+            "angle_deg": 2.0222041862189568e-06
+          },
+          {
+            "from": 7,
+            "to": 8,
+            "angle_deg": 7.546273290198086e-06
+          },
+          {
+            "from": 8,
+            "to": 9,
+            "angle_deg": 0.0
+          },
+          {
+            "from": 9,
+            "to": 10,
+            "angle_deg": 7.546273290198086e-06
+          },
+          {
+            "from": 10,
+            "to": 11,
+            "angle_deg": 2.022204416116936e-06
+          },
+          {
+            "from": 11,
+            "to": 12,
+            "angle_deg": 0.0
+          },
+          {
+            "from": 12,
+            "to": 13,
+            "angle_deg": 5.166556295964698e-06
+          },
+          {
+            "from": 13,
+            "to": 14,
+            "angle_deg": 2.3579280404128294e-14
+          },
+          {
+            "from": 14,
+            "to": 15,
+            "angle_deg": 3.257715329152175e-06
+          },
+          {
+            "from": 15,
+            "to": 16,
+            "angle_deg": 0.0
+          },
+          {
+            "from": 16,
+            "to": 17,
+            "angle_deg": 4.267548043241927e-06
+          },
+          {
+            "from": 17,
+            "to": 0,
+            "angle_deg": 5.6900639139894605e-06
+          }
+        ],
+        "errors": []
+      }
+    }
+  },
+  "render_comparison": {
+    "method": "SVG vs same-style parsed polyline alpha masks; bidirectional 1px Chebyshev dilation",
+    "alpha_threshold": 32,
+    "pixel_tolerance": 1,
+    "source_pixels": 3393,
+    "parsed_pixels": 3392,
+    "source_unmatched": 0,
+    "parsed_unmatched": 0,
+    "status": "PASS",
+    "limitation": "Raster agreement at this resolution, not a mathematical geometric equivalence proof"
+  },
+  "arms": {
+    "left": {
+      "bounds_uv": [
+        [
+          339.047851703125,
+          228.22753912109374
+        ],
+        [
+          574.2138674101564,
+          349.2122398066406
+        ]
+      ],
+      "length_m": 1.5608840098605037,
+      "closed": true,
+      "flattened_points": 697,
+      "curve_to_polyline_error_bound_px": 0.1,
+      "removed_zero_length_segments": 1
+    },
+    "right": {
+      "bounds_uv": [
+        [
+          41.786132589843746,
+          228.22753912109374
+        ],
+        [
+          276.952148296875,
+          349.2122398066406
+        ]
+      ],
+      "length_m": 1.5608840098605037,
+      "closed": true,
+      "flattened_points": 697,
+      "curve_to_polyline_error_bound_px": 0.1,
+      "removed_zero_length_segments": 1
+    }
+  },
+  "execution_status": "UNVALIDATED",
+  "design_intent": "对向游鱼：保留鱼体和凹尾，圆化鱼头、尾端与闭合缝。全部采用显式 C 曲线，满足 v1.1 定量平滑预筛。",
+  "initial_attempt_passed": false,
+  "revision": "v1.1",
+  "initial_attempt_note": "v1 passed older format/mask/render checks only; revised for v1.1 smoothness gate"
+}

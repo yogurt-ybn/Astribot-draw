@@ -1,0 +1,34 @@
+{
+  "config": {
+    "mode": "simulate",
+    "seeds": 12,
+    "candidate_order": [
+      "height_coupled",
+      "bend_0.45",
+      "bend_0.35",
+      "bend_0.55"
+    ],
+    "ik_random_seed": 36,
+    "rrt_random_seed": 12345,
+    "maximum_steps": 200000,
+    "input_geometry_policy": "unchanged; no scaling or repair",
+    "initial_state": "selected torso candidate at progress=0 + identical neutral arms rule; not arbitrary standing"
+  },
+  "source_sha256": {
+    "download_t1_assets.py": "11ebf7301adfe847734da506102d332a2b5f039b617f00617abac9e9df2101f4",
+    "planning_primitives.py": "fc1b022c340a470d1d8a28370146171c602be68dc2002871831462a7ed61f4cc",
+    "run_benchmark.py": "bcfa843be9954fa257322089246c32e2ec0cdb25b1da5af7a3507aae6260ecd6",
+    "svg_input.py": "e0e9f955d2a3c6f7b8a4f91f1f4417dcd8bdd320d39824226c017184988767d7",
+    "svg_plan.py": "3628573adfb21fdf6830e447bb4c21950c9ad7890060226c2a0f1d985038554a",
+    "t1_kinematics.py": "eba351dbe2ffc9155c2299f35ab01825247d7bcd3557f84b47edaa0cd5f1871e",
+    "t1_model.py": "c90b03c370d1f40741cdf999a823a7b02a6fa439b9ee7a88a6c584e8bca72012",
+    "test_svg_backend.py": "079121fb7936e4cf9af9126b1d7ef19096bb2c6abb5d3a7f13f2073df4c6a645",
+    "test_svg_input.py": "261f3d87e23328bed6582a79829a41342873c7b14e3a5b883b61d646e9f981a3"
+  },
+  "input_sha256": {
+    "ginkgo.svg": "2069a373d715ff2ad6a72b07e49177243229ac44ba75d7d413188390b8768d5a",
+    "koi.svg": "6f970acb2a26ae055324f3c96f5db3bc05042869dd51f0fc43e9f2d01ce8ffb8",
+    "wings.svg": "4fe67f51fd020e6e01931b5778caddd186a8ba76409d319c95d565fd96ec2049"
+  },
+  "frozen_at_unix": 1792819621.9468048
+}

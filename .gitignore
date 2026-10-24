@@ -26,3 +26,8 @@ t1/t1-results/*/scene*.xml
 t1/workspace-recompute/results-final/model/
 t1/t1-results/wings/scene*
 t1/t1-results/wings/plans.npz
+
+# Generic SVG full-rate runs and generated scenes (compact review samples are tracked)
+svg_planner/runs/**/plan.npz
+svg_planner/runs/**/execution.npz
+svg_planner/runs/**/scene*.xml

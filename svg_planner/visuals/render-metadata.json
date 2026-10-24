@@ -1,0 +1,82 @@
+{
+  "run": "runs/frozen-v3-analytic-time",
+  "render_source_sha256": "f0358a91b7dce01f2ea56ba718d37abb3f7c4d41fc667901564baca3708b20a1",
+  "video_seconds_per_success": 8,
+  "fps": 15,
+  "canvas_projection": "u=(x+0.77)/0.0025; v=(1.89-z)/0.0025; projected actual tip xyz, not detected pixels",
+  "scope": "Measured execution only. No force control/hardware certification. Same framing and scale for all cases.",
+  "cases": [
+    {
+      "name": "ginkgo",
+      "input_sha256": "2069a373d715ff2ad6a72b07e49177243229ac44ba75d7d413188390b8768d5a",
+      "stages": {
+        "static": "passed",
+        "ik": "passed",
+        "full_plan": "passed",
+        "simulation": "passed"
+      },
+      "actual_execution": true,
+      "video_generated": true,
+      "robot_state_replay": true,
+      "report_sha256": "087bf88c555e0c53697a8b4427498fce6e187c263a59bb188828eb14aef5b61c",
+      "execution_sha256": "f3ebe8c5eb8a4c783acdca6eb90671d3405d962a856894106351d7eda269896d",
+      "simulation_seconds": 238.755,
+      "video_seconds": 8,
+      "playback_speed": 29.844375,
+      "actual_frames": 47751,
+      "tracking": {
+        "left": {
+          "rms_m": 0.0001689444162078739,
+          "max_m": 0.0009238592419980226
+        },
+        "right": {
+          "rms_m": 0.00016860112113545818,
+          "max_m": 0.0009530086657679018
+        }
+      }
+    },
+    {
+      "name": "koi",
+      "input_sha256": "6f970acb2a26ae055324f3c96f5db3bc05042869dd51f0fc43e9f2d01ce8ffb8",
+      "stages": {
+        "static": "passed",
+        "ik": "passed",
+        "full_plan": "passed",
+        "simulation": "passed"
+      },
+      "actual_execution": true,
+      "video_generated": true,
+      "robot_state_replay": true,
+      "report_sha256": "37329602eab8cbb38f2221502ce316b46379696244f231d9cb69d7ead4a8b3ca",
+      "execution_sha256": "25eddfb0ab5c5ee5ed365eb1b31da09e06f8439b9f79b0366a043284682ecc71",
+      "simulation_seconds": 295.635,
+      "video_seconds": 8,
+      "playback_speed": 36.954375,
+      "actual_frames": 59127,
+      "tracking": {
+        "left": {
+          "rms_m": 0.00010629701894805869,
+          "max_m": 0.0006052336221554349
+        },
+        "right": {
+          "rms_m": 0.00010263506208193093,
+          "max_m": 0.0005403121420798722
+        }
+      }
+    },
+    {
+      "name": "wings",
+      "input_sha256": "4fe67f51fd020e6e01931b5778caddd186a8ba76409d319c95d565fd96ec2049",
+      "stages": {
+        "static": "passed",
+        "ik": "failed",
+        "full_plan": "not_run",
+        "simulation": "not_run"
+      },
+      "actual_execution": false,
+      "video_generated": false,
+      "robot_state_replay": false,
+      "report_sha256": "d45eb943dc6eb23d4a3b0f8f8a31f70f9315c87e64f40b81e154bbe51175b201"
+    }
+  ]
+}

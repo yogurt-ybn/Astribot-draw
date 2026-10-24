@@ -1,0 +1,102 @@
+{
+  "auditor": "independent read-only source/outputs review",
+  "source_hashes_match_frozen": true,
+  "canvas_hashes_match_frozen": true,
+  "same_frozen_config_for_all_inputs": true,
+  "case_name_branches_found": false,
+  "geometry_policy": "No per-case geometry or parameter edits in v3; byte-identical to final v1.1 generated SVGs",
+  "cases": [
+    {
+      "input": "ginkgo",
+      "input_hash_matches_frozen": true,
+      "input_byte_identical_to_generated_svg": true,
+      "input_matches_generation_render_report": true,
+      "source_vs_parsed_render_status": "PASS",
+      "status": "passed_requested_mode",
+      "stages": {
+        "static": "passed",
+        "ik": "passed",
+        "full_plan": "passed",
+        "simulation": "passed"
+      },
+      "plan_start_equals_home": true,
+      "plan_end_equals_home": true,
+      "actual_final_home_error_rad": 0.00035021048240241803,
+      "actual_clearance_m": 0.003977508166665901,
+      "actual_tip_max_errors_m": {
+        "left": 0.0009238592419980226,
+        "right": 0.0009530086657679018
+      }
+    },
+    {
+      "input": "koi",
+      "input_hash_matches_frozen": true,
+      "input_byte_identical_to_generated_svg": true,
+      "input_matches_generation_render_report": true,
+      "source_vs_parsed_render_status": "PASS",
+      "status": "passed_requested_mode",
+      "stages": {
+        "static": "passed",
+        "ik": "passed",
+        "full_plan": "passed",
+        "simulation": "passed"
+      },
+      "plan_start_equals_home": true,
+      "plan_end_equals_home": true,
+      "actual_final_home_error_rad": 0.0008346295054640158,
+      "actual_clearance_m": 0.00216632079906446,
+      "actual_tip_max_errors_m": {
+        "left": 0.0006052336221554349,
+        "right": 0.0005403121420798722
+      }
+    },
+    {
+      "input": "wings",
+      "input_hash_matches_frozen": true,
+      "input_byte_identical_to_generated_svg": true,
+      "input_matches_generation_render_report": true,
+      "source_vs_parsed_render_status": "PASS",
+      "status": "rejected",
+      "stages": {
+        "static": "passed",
+        "ik": "failed",
+        "full_plan": "not_run",
+        "simulation": "not_run"
+      },
+      "rejection_details": [
+        {
+          "candidate": "height_coupled",
+          "stage": "ik",
+          "error": "No collision-checked coupled IK branch combination within deterministic seed/pair budgets; see IK_PAIR log"
+        },
+        {
+          "candidate": "bend_0.45",
+          "stage": "ik",
+          "error": "left: no continuous IK branch in 13 deterministic seeds"
+        },
+        {
+          "candidate": "bend_0.35",
+          "stage": "ik",
+          "error": "left: no continuous IK branch in 13 deterministic seeds"
+        },
+        {
+          "candidate": "bend_0.55",
+          "stage": "ik",
+          "error": "left: no continuous IK branch in 13 deterministic seeds"
+        }
+      ],
+      "no_plan_or_execution_artifacts": true
+    }
+  ],
+  "limitations": [
+    "Finite four prescribed torso families, not whole-body trajectory optimization or completeness proof.",
+    "Same 13 IK seeds per arm, at most169 branch pairs; wrist joints additionally restricted to ±0.4rad.",
+    "Pair backtracking applies to sparse knot collision precheck; later RRT/fullplan/simulation failure does not enumerate remaining pairs.",
+    "Common normalized progress per arm; independent progress/avoidance timing is not optimized.",
+    "Finite collision sampling with explicit mechanical exclusions; actual speed measured not gated; no torque/acceleration/jerk/orientation/contact/hardware guarantee.",
+    "Wings rejection is this bounded planner failure, not proof of robot unreachability."
+  ],
+  "common_home_rule_for_all_attempted_inputs": "home depends only on robot model and common fixed joint margins, not input; canonical zero torso with neutral arms; successful plans use18DOF approach/return",
+  "successful_plans_have_identical_home": true,
+  "audit_status": "PASS_WITH_DECLARED_LIMITATIONS"
+}

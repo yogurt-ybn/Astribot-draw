@@ -1,0 +1,11 @@
+# Publication provenance
+
+The frozen v3 simulations and their measurements predate this publication. Original freeze, source hashes and full-rate trajectory hashes remain evidence of that run, not a claim that portable source bytes are identical. `publication-diffs.json` maps original delivery hashes to publication hashes.
+
+Packaging changes: t1_model.py uses repository-relative descriptions/ or ASTRIBOT_T1_ASSETS rather than a private machine fallback. run_benchmark.py records an optional locally generated asset-manifest hash and the pinned upstream commit, allowing execution with an externally supplied asset checkout. No IK, geometry, timing, candidate or collision algorithms were changed. JSON report input paths and renderer run path were normalized to relative paths; their original hashes in visual metadata refer to the original reports. Other numerical evidence is unchanged. Setup/renderer documentation is portable. The original DELIVERY_SHA256 manifest is replaced by PUBLICATION_SHA256 for this public package.
+
+No new dynamics rerun was performed for these packaging changes. Unit/static/hash/geometry checks are recorded separately. Original upstream assets, generated asset_manifest.json, and large full-rate trajectories are not published. Download assets locally and rerun to reproduce full-rate trajectories. This finite search can reject reachable drawings; sampled collisions and simulation are not a real-hardware safety proof.
+
+Publication excludes three optional model/environment inventory files (v1 environment-freeze, v2 inherited-model-environment-evidence, v3 model-freeze): they contain extensive upstream model asset path/hash inventories and were not approved for public upload. This is an explicit evidence-package omission, not a new verification or a replacement model freeze. The original tested upstream commit, source/input/config freeze and result evidence remain documented. No asset-inventory content is republished through another file.
+
+The owner requested no MP4 in this publication. All three newly generated MP4 files are omitted; existing historical S1/T1 repository videos are unchanged. Renderer metadata still describes the original local render process, not the set of publicly shipped media.

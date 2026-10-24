@@ -1,0 +1,194 @@
+CANDIDATE height_coupled
+RRT_PASS whole_body_18dof 21 4
+SCHEDULE_STEPS 57085 duration_s 285.425
+PLAN_CHECK 0 57085
+PLAN_CHECK 10000 57085
+PLAN_CHECK 20000 57085
+PLAN_CHECK 30000 57085
+PLAN_CHECK 40000 57085
+PLAN_CHECK 50000 57085
+REJECT {'candidate': 'height_coupled', 'stage': 'full_plan', 'error': 'Interpolated joint velocity exceeds configured .2 rad/s + numerical allowance'}
+CANDIDATE bend_0.45
+REJECT {'candidate': 'bend_0.45', 'stage': 'ik', 'error': 'left: no continuous IK branch in 13 deterministic seeds'}
+CANDIDATE bend_0.35
+REJECT {'candidate': 'bend_0.35', 'stage': 'ik', 'error': 'left: no continuous IK branch in 13 deterministic seeds'}
+CANDIDATE bend_0.55
+REJECT {'candidate': 'bend_0.55', 'stage': 'ik', 'error': 'left: no continuous IK branch in 13 deterministic seeds'}
+{
+  "schema": "astribot-t1-svg-plan-report-v1",
+  "input": "inputs/koi.svg",
+  "mode": "simulate",
+  "stages": {
+    "static": "passed",
+    "ik": "failed",
+    "full_plan": "failed",
+    "simulation": "not_run"
+  },
+  "limitations": [
+    "Fixed chassis; identical canonical initial whole-body posture for all inputs, 18DOF approach/return is validated only when corresponding stages pass; not arbitrary measured starting states.",
+    "Finite prescribed torso candidate families, not complete whole-body optimization.",
+    "Sampled collision checks and existing compound-joint exclusions, not swept/hardware safety proof.",
+    "Position-only free-space light-tip planning; no pen orientation, surface contact or force control.",
+    "Acceleration, jerk, torque margins and singularity thresholds are not validated; actual velocity is measured but not gated; no hardware-ready claim."
+  ],
+  "calibration": {
+    "schema": "astribot-t1-canvas-v1",
+    "robot": "Astribot T1",
+    "width": 616,
+    "height": 560,
+    "meters_per_pixel": 0.0025,
+    "coordinate_system": "continuous_pixel_edges; +u right, +v down, pixel centers at integer+0.5",
+    "drawing_plane_world_y_m": -0.42,
+    "world_bounds_m": {
+      "x": [
+        -0.7699999999999999,
+        0.7700000000000015
+      ],
+      "z": [
+        0.4900000000000002,
+        1.8900000000000015
+      ]
+    },
+    "physical_size_m": [
+      1.54,
+      1.4000000000000001
+    ],
+    "pixel_to_world": {
+      "x": "-0.7700000000 + u * 0.0025",
+      "y": "-0.42",
+      "z": "1.8900000000 - v * 0.0025"
+    },
+    "sampling_grid_m": 0.02,
+    "pixels_per_sampling_cell": 8,
+    "masks": "marginal-mask-* contains all found arm witnesses; mask-* further assigns x>=0 to left arm and x<0 to right for design. Filled cells visualize sampling support only, not verified every pixel.",
+    "torso_samples": [
+      [
+        0.04,
+        -0.3,
+        0.26,
+        0.0
+      ],
+      [
+        0.04,
+        -0.45,
+        0.41000000000000003,
+        0.0
+      ],
+      [
+        0.04,
+        -0.6,
+        0.5599999999999999,
+        0.0
+      ],
+      [
+        0.04,
+        -0.8,
+        0.76,
+        0.0
+      ],
+      [
+        0.04,
+        -0.95,
+        0.9099999999999999,
+        0.0
+      ],
+      [
+        0.2,
+        -0.4,
+        0.2,
+        0.0
+      ],
+      [
+        0.35,
+        -0.7,
+        0.35,
+        0.0
+      ],
+      [
+        0.5,
+        -1.0,
+        0.5,
+        0.0
+      ],
+      [
+        0.65,
+        -1.3,
+        0.65,
+        0.0
+      ],
+      [
+        0.35,
+        -0.7,
+        0.35,
+        -0.4
+      ],
+      [
+        0.35,
+        -0.7,
+        0.35,
+        0.4
+      ]
+    ],
+    "joint_margin_rad": 0.04,
+    "model_clearance_m": 0.002,
+    "tool": "80mm local -Y beyond official T1 arm tool site; tip at link7 [0,-.23,0]m",
+    "source_commit": "cab872dc00081d2c5b096c7a19e563050eb7a2ff",
+    "model_pair_count": 3947,
+    "validity": "Sampled marginal union over torso; arbitrary two-arm target combinations and continuous paths NOT guaranteed. No S1 camera/crop mapping retained."
+  },
+  "input_sha256": "6f970acb2a26ae055324f3c96f5db3bc05042869dd51f0fc43e9f2d01ce8ffb8",
+  "static": {
+    "status": "PASS",
+    "scope": "sampled marginal mask only",
+    "arms": {
+      "left": {
+        "checked_cells": 952,
+        "envelope_px": 0.1
+      },
+      "right": {
+        "checked_cells": 952,
+        "envelope_px": 0.1
+      }
+    }
+  },
+  "geometry": {
+    "source_sha256": "6f970acb2a26ae055324f3c96f5db3bc05042869dd51f0fc43e9f2d01ce8ffb8",
+    "svg_subset": "MLCQZ-v1",
+    "max_step_px": 1,
+    "flatten_tolerance_px": 0.1,
+    "synchronization": "equal normalized per-arm arc progress",
+    "shape_rescaled": false,
+    "paths_reordered": false,
+    "mask_validated": true,
+    "mechanical_feasibility": "NOT_CHECKED",
+    "progress_knot_merge_tolerance": 1e-12,
+    "progress_knot_merge_max_path_displacement_m": 1.5608840098605036e-12
+  },
+  "candidate_failures": [
+    {
+      "candidate": "height_coupled",
+      "stage": "full_plan",
+      "error": "Interpolated joint velocity exceeds configured .2 rad/s + numerical allowance"
+    },
+    {
+      "candidate": "bend_0.45",
+      "stage": "ik",
+      "error": "left: no continuous IK branch in 13 deterministic seeds"
+    },
+    {
+      "candidate": "bend_0.35",
+      "stage": "ik",
+      "error": "left: no continuous IK branch in 13 deterministic seeds"
+    },
+    {
+      "candidate": "bend_0.55",
+      "stage": "ik",
+      "error": "left: no continuous IK branch in 13 deterministic seeds"
+    }
+  ],
+  "status": "rejected",
+  "error": {
+    "type": "PlanningError",
+    "message": "Candidate search exhausted; input unchanged. See candidate_failures."
+  }
+}

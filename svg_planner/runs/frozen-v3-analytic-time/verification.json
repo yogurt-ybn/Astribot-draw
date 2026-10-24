@@ -1,0 +1,83 @@
+{
+  "source_canvas_inputs_hash_verified": true,
+  "fresh_actual_simulations_no_reuse": true,
+  "cases": [
+    {
+      "input": "ginkgo.svg",
+      "status": "passed_requested_mode",
+      "stages": {
+        "static": "passed",
+        "ik": "passed",
+        "full_plan": "passed",
+        "simulation": "passed"
+      },
+      "source_input_unchanged": true,
+      "identical_canonical_start_end": true,
+      "plan_sha256": "5c84c078af0c2a56ff842b607eb47e3c6dddc8a4edcd99fd4ae5543cce5a9660",
+      "actual_max_tip_error_m": 0.0009530086657679018,
+      "execution_sha256": "f3ebe8c5eb8a4c783acdca6eb90671d3405d962a856894106351d7eda269896d",
+      "actual_final_home_error_rad": 0.00035021048240241803
+    },
+    {
+      "input": "koi.svg",
+      "status": "passed_requested_mode",
+      "stages": {
+        "static": "passed",
+        "ik": "passed",
+        "full_plan": "passed",
+        "simulation": "passed"
+      },
+      "source_input_unchanged": true,
+      "identical_canonical_start_end": true,
+      "plan_sha256": "0fdb2457ba1c1593656074a716fe54891bd4c6abe8595cd229dda66ffe82aa36",
+      "actual_max_tip_error_m": 0.0006052336221554349,
+      "execution_sha256": "25eddfb0ab5c5ee5ed365eb1b31da09e06f8439b9f79b0366a043284682ecc71",
+      "actual_final_home_error_rad": 0.0008346295054640158
+    },
+    {
+      "input": "wings.svg",
+      "status": "rejected",
+      "stages": {
+        "static": "passed",
+        "ik": "failed",
+        "full_plan": "not_run",
+        "simulation": "not_run"
+      },
+      "source_input_unchanged": true
+    }
+  ],
+  "canonical_home": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.001,
+    0.001,
+    -0.001,
+    0.001,
+    -0.001,
+    0.001,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.001,
+    0.001,
+    -0.001,
+    0.001,
+    -0.001,
+    0.001
+  ]
+}

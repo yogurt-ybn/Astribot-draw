@@ -1,0 +1,55 @@
+{
+  "config": {
+    "coupled_ik": "deterministic branch-pair backtracking, max169 pairs, full3947pair checking every5 path knots",
+    "timing": "exact cubic derivative extrema bound",
+    "mode": "simulate",
+    "seeds": 12,
+    "candidate_order": [
+      "height_coupled",
+      "bend_0.45",
+      "bend_0.35",
+      "bend_0.55"
+    ],
+    "ik_random_seed": 36,
+    "rrt_random_seed": 12345,
+    "maximum_steps": 200000,
+    "input_geometry_policy": "unchanged; no scaling or repair",
+    "initial_state": "same canonical whole-body neutral state; collision-checked 18DOF RRT approach and return"
+  },
+  "source_sha256": {
+    "download_t1_assets.py": "11ebf7301adfe847734da506102d332a2b5f039b617f00617abac9e9df2101f4",
+    "planning_primitives.py": "fc1b022c340a470d1d8a28370146171c602be68dc2002871831462a7ed61f4cc",
+    "run_benchmark.py": "7a4df3405010f9c3a0dfc75101a488df56234f018fce77365b4a53ccf3a2baac",
+    "svg_input.py": "e0e9f955d2a3c6f7b8a4f91f1f4417dcd8bdd320d39824226c017184988767d7",
+    "svg_plan.py": "005ae1d8f8857e34966e47e4c9527428159cfb9d60e20951f85ec6edd0bf4c44",
+    "t1_kinematics.py": "eba351dbe2ffc9155c2299f35ab01825247d7bcd3557f84b47edaa0cd5f1871e",
+    "t1_model.py": "c90b03c370d1f40741cdf999a823a7b02a6fa439b9ee7a88a6c584e8bca72012",
+    "test_svg_backend.py": "079121fb7936e4cf9af9126b1d7ef19096bb2c6abb5d3a7f13f2073df4c6a645",
+    "test_svg_input.py": "261f3d87e23328bed6582a79829a41342873c7b14e3a5b883b61d646e9f981a3",
+    "test_timing.py": "20313f81f776be7a8c2f8f6977f99712611c8d48dbe305a0becb0ed09857df86"
+  },
+  "input_sha256": {
+    "ginkgo.svg": "2069a373d715ff2ad6a72b07e49177243229ac44ba75d7d413188390b8768d5a",
+    "koi.svg": "6f970acb2a26ae055324f3c96f5db3bc05042869dd51f0fc43e9f2d01ce8ffb8",
+    "wings.svg": "4fe67f51fd020e6e01931b5778caddd186a8ba76409d319c95d565fd96ec2049"
+  },
+  "frozen_at_unix": 1792820549.2501757,
+  "canvas_sha256": {
+    "t1-canvas/blank-white.png": "e7808a3a9ce393c04ce461c1fa1230eb997ad66c2eaf51b22e54fa3e9f7109f1",
+    "t1-canvas/calibration.json": "13c7af77a336906ab7f966d28863c6608b422914a084ca964b3303f154e6e114",
+    "t1-canvas/drawing-regions.png": "8b1fa9737c6a87cc1b05ea2715d13620d3709c325e1b5d7bfe065b075e0b8f89",
+    "t1-canvas/independent-checks.json": "2e8e0605ae59ff0f73e46abb4677b62a9591b48f9d4a61eee5a55a478151888e",
+    "t1-canvas/mask-left.png": "0d92edc725bc55ca53e2792a2fee3860852b533f58f39228b766eb89de9e2843",
+    "t1-canvas/mask-right.png": "4e3c426b323dd63654e03d5c7e265d547e9479922b4d4519b5bc2a586f8fa7fa",
+    "t1-canvas/t1-canvas-overview-zh.png": "2150cf177c8a9294066fb51f96cb61ba77f222732820308623569d5c1bc8a395",
+    "t1-canvas/workspace-summary.json": "78749e40e8288a728e4c44915f554d4d6bca301c609df98139003f0e5fa13085"
+  },
+  "asset_manifest_sha256": "7764e0ceb48de442a4085ca46f8701cc07e1a388902a6b34b85e057196e18723",
+  "python": "3.12.14",
+  "packages": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "pillow": "13.0.0",
+    "mujoco": "3.4.0"
+  }
+}

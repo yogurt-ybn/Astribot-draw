@@ -1,0 +1,30 @@
+test_all_supplied_examples_parse (test_svg_backend.BackendTests.test_all_supplied_examples_parse) ... ok
+test_calibration_rejects_wrong_scale (test_svg_backend.BackendTests.test_calibration_rejects_wrong_scale) ... ok
+test_failed_run_removes_stale_success_files (test_svg_backend.BackendTests.test_failed_run_removes_stale_success_files) ... ok
+test_mirrored_wing_knots_are_numerically_stable (test_svg_backend.BackendTests.test_mirrored_wing_knots_are_numerically_stable) ... ok
+test_torso_is_shared_finite_family (test_svg_backend.BackendTests.test_torso_is_shared_finite_family) ... ok
+test_union_preserves_vertices (test_svg_backend.BackendTests.test_union_preserves_vertices) ... ok
+test_close (test_svg_input.ParserTests.test_close) ... ok
+test_curve_error (test_svg_input.ParserTests.test_curve_error) ... ok
+test_disconnected_unsupported (test_svg_input.ParserTests.test_disconnected_unsupported) ... ok
+test_encoded_xml_attack (test_svg_input.ParserTests.test_encoded_xml_attack) ... ok
+test_external_content (test_svg_input.ParserTests.test_external_content) ... ok
+test_invalid_dimensions (test_svg_input.ParserTests.test_invalid_dimensions) ... ok
+test_invalid_separators (test_svg_input.ParserTests.test_invalid_separators) ... ok
+test_labels (test_svg_input.ParserTests.test_labels) ... ok
+test_lines_exact (test_svg_input.ParserTests.test_lines_exact) ... ok
+test_mask_supercover (test_svg_input.ParserTests.test_mask_supercover) ... ok
+test_no_implicit_closing (test_svg_input.ParserTests.test_no_implicit_closing) ... ok
+test_out_of_bounds (test_svg_input.ParserTests.test_out_of_bounds) ... ok
+test_quadratic_and_cubic (test_svg_input.ParserTests.test_quadratic_and_cubic) ... ok
+test_relative_and_implicit (test_svg_input.ParserTests.test_relative_and_implicit) ... ok
+test_zero_length (test_svg_input.ParserTests.test_zero_length) ... ok
+test_linear_and_constant (test_timing.TimingTests.test_linear_and_constant) ... ok
+test_narrow_peak_missed_by_old_uniform_grid (test_timing.TimingTests.test_narrow_peak_missed_by_old_uniform_grid) ... ok
+test_random_multiaxis_bound (test_timing.TimingTests.test_random_multiaxis_bound) ... ok
+test_stationary_extremum (test_timing.TimingTests.test_stationary_extremum) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 0.447s
+
+OK

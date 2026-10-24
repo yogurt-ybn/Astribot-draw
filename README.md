@@ -1,8 +1,12 @@
 # Astribot drawing: T1 and historical S1
 
-## Current model: Astribot T1
+## Latest generic SVG interface: Astribot T1
 
-The new implementation is in [`t1/`](t1/). Start with [T1 setup and limitations](t1/T1_README.md), [T1 agent drawing specification](t1/T1_AGENT_DRAWING_SPEC.md), and the recalculated [616 × 560 canvas](t1/t1-canvas/t1-canvas-overview-zh.png). A [larger 1.271 m wingspan regression](t1/T1_WINGS_README.md) adds verified synchronized approach/draw/return beyond the three small examples.
+Start with [`svg_planner/`](svg_planner/README.md): SVG → unchanged geometry → synchronized dual-arm planning with a movable torso and collision checks → MuJoCo validation. The same frozen method/configuration tests all three original SVG inputs: **ginkgo and koi passed; wings was rejected at IK and was not executed**. Includes [agent generation MD](svg_planner/SVG_GENERATION_SPEC.md), tests, [original SVG/PNG test images](svg_planner/inputs/), reports, and [measured trajectory comparison](svg_planner/visuals/three-design-comparison.jpg). Fixed chassis; no hardware-safety certification.
+
+## Earlier T1 case-specific demonstrations
+
+The earlier case-specific implementation is preserved in [`t1/`](t1/). Start with [T1 setup and limitations](t1/T1_README.md), [T1 agent drawing specification](t1/T1_AGENT_DRAWING_SPEC.md), and the recalculated [616 × 560 canvas](t1/t1-canvas/t1-canvas-overview-zh.png). A [larger 1.271 m wingspan regression](t1/T1_WINGS_README.md) adds verified synchronized approach/draw/return beyond the three small examples.
 
 Upstream T1 model assets are downloaded from a pinned official commit, not redistributed here.
 

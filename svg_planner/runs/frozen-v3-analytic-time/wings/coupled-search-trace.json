@@ -1,0 +1,16 @@
+[
+  {
+    "candidate": "height_coupled",
+    "left_seed": 9,
+    "right_seed": 7,
+    "status": "rejected",
+    "failure": {
+      "knot": 0,
+      "progress": 0.0,
+      "threshold_m": 0.003,
+      "distance_m": -0.0008896203183482304,
+      "geom1": "collision_astribot_gripper_left_geom_R11",
+      "geom2": "collision_astribot_gripper_right_geom_L11"
+    }
+  }
+]

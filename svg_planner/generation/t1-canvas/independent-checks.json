@@ -1,0 +1,21 @@
+{
+  "model_pairs": 3947,
+  "samples": {
+    "left": {
+      "all_fk_witnesses_checked": 3409,
+      "max_fk_error_m": 0.0004995869690641472,
+      "min_active_arm_limit_margin_rad": 0.04,
+      "collision_witnesses_rechecked": 160,
+      "min_sampled_distance_m": 0.004434129373221865
+    },
+    "right": {
+      "all_fk_witnesses_checked": 3406,
+      "max_fk_error_m": 0.0004999806040738399,
+      "min_active_arm_limit_margin_rad": 0.04,
+      "collision_witnesses_rechecked": 160,
+      "min_sampled_distance_m": 0.004434003652296112
+    }
+  },
+  "pixel_world_roundtrip_max_m": 3.1401849173675503e-16,
+  "passed": true
+}

@@ -1,0 +1,14 @@
+{
+  "purpose": "Review-only decimation of freshly simulated full-resolution records; NOT executable trajectory or new validation evidence",
+  "source_plan": "../runs/frozen-v3-analytic-time/ginkgo/plan.npz",
+  "source_execution": "../runs/frozen-v3-analytic-time/ginkgo/execution.npz",
+  "original_step_count": 47751,
+  "original_dt_s": 0.005,
+  "sample_count": 2389,
+  "nominal_stride_steps": 20,
+  "nominal_sample_rate_hz": 10,
+  "last_step_included": true,
+  "command_time_s": "original_step_index*dt",
+  "actual_state_time_s": "(original_step_index+1)*dt; state after mj_step",
+  "complete_validation": "See report.json/verification.json. All pass/fail gates ran on original full-resolution schedule with declared collision sample intervals."
+}

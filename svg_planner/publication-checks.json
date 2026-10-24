@@ -1,0 +1,27 @@
+{
+  "unit_tests": 25,
+  "unit_tests_passed": true,
+  "original_frozen_source_verified_against_delivery": true,
+  "frozen_canvas_and_inputs_unchanged": true,
+  "new_dynamics_rerun": false,
+  "cases": {
+    "ginkgo": {
+      "generation_static": "PASS",
+      "cli_static": "passed",
+      "same_source_png_hash": true,
+      "original_svg_sha256": "2069a373d715ff2ad6a72b07e49177243229ac44ba75d7d413188390b8768d5a"
+    },
+    "koi": {
+      "generation_static": "PASS",
+      "cli_static": "passed",
+      "same_source_png_hash": true,
+      "original_svg_sha256": "6f970acb2a26ae055324f3c96f5db3bc05042869dd51f0fc43e9f2d01ce8ffb8"
+    },
+    "wings": {
+      "generation_static": "PASS",
+      "cli_static": "passed",
+      "same_source_png_hash": true,
+      "original_svg_sha256": "4fe67f51fd020e6e01931b5778caddd186a8ba76409d319c95d565fd96ec2049"
+    }
+  }
+}

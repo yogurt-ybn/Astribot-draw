@@ -1,0 +1,359 @@
+{
+  "schema": "astribot-t1-svg-plan-report-v1",
+  "input": "inputs/koi.svg",
+  "mode": "simulate",
+  "stages": {
+    "static": "passed",
+    "ik": "passed",
+    "full_plan": "passed",
+    "simulation": "passed"
+  },
+  "limitations": [
+    "Fixed chassis; identical canonical initial whole-body posture for all inputs, 18DOF approach/return is validated only when corresponding stages pass; not arbitrary measured starting states.",
+    "Finite prescribed torso candidate families, not complete whole-body optimization.",
+    "Sampled collision checks and existing compound-joint exclusions, not swept/hardware safety proof.",
+    "Position-only free-space light-tip planning; no pen orientation, surface contact or force control.",
+    "Acceleration, jerk, torque margins and singularity thresholds are not validated; actual velocity is measured but not gated; no hardware-ready claim."
+  ],
+  "calibration": {
+    "schema": "astribot-t1-canvas-v1",
+    "robot": "Astribot T1",
+    "width": 616,
+    "height": 560,
+    "meters_per_pixel": 0.0025,
+    "coordinate_system": "continuous_pixel_edges; +u right, +v down, pixel centers at integer+0.5",
+    "drawing_plane_world_y_m": -0.42,
+    "world_bounds_m": {
+      "x": [
+        -0.7699999999999999,
+        0.7700000000000015
+      ],
+      "z": [
+        0.4900000000000002,
+        1.8900000000000015
+      ]
+    },
+    "physical_size_m": [
+      1.54,
+      1.4000000000000001
+    ],
+    "pixel_to_world": {
+      "x": "-0.7700000000 + u * 0.0025",
+      "y": "-0.42",
+      "z": "1.8900000000 - v * 0.0025"
+    },
+    "sampling_grid_m": 0.02,
+    "pixels_per_sampling_cell": 8,
+    "masks": "marginal-mask-* contains all found arm witnesses; mask-* further assigns x>=0 to left arm and x<0 to right for design. Filled cells visualize sampling support only, not verified every pixel.",
+    "torso_samples": [
+      [
+        0.04,
+        -0.3,
+        0.26,
+        0.0
+      ],
+      [
+        0.04,
+        -0.45,
+        0.41000000000000003,
+        0.0
+      ],
+      [
+        0.04,
+        -0.6,
+        0.5599999999999999,
+        0.0
+      ],
+      [
+        0.04,
+        -0.8,
+        0.76,
+        0.0
+      ],
+      [
+        0.04,
+        -0.95,
+        0.9099999999999999,
+        0.0
+      ],
+      [
+        0.2,
+        -0.4,
+        0.2,
+        0.0
+      ],
+      [
+        0.35,
+        -0.7,
+        0.35,
+        0.0
+      ],
+      [
+        0.5,
+        -1.0,
+        0.5,
+        0.0
+      ],
+      [
+        0.65,
+        -1.3,
+        0.65,
+        0.0
+      ],
+      [
+        0.35,
+        -0.7,
+        0.35,
+        -0.4
+      ],
+      [
+        0.35,
+        -0.7,
+        0.35,
+        0.4
+      ]
+    ],
+    "joint_margin_rad": 0.04,
+    "model_clearance_m": 0.002,
+    "tool": "80mm local -Y beyond official T1 arm tool site; tip at link7 [0,-.23,0]m",
+    "source_commit": "cab872dc00081d2c5b096c7a19e563050eb7a2ff",
+    "model_pair_count": 3947,
+    "validity": "Sampled marginal union over torso; arbitrary two-arm target combinations and continuous paths NOT guaranteed. No S1 camera/crop mapping retained."
+  },
+  "input_sha256": "6f970acb2a26ae055324f3c96f5db3bc05042869dd51f0fc43e9f2d01ce8ffb8",
+  "static": {
+    "status": "PASS",
+    "scope": "sampled marginal mask only",
+    "arms": {
+      "left": {
+        "checked_cells": 952,
+        "envelope_px": 0.1
+      },
+      "right": {
+        "checked_cells": 952,
+        "envelope_px": 0.1
+      }
+    }
+  },
+  "geometry": {
+    "source_sha256": "6f970acb2a26ae055324f3c96f5db3bc05042869dd51f0fc43e9f2d01ce8ffb8",
+    "svg_subset": "MLCQZ-v1",
+    "max_step_px": 1,
+    "flatten_tolerance_px": 0.1,
+    "synchronization": "equal normalized per-arm arc progress",
+    "shape_rescaled": false,
+    "paths_reordered": false,
+    "mask_validated": true,
+    "mechanical_feasibility": "NOT_CHECKED",
+    "progress_knot_merge_tolerance": 1e-12,
+    "progress_knot_merge_max_path_displacement_m": 1.5608840098605036e-12
+  },
+  "ik_search": {
+    "seed_budget_per_arm": 13,
+    "pair_combination_budget": 169,
+    "pair_attempts": [
+      {
+        "left_seed": 3,
+        "right_seed": 2,
+        "status": "passed",
+        "failure": null
+      }
+    ],
+    "arm_branch_seeds": {
+      "left": [
+        3
+      ],
+      "right": [
+        2
+      ]
+    },
+    "selected_pair": {
+      "left_seed": 3,
+      "right_seed": 2
+    }
+  },
+  "candidate_failures": [],
+  "selected_torso_candidate": "height_coupled",
+  "plan": {
+    "minimum_clearance_m": 0.002166349019185783,
+    "worst_pair": {
+      "distance_m": 0.002166349019185783,
+      "minimum_distance_m": 0.002166349019185783,
+      "geom1": "collision_t1_geom_070",
+      "geom2": "collision_t1_geom_081",
+      "category": "arm_body",
+      "category_minima": {
+        "arm_environment": {
+          "distance_m": 0.05,
+          "geom1": "floor",
+          "geom2": "collision_t1_geom_078"
+        },
+        "torso_head_base": {
+          "distance_m": 0.05,
+          "geom1": "collision_t1_geom_000",
+          "geom2": "collision_t1_geom_070"
+        },
+        "arm_body": {
+          "distance_m": 0.002166349019185783,
+          "geom1": "collision_t1_geom_070",
+          "geom2": "collision_t1_geom_081"
+        },
+        "same_arm_nonadjacent": {
+          "distance_m": 0.0049853478316543645,
+          "geom1": "collision_t1_geom_083",
+          "geom2": "collision_t1_geom_085"
+        },
+        "inter_arm": {
+          "distance_m": 0.03155290044620512,
+          "geom1": "collision_astribot_gripper_left_geom_R11",
+          "geom2": "collision_astribot_gripper_right_geom_L11"
+        }
+      },
+      "time_s": 151.4,
+      "phase": "return_both"
+    },
+    "collision_sampling_s": 0.05,
+    "max_fk_vs_flattened_input_m": 5.517393654442725e-05,
+    "minimum_joint_margin_rad": 0.001,
+    "maximum_commanded_velocity_rad_s": 0.1999924138865173
+  },
+  "simulation": {
+    "max_tracking_error_threshold_m": 0.002,
+    "actual_minimum_joint_margin_rad": 0.0009138864410431011,
+    "maximum_actual_joint_velocity_rad_s": 0.20410090175744272,
+    "initial_qpos": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.001,
+      0.001,
+      -0.001,
+      0.001,
+      -0.001,
+      0.001,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.001,
+      0.001,
+      -0.001,
+      0.001,
+      -0.001,
+      0.001
+    ],
+    "final_actual_qpos": [
+      -3.153973499259764e-05,
+      -5.593317090028221e-06,
+      -8.957087862439422e-06,
+      -6.80726652558965e-06,
+      -7.977653636278651e-07,
+      -1.7820219959210628e-05,
+      0.0008346295054640158,
+      0.0002682079745592386,
+      0.000511175371475318,
+      -8.32523111886839e-05,
+      -5.964896267746481e-05,
+      -2.8410894602022866e-05,
+      -7.698898947807145e-05,
+      0.001108459606917867,
+      0.001107696631745637,
+      -0.0011085567344238027,
+      0.0011081585552577416,
+      -0.0011105505536620282,
+      0.001108058371630753,
+      -0.0004280606110953086,
+      0.0007265949409119145,
+      -0.0007349884181975417,
+      -5.874775343244773e-05,
+      1.3242735169928245e-05,
+      -8.063779882494386e-05,
+      2.8777034645699377e-05,
+      0.0011082266495880653,
+      0.0011088629547178755,
+      -0.001108181151018348,
+      0.0011084038936090591,
+      -0.0011093997835550215,
+      0.0011084465922187232
+    ],
+    "maximum_final_home_error_rad": 0.0008346295054640158,
+    "duration_s": 295.63499999980365,
+    "minimum_clearance_m": 0.00216632079906446,
+    "worst_pair": {
+      "distance_m": 0.00216632079906446,
+      "minimum_distance_m": 0.00216632079906446,
+      "geom1": "collision_t1_geom_070",
+      "geom2": "collision_t1_geom_081",
+      "category": "arm_body",
+      "category_minima": {
+        "arm_environment": {
+          "distance_m": 0.05,
+          "geom1": "floor",
+          "geom2": "collision_t1_geom_078"
+        },
+        "torso_head_base": {
+          "distance_m": 0.05,
+          "geom1": "collision_t1_geom_000",
+          "geom2": "collision_t1_geom_070"
+        },
+        "arm_body": {
+          "distance_m": 0.00216632079906446,
+          "geom1": "collision_t1_geom_070",
+          "geom2": "collision_t1_geom_081"
+        },
+        "same_arm_nonadjacent": {
+          "distance_m": 0.0049853474022561045,
+          "geom1": "collision_t1_geom_083",
+          "geom2": "collision_t1_geom_085"
+        },
+        "inter_arm": {
+          "distance_m": 0.03155080058394008,
+          "geom1": "collision_astribot_gripper_left_geom_R11",
+          "geom2": "collision_astribot_gripper_right_geom_L11"
+        }
+      },
+      "time_s": 151.4049999999348,
+      "phase": "return_both"
+    },
+    "arms": {
+      "left": {
+        "rms_m": 0.00010629701894805869,
+        "max_m": 0.0006052336221554349
+      },
+      "right": {
+        "rms_m": 0.00010263506208193093,
+        "max_m": 0.0005403121420798722
+      }
+    },
+    "torso_z_range_m": [
+      0.8305374906715186,
+      0.8799999999951087
+    ],
+    "collision_sampling_s": 0.01,
+    "step_s": 0.005,
+    "warning_counts": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "status": "passed_requested_mode"
+}
