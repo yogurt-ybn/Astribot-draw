@@ -14,6 +14,7 @@ class LightPainter:
         self.width = 4
         self.only_bright = True
         self.overlay = False
+        self.overlay_brightness = 60
         self.filter_static = True
         self.change_threshold = 25
         self.light_color = 'white'
@@ -24,6 +25,7 @@ class LightPainter:
         static_background = getattr(self, 'static_background', None) if keep_background else None
         self.trail = None
         self.exposure = None
+        self.last_drawing_frame = None
         self.background = background
         self.static_background = static_background
         self.foreground_mask = None
@@ -231,6 +233,7 @@ class LightPainter:
         if self.trail is None or self.trail.shape != rgb.shape:
             self.trail = np.zeros_like(rgb)
             self.exposure = np.zeros_like(rgb)
+            self.last_drawing_frame = None
             self._glow_result = None
             if self.background is not None and self.background.shape != (h, w):
                 self.background = None
@@ -242,6 +245,9 @@ class LightPainter:
         position = None
         self.last_tracking_event = 'paused'
         if accumulate:
+            # Store the final drawing frame even when overlay is disabled, so
+            # it can be enabled after pausing without using a later live frame.
+            self.last_drawing_frame = rgb.copy()
             self.frames += 1
             if self.light_color == 'cyan':
                 position = self.detect_colored_light(rgb)
@@ -292,6 +298,13 @@ class LightPainter:
                         cv2.circle(self.trail, point_int, max(1, self.width//2), color, -1, cv2.LINE_AA)
                     self.previous = point_int
                     self.strokes += 1
+        return self.render(rgb), position
+
+    def render(self, rgb=None):
+        """Compose existing strokes with the last drawing frame, without detection."""
+        if self.trail is None:
+            return None
+        h, w = self.trail.shape[:2]
         if self.mode == 'neon':
             if self._glow_result is None or self._glow_strokes != self.strokes:
                 near = cv2.GaussianBlur(self.trail, (0, 0), 2)
@@ -305,5 +318,7 @@ class LightPainter:
         else:
             result = self.exposure.copy()
         if self.overlay:
-            result = np.maximum(result, (rgb*0.28).astype(np.uint8))
-        return result, position
+            base = self.last_drawing_frame if self.last_drawing_frame is not None else rgb
+            if base is not None and base.shape == result.shape:
+                result = np.maximum(result, (base*(self.overlay_brightness/100)).astype(np.uint8))
+        return result

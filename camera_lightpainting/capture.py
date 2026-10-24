@@ -104,4 +104,5 @@ class CameraWorker:
         return dict(camera=str(self.source), mode=e.mode, threshold=e.threshold,
                     change_threshold=e.change_threshold, line_width=e.width,
                     filter_static=e.filter_static, overlay=e.overlay, only_bright=e.only_bright,
+                    overlay_brightness=e.overlay_brightness,
                     mirrored=self.mirrored, roi=e.roi, light_color=e.light_color)

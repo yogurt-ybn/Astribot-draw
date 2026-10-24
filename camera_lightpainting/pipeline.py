@@ -26,12 +26,14 @@ class PipelineSettings:
     filter_static: bool = True
     only_bright: bool = True
     overlay: bool = False
+    overlay_brightness: int = 60
 
     @classmethod
     def validate(cls, changes):
         if not isinstance(changes, dict):
             raise ValueError('设置必须为对象')
-        numeric = {'threshold': (100, 254), 'change_threshold': (8, 80), 'width': (1, 16)}
+        numeric = {'threshold': (100, 254), 'change_threshold': (8, 80), 'width': (1, 16),
+                   'overlay_brightness': (0, 100)}
         choices = {'mode': {'neon', 'exposure'}, 'light_color': {'cyan', 'white'}}
         for key, value in changes.items():
             if key in numeric:
@@ -66,6 +68,10 @@ class FrameResult:
     tracking_event: str
     settings: PipelineSettings
     roi: tuple[int, int, int, int] | None
+    generation: int = 0
+    overlay_base_sequence: int | None = None
+    overlay_base_captured_ns: int | None = None
+    overlay_frozen: bool = False
 
     def metadata(self):
         h, w = self.rgb.shape[:2]
@@ -75,7 +81,10 @@ class FrameResult:
                     normalized_position=[self.position[0]/w, self.position[1]/h] if self.position else None,
                     processing_ms=round(self.processing_ms, 3), source_pixels=int(self.mask.sum()),
                     frames=self.frames, points=self.points, misses=self.misses,
-                    tracking_event=self.tracking_event, settings=asdict(self.settings), roi=self.roi)
+                    tracking_event=self.tracking_event, settings=asdict(self.settings), roi=self.roi,
+                    overlay=dict(enabled=self.settings.overlay, brightness=self.settings.overlay_brightness,
+                                 base_sequence=self.overlay_base_sequence,
+                                 base_captured_ns=self.overlay_base_captured_ns, frozen=self.overlay_frozen))
 
 
 class FrameProcessor(Protocol):
@@ -97,6 +106,12 @@ class LightPaintingPipeline:
         for name, value in asdict(self._settings).items():
             setattr(self.engine, name, value)
         self._sequence = 0
+        self.generation = 0
+        self._last_rgb = None
+        self._last_point = None
+        self._captured_ns = 0
+        self._accumulating = False
+        self._overlay_sequence = self._overlay_captured_ns = None
 
     @property
     def settings(self):
@@ -117,6 +132,8 @@ class LightPaintingPipeline:
             for name, value in changes.items():
                 setattr(self.engine, name, value)
             self._settings = settings
+            if changes:
+                self.generation += 1
             if reset:
                 self.clear()
             return settings
@@ -126,10 +143,37 @@ class LightPaintingPipeline:
             roi = self.engine.roi
             self.engine.reset(keep_background=keep_background)
             self.engine.roi = roi
+            self._last_rgb = None
+            self._last_point = None
+            self._overlay_sequence = self._overlay_captured_ns = None
+            self.generation += 1
 
     def break_stroke(self):
         with self.lock:
             self.engine.break_stroke()
+            self._accumulating = False
+            self.generation += 1
+
+    def overlay_state(self):
+        with self.lock:
+            return dict(enabled=self._settings.overlay, brightness=self._settings.overlay_brightness,
+                        base_sequence=self._overlay_sequence, base_captured_ns=self._overlay_captured_ns,
+                        frozen=bool(self._overlay_sequence is not None and not self._accumulating))
+
+    def snapshot(self):
+        """Re-render immediately after pause/overlay changes without adding a frame."""
+        with self.lock:
+            if self._last_rgb is None:
+                return None
+            return self._frame_result(self.engine.render(self._last_rgb), 0.)
+
+    def _frame_result(self, image, elapsed):
+        e = self.engine
+        return FrameResult(self._sequence, self._captured_ns, self._last_rgb.copy(), image.copy(),
+                           e.source_mask.copy(), self._last_point, elapsed, e.frames, e.strokes,
+                           e.misses, e.last_tracking_event, self._settings, e.roi, self.generation,
+                           self._overlay_sequence, self._overlay_captured_ns,
+                           bool(self._overlay_sequence is not None and not self._accumulating))
 
     def set_background(self, rgb):
         self._validate_frame(rgb)
@@ -157,11 +201,15 @@ class LightPaintingPipeline:
         with self.lock:
             self._sequence = self._sequence+1 if sequence is None else sequence
             stamp = time.monotonic_ns() if captured_ns is None else captured_ns
+            self._captured_ns = stamp
+            if self.engine.last_drawing_frame is not None and self.engine.last_drawing_frame.shape != rgb.shape:
+                self._overlay_sequence = self._overlay_captured_ns = None
             started = time.monotonic_ns()
             image, point = self.engine.process(rgb, accumulate, stamp/1e9)
             elapsed = (time.monotonic_ns()-started)/1e6
-            e = self.engine
-            return FrameResult(self._sequence, stamp, rgb.copy(), image.copy(), e.source_mask.copy(),
-                               tuple(map(float, point)) if point is not None else None,
-                               elapsed, e.frames, e.strokes, e.misses, e.last_tracking_event,
-                               self._settings, e.roi)
+            self._last_rgb = rgb.copy()
+            self._last_point = tuple(map(float, point)) if point is not None else None
+            self._accumulating = accumulate
+            if accumulate:
+                self._overlay_sequence, self._overlay_captured_ns = self._sequence, stamp
+            return self._frame_result(image, elapsed)

@@ -72,7 +72,8 @@ class WebController:
             return dict(mode=e.mode, light_color=e.light_color, threshold=e.threshold,
                         change_threshold=e.change_threshold, width=e.width,
                         filter_static=e.filter_static, only_bright=e.only_bright,
-                        overlay=e.overlay, mirrored=self.mirrored, roi=e.roi)
+                        overlay=e.overlay, overlay_brightness=e.overlay_brightness,
+                        mirrored=self.mirrored, roi=e.roi)
 
     def state(self):
         self._finish_recording()
@@ -82,7 +83,8 @@ class WebController:
                         fps=round(self.fps, 1), frame_age=round(time.monotonic()-self.last_frame_at, 2))
         alive = self.worker is not None and self.worker.thread.is_alive()
         recording = self.recorder
-        return dict(version='0.5.1', api_version='1', background_captured=self.background_captured,
+        return dict(version='0.6.0', api_version='1', background_captured=self.background_captured,
+                    overlay=self.pipeline.overlay_state(),
                     connected=bool(alive and self.latest_rgb is not None and info['frame_age'] < 3),
                     drawing=self.running, source=str(self.source), message=self.message,
                     settings=self.settings(), revision=self.revision, **info,
@@ -151,8 +153,14 @@ class WebController:
                 self.worker.drawing = enabled
             if not enabled:
                 self.pipeline.break_stroke()
+                self._refresh_result()
             self._record_event('drawing_started' if enabled else 'pause')
             self.message = '正在绘制' if enabled else '已暂停，光轨已保留'
+
+    def _refresh_result(self):
+        snapshot = self.pipeline.snapshot()
+        if snapshot is not None:
+            self._publish(snapshot)
 
     def capture_background(self):
         with self.control_lock, self.engine_lock:
@@ -191,6 +199,8 @@ class WebController:
                 self.clear()
             self._record_event('settings_changed', changes)
             self.revision += 1
+            if changed & {'overlay', 'overlay_brightness'}:
+                self._refresh_result()
 
     def set_roi(self, coordinates):
         with self.control_lock, self.engine_lock:
@@ -279,6 +289,8 @@ class WebController:
 
     def _publish(self, packet):
         if isinstance(packet, FrameResult):
+            if packet.generation != self.pipeline.generation:
+                return
             rgb, seq, captured_ns = packet.rgb, packet.sequence, packet.captured_ns
             result, position, mask = packet.image, packet.position, packet.mask
             processing_ms = packet.processing_ms
@@ -300,6 +312,8 @@ class WebController:
         with self.frame_lock:
             if captured_ns <= self.epoch_ns:
                 return
+            if isinstance(packet, FrameResult) and packet.generation != self.pipeline.generation:
+                return
             elapsed = now-self.last_frame_at
             if self.last_frame_at and seq > self.last_seq and elapsed:
                 measured = (seq-self.last_seq)/elapsed
@@ -308,7 +322,8 @@ class WebController:
             self.latest_metadata = metadata
             self.shape = (rgb.shape[1], rgb.shape[0])
             self.stats, self.processing_ms = stats, processing_ms
-            self.last_frame_at, self.last_seq = now, seq
+            if seq > self.last_seq:
+                self.last_frame_at, self.last_seq = now, seq
             self.previews = encoded
 
     def preview(self, view):

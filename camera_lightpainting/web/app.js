@@ -59,6 +59,10 @@ function render(s) {
   $('backgroundStatus').textContent = s.background_captured ? '已校准' : '待采集';
   $('backgroundStatus').classList.toggle('ready', s.background_captured);
   $('canvasMode').textContent = s.settings.mode === 'neon' ? '彩虹光轨' : '取亮长曝光';
+  $('overlayControls').hidden = !s.settings.overlay;
+  $('overlayStatus').textContent = s.overlay?.frozen
+    ? `底图已锁定 · 绘制结束前的第 ${s.overlay.base_sequence} 帧`
+    : s.drawing ? '绘制中实时预览，暂停后锁定底图' : '开始绘制后记录底图';
   $('emptyCanvas').hidden = s.points > 0 || s.settings.overlay || (s.settings.mode === 'exposure' && s.frames > 0);
   $('emptyTitle').textContent = s.drawing ? '正在等待光源' : '等待第一道光';
   $('emptyHint').textContent = s.drawing ? '将光源移入识别区域，慢慢移动' : s.background_captured ? '背景已就绪，点击开始绘制' : '采集背景后，开始你的创作';

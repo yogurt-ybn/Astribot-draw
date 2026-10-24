@@ -130,6 +130,7 @@ def create_app(controller):
     def capabilities():
         return jsonify(application='astribot-lightpainting', api_version='1', modes=['neon', 'exposure'], light_colors=['cyan', 'white'],
                        previews=['camera', 'selected', 'mask', 'result'],
+                       overlay_mode='last_drawing_frame', overlay_brightness_range=[0, 100],
                        frame_format='RGB uint8 HxWx3', mask_values=[0, 1],
                        coordinate_space='processed_frame', timestamp_clock='monotonic_ns',
                        endpoints=dict(state='/api/v1/state', settings='/api/v1/settings',

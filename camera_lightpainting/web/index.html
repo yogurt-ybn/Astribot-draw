@@ -49,12 +49,13 @@
         <label class="field slider-field"><span>背景差异阈值 <output id="change_thresholdValue"></output></span><input aria-label="背景差异阈值" type="range" data-setting="change_threshold" min="8" max="80"><small>背景残留时，可适当提高</small></label>
         <label class="field slider-field"><span>光轨宽度 <output id="widthValue"></output></span><input aria-label="光轨宽度" type="range" data-setting="width" min="1" max="16"></label>
         <label class="check switch"><span>过滤静止背景光源</span><input type="checkbox" data-setting="filter_static"><i></i></label>
-        <label class="check switch"><span>叠加相机背景</span><input type="checkbox" data-setting="overlay"><i></i></label>
+        <label class="check switch"><span>叠加结束画面</span><input type="checkbox" data-setting="overlay"><i></i></label>
+        <div id="overlayControls" hidden><label class="field slider-field"><span>底图亮度（%） <output id="overlay_brightnessValue"></output></span><input aria-label="底图亮度" type="range" data-setting="overlay_brightness" min="0" max="100"><small>暂停时锁定最后一帧，100% 为原始亮度。</small></label><p id="overlayStatus" class="note">开始绘制后记录底图</p></div>
         <details><summary>更多设置</summary><label class="check switch"><span>仅累积明亮像素</span><input type="checkbox" data-setting="only_bright"><i></i></label><label class="check switch"><span>镜像画面</span><input type="checkbox" data-setting="mirrored"><i></i></label><p class="note">更改镜像后，请重新采集背景。</p></details>
       </section>
       <section class="card camera-panel"><div class="panel-title"><h2>相机设备</h2><svg><use href="#i-camera"/></svg></div><label class="field"><span class="sr-only">视频设备</span><select id="device" aria-label="视频设备"></select></label><button id="connect" class="wide">重新连接相机</button></section>
     </aside></div>
-    <footer><span><i class="dot online"></i>图像在相机电脑本地处理</span><span><kbd>Esc</kbd> 暂停 <span class="footer-separator">/</span> <kbd>Ctrl S</kbd> 保存图片</span><span>LUMA STUDIO <span class="footer-separator">/</span> v0.5</span></footer>
+    <footer><span><i class="dot online"></i>图像在相机电脑本地处理</span><span><kbd>Esc</kbd> 暂停 <span class="footer-separator">/</span> <kbd>Ctrl S</kbd> 保存图片</span><span>LUMA STUDIO <span class="footer-separator">/</span> v0.6</span></footer>
   </div>
   <div id="toast" role="status"></div>
 </body></html>

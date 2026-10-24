@@ -78,8 +78,13 @@ pipeline.clear(keep_background=False)
 | `filter_static` | bool | true |
 | `only_bright` | bool | true |
 | `overlay` | bool | false |
+| `overlay_brightness` | 整数 0–100，底图亮度百分比 | 60 |
 
-参数修改先完整校验再应用；非法值抛出 `ValueError`。切换模式、光源类型或静止过滤会清空已有画布，保留背景和 ROI。阈值、宽度、背景叠加只影响后续处理。镜像是采集层设置，不在 `PipelineSettings` 内。
+参数修改先完整校验再应用；非法值抛出 `ValueError`。切换模式、光源类型或静止过滤会清空已有画布，保留背景和 ROI。阈值、宽度只影响后续处理；背景叠加及底图亮度可以重新渲染已有光轨。镜像是采集层设置，不在 `PipelineSettings` 内。
+
+叠加使用最后一帧 `accumulate=True` 的 RGB 底图，与纯光轨逐通道取最大值；底图先乘 `overlay_brightness / 100`。`accumulate=False` 不更新该底图，`break_stroke()` 标记暂停。即使绘制时未开启叠加，暂停后也可以 `configure(overlay=True)`，然后 `snapshot()` 立即重新合成；不增加累积帧数、不重新检测光源。`clear()` 丢弃底图。底图是处理后（缩放/镜像）的原始 RGB，不含定位标记和区域框。
+
+`FrameResult.metadata().overlay` 和 `/api/v1/state` 的 `overlay` 字段含 `enabled`、`brightness`、`base_sequence`、`base_captured_ns`、`frozen`。暂停后处理帧序号可能继续变化，底图序号保持不变。PNG 的 `X-Frame-Sequence` 标识输出快照对应的处理帧，底图来源以 overlay 元数据为准。HTTP 暂停或调整叠加后会立即重新渲染，GET PNG 无需等待下一相机帧。
 
 ## HTTP：连接现有相机服务
 
